@@ -63,6 +63,30 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
+  // Pulse Heartbeat to ensure sync even if initial join missed
+  useEffect(() => {
+    if (!channelRef.current || (gameState.status !== 'lobby' && gameState.status !== 'guest-setup')) return;
+
+    const intervalId = setInterval(() => {
+      if (!channelRef.current) return;
+
+      if (gameState.playerId === 'player1') {
+        // Host broadcasts the full state to help lost guests
+        channelRef.current.publish('full-sync', latestStateRef.current);
+      } else if (gameState.playerId === 'player2' && gameState.isPlayer2Ready) {
+        // Guest broadcasts their ready status to help lost hosts
+        channelRef.current.publish('player-ready', {
+          playerId: 'player2',
+          name: gameState.player2.name,
+          secret: gameState.player2.secretNumber,
+          isReady: true
+        });
+      }
+    }, 5000); // 5s pulse is enough to be resilient
+
+    return () => clearInterval(intervalId);
+  }, [gameState.status, gameState.playerId, gameState.isPlayer2Ready, gameState.player2.name, gameState.player2.secretNumber]);
+
   const updateState = useCallback((updater: GameState | ((prev: GameState) => GameState)) => {
     setGameState(prev => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
