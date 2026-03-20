@@ -1,15 +1,28 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, Loader2, Sparkles } from 'lucide-react';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, Loader2, Sparkles, Link as LinkIcon } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
 export default function Setup() {
+  return (
+    <React.Suspense fallback={
+      <div className="min-h-screen bg-[#050B18] flex items-center justify-center text-blue-500">
+        <Loader2 className="animate-spin" size={48} />
+      </div>
+    }>
+      <SetupContent />
+    </React.Suspense>
+  );
+}
+
+function SetupContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { gameState, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
@@ -17,6 +30,7 @@ export default function Setup() {
   const [mode, setMode] = useState<'selection' | 'host-setup' | 'enter-code' | 'guest-setup' | 'lobby'>('selection');
   const [joinCode, setJoinCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   
   const [form, setForm] = useState({
     name: '',
@@ -26,6 +40,15 @@ export default function Setup() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Auto-join if room code in URL
+  useEffect(() => {
+    const room = searchParams.get('room');
+    if (room && room.length === 6 && !roomCode) {
+      console.log('Auto-joining room from URL:', room);
+      joinRoom(room.toUpperCase());
+    }
+  }, [searchParams, joinRoom, roomCode]);
 
   // Sync mode with game status for guest
   useEffect(() => {
@@ -71,6 +94,15 @@ export default function Setup() {
       navigator.clipboard.writeText(roomCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const copyInviteLink = () => {
+    if (roomCode) {
+      const url = `${window.location.origin}/setup?room=${roomCode}`;
+      navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
     }
   };
 
@@ -263,6 +295,24 @@ export default function Setup() {
                   </button>
                 </div>
               </div>
+              
+              <button 
+                onClick={copyInviteLink}
+                className="flex items-center justify-center gap-2 mx-auto px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 rounded-2xl border border-blue-500/20 transition-all group w-full max-w-[280px]"
+              >
+                {linkCopied ? (
+                  <>
+                    <Check size={18} className="text-green-400" />
+                    <span className="font-bold text-sm">COPIED LINK!</span>
+                  </>
+                ) : (
+                  <>
+                    <LinkIcon size={18} className="group-hover:rotate-12 transition-transform" />
+                    <span className="font-bold text-sm uppercase tracking-wide">Copy Invite Link</span>
+                  </>
+                )}
+              </button>
+
               {!isOpponentPresent && (
                 <div className="flex items-center justify-center gap-2 text-blue-400 font-bold animate-pulse text-sm">
                   <Loader2 className="animate-spin" size={16} /> Waiting for opponent to join...

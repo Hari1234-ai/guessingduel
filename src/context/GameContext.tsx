@@ -2,14 +2,13 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import * as Ably from 'ably';
-import { GameState, GameStatus, Player, Feedback } from '@/types/game';
+import { GameState, Player, Feedback } from '@/types/game';
 
 interface GameContextType {
   gameState: GameState;
-  createRoom: (name: string, secret: number, min: number, max: number) => string;
-  joinRoom: (code: string) => void;
-  setSetup: (p1Name: string, p2Name: string, min: number, max: number, p1Secret: number, p2Secret: number) => void;
-  completeGuestSetup: (name: string, secret: number) => void;
+  createRoom: (name: string, secret: number, min: number, max: number) => Promise<string>;
+  joinRoom: (code: string) => Promise<void>;
+  completeGuestSetup: (name: string, secret: number) => Promise<void>;
   makeGuess: (guess: number) => Feedback;
   resetGame: () => void;
   startNewGame: () => void;
@@ -55,37 +54,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Initialize Ably
   useEffect(() => {
     if (ABLY_KEY && ABLY_KEY !== 'your_ably_api_key_here') {
-      ablyRef.current = new Ably.Realtime({ key: ABLY_KEY });
+      ablyRef.current = new Ably.Realtime({ 
+        key: ABLY_KEY,
+        clientId: `client-${Math.random().toString(36).substring(2, 7)}`
+      });
       console.log('Ably initialized');
     }
     return () => {
       ablyRef.current?.close();
     };
   }, []);
-
-  // Pulse Heartbeat to ensure sync even if initial join missed
-  useEffect(() => {
-    if (!channelRef.current || (gameState.status !== 'lobby' && gameState.status !== 'guest-setup')) return;
-
-    const intervalId = setInterval(() => {
-      if (!channelRef.current) return;
-
-      if (gameState.playerId === 'player1') {
-        // Host broadcasts the full state to help lost guests
-        channelRef.current.publish('full-sync', latestStateRef.current);
-      } else if (gameState.playerId === 'player2' && gameState.isPlayer2Ready) {
-        // Guest broadcasts their ready status to help lost hosts
-        channelRef.current.publish('player-ready', {
-          playerId: 'player2',
-          name: gameState.player2.name,
-          secret: gameState.player2.secretNumber,
-          isReady: true
-        });
-      }
-    }, 5000); // 5s pulse is enough to be resilient
-
-    return () => clearInterval(intervalId);
-  }, [gameState.status, gameState.playerId, gameState.isPlayer2Ready, gameState.player2.name, gameState.player2.secretNumber]);
 
   const updateState = useCallback((updater: GameState | ((prev: GameState) => GameState)) => {
     setGameState(prev => {
@@ -95,10 +73,59 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, []);
 
-  const createRoom = useCallback((name: string, secret: number, min: number, max: number) => {
+  // Sync state from Ably Presence members
+  const syncFromPresence = useCallback(async (channel: Ably.RealtimeChannel) => {
+    try {
+      const members = await channel.presence.get();
+      console.log('Presence Sync: Current Members:', members.map(m => ({ id: m.clientId, data: m.data })));
+      
+      updateState(prev => {
+        let newState = { ...prev };
+        let foundOpponent = false;
+
+        members.forEach((member) => {
+          const data = member.data;
+          if (!data || !data.playerId) return;
+
+          // Don't overwrite ourselves
+          if (member.connectionId === ablyRef.current?.connection.id) return;
+
+          foundOpponent = true;
+          if (data.playerId === 'player1') {
+            newState = {
+              ...newState,
+              player1: { ...newState.player1, name: data.name, secretNumber: data.secret },
+              range: data.range || newState.range,
+              isPlayer1Ready: data.isReady,
+              isOpponentPresent: true
+            };
+          } else if (data.playerId === 'player2') {
+            newState = {
+              ...newState,
+              player2: { ...newState.player2, name: data.name, secretNumber: data.secret },
+              isPlayer2Ready: data.isReady,
+              isOpponentPresent: true
+            };
+          }
+        });
+
+        // If no opponent found in presence, mark them absent
+        if (!foundOpponent && prev.roomCode) {
+          newState.isOpponentPresent = false;
+        }
+
+        return newState;
+      });
+    } catch (err) {
+      console.error('Error syncing from presence:', err);
+    }
+  }, [updateState]);
+
+  const createRoom = useCallback(async (name: string, secret: number, min: number, max: number) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    console.log('Creating room:', code, { name, secret, min, max });
+    console.log('Ably Presence: Creating Room:', code);
     
+    // 1. Set Local State
     const newState: GameState = { 
       ...initialState, 
       roomCode: code, 
@@ -107,34 +134,31 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       player1: initialPlayer(name, secret),
       range: { min, max },
       isPlayer1Ready: true,
+      isOpponentPresent: false,
     };
-    
-    // Update ref immediately for sync, then set state
     latestStateRef.current = newState;
     setGameState(newState);
     
+    // 2. Setup Channel & Presence
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
       
-      // Subscribe to player updates
-      channel.subscribe('player-ready', (msg) => {
-        console.log('Host received player-ready:', msg.data);
-        const { playerId, name: pName, secret: pSecret, isReady } = msg.data;
-        const pKey = playerId as 'player1' | 'player2';
-        const readyKey = pKey === 'player1' ? 'isPlayer1Ready' : 'isPlayer2Ready';
-        
-        if (msg.connectionId !== ablyRef.current?.connection.id) {
-          updateState(prev => ({
-            ...prev,
-            [pKey]: { ...prev[pKey], name: pName, secretNumber: pSecret },
-            [readyKey]: isReady,
-            isOpponentPresent: true,
-          }));
-        }
+      // Subscribe to Presence updates
+      channel.presence.subscribe(['enter', 'present', 'update', 'leave'], () => {
+        syncFromPresence(channel);
       });
 
-      // Subscribe to start duel
+      // Enter Presence as Host
+      await channel.presence.enter({ 
+        playerId: 'player1', 
+        name, 
+        secret, 
+        range: { min, max }, 
+        isReady: true 
+      });
+
+      // Game Events
       channel.subscribe('start-duel', () => {
         updateState(prev => ({ ...prev, status: 'playing' }));
       });
@@ -144,42 +168,35 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { guess, feedback, nextTurn, isWinner } = msg.data;
           updateState(prev => {
             const currentPlayerKey = prev.currentTurn;
-            const updatedPlayer = {
-              ...prev[currentPlayerKey],
-              attempts: prev[currentPlayerKey].attempts + 1,
-              history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
-            };
             return {
               ...prev,
-              [currentPlayerKey]: updatedPlayer,
+              [currentPlayerKey]: {
+                ...prev[currentPlayerKey],
+                attempts: prev[currentPlayerKey].attempts + 1,
+                history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
+              },
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
               winner: isWinner ? currentPlayerKey : null,
             };
           });
-        }
-      });
-
-      channel.subscribe('request-sync', () => {
-        console.log('Sync requested by guest. Current state:', latestStateRef.current);
-        updateState(prev => ({ ...prev, isOpponentPresent: true }));
-        if (channelRef.current) {
-          channelRef.current.publish('full-sync', latestStateRef.current);
-        }
-      });
-
-      channel.subscribe('full-sync', (msg) => {
-        if (msg.connectionId !== ablyRef.current?.connection.id) {
-          console.log('Host received full-sync (ignoring):', msg.data);
         }
       });
     }
     return code;
-  }, [updateState]);
+  }, [syncFromPresence, updateState]);
 
   const joinRoom = useCallback(async (code: string) => {
-    console.log('Joining room:', code);
-    const newState: GameState = { ...initialState, roomCode: code, playerId: 'player2', status: 'guest-setup', isOpponentPresent: true };
+    console.log('Ably Presence: Joining Room:', code);
+    
+    // 1. Set Local Join State
+    const newState: GameState = { 
+      ...initialState, 
+      roomCode: code, 
+      playerId: 'player2', 
+      status: 'guest-setup', 
+      isOpponentPresent: true 
+    };
     latestStateRef.current = newState;
     setGameState(newState);
     
@@ -187,20 +204,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
       
-      channel.subscribe('player-ready', (msg) => {
-        const { playerId, name: pName, secret: pSecret, isReady } = msg.data;
-        const pKey = playerId as 'player1' | 'player2';
-        const readyKey = pKey === 'player1' ? 'isPlayer1Ready' : 'isPlayer2Ready';
-        if (msg.connectionId !== ablyRef.current?.connection.id) {
-          updateState(prev => ({
-            ...prev,
-            [pKey]: { ...prev[pKey], name: pName, secretNumber: pSecret },
-            [readyKey]: isReady,
-            isOpponentPresent: true,
-          }));
-        }
+      // Subscribe to Presence
+      channel.presence.subscribe(['enter', 'present', 'update', 'leave'], () => {
+        syncFromPresence(channel);
       });
 
+      // Enter Presence as Challenger (Not ready yet)
+      await channel.presence.enter({ 
+        playerId: 'player2', 
+        name: 'Challenger Joining...', 
+        isReady: false 
+      });
+
+      // Initial Presence Sync
+      syncFromPresence(channel);
+
+      // Handle Events
       channel.subscribe('start-duel', () => {
         updateState(prev => ({ ...prev, status: 'playing' }));
       });
@@ -210,14 +229,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { guess, feedback, nextTurn, isWinner } = msg.data;
           updateState(prev => {
             const currentPlayerKey = prev.currentTurn;
-            const updatedPlayer = {
-              ...prev[currentPlayerKey],
-              attempts: prev[currentPlayerKey].attempts + 1,
-              history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
-            };
             return {
               ...prev,
-              [currentPlayerKey]: updatedPlayer,
+              [currentPlayerKey]: {
+                ...prev[currentPlayerKey],
+                attempts: prev[currentPlayerKey].attempts + 1,
+                history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
+              },
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
               winner: isWinner ? currentPlayerKey : null,
@@ -225,132 +243,102 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
         }
       });
-
-      channel.subscribe('full-sync', (msg) => {
-        if (msg.connectionId !== ablyRef.current?.connection.id) {
-          console.log('Guest received full sync. Merging state:', msg.data);
-          const incoming: GameState = msg.data;
-          updateState(prev => ({
-            ...prev,
-            // Only merge fields that the Host controls
-            player1: incoming.player1, 
-            range: incoming.range,
-            isPlayer1Ready: incoming.isPlayer1Ready,
-            isOpponentPresent: true,
-            // Only sync status if it's further along
-            status: incoming.status === 'playing' ? 'playing' : prev.status,
-          }));
-        }
-      });
-
-      if (ablyRef.current.connection.state !== 'connected') {
-        await new Promise(resolve => ablyRef.current?.connection.once('connected', resolve));
-      }
-      channel.publish('request-sync', {});
     }
-  }, [updateState]);
+  }, [syncFromPresence, updateState]);
 
-  const completeGuestSetup = useCallback((name: string, secret: number) => {
-    const newState: GameState = {
-      ...latestStateRef.current,
+  const completeGuestSetup = useCallback(async (name: string, secret: number) => {
+    console.log('Ably Presence: Guest Ready:', name);
+    
+    updateState(prev => ({
+      ...prev,
       player2: initialPlayer(name, secret),
       isPlayer2Ready: true,
       status: 'lobby',
-    };
-    
-    latestStateRef.current = newState;
-    setGameState(newState);
+    }));
 
     if (channelRef.current) {
-      console.log('Guest publishing player-ready');
-      channelRef.current.publish('player-ready', { 
+      await channelRef.current.presence.update({ 
         playerId: 'player2', 
         name, 
         secret, 
         isReady: true 
       });
     }
-  }, []);
+  }, [updateState]);
 
-  const setSetup = useCallback((
-    p1Name: string,
-    p2Name: string,
-    min: number,
-    max: number,
-    p1Secret: number,
-    p2Secret: number
-  ) => {
-    // Kept for backward compatibility if needed, but not used in the new flow
-  }, []);
+  const makeGuess = useCallback((guess: number): Feedback => {
+    const { player1, player2, currentTurn, status } = latestStateRef.current;
+    if (status !== 'playing') return null;
+
+    const opponent = currentTurn === 'player1' ? player2 : player1;
+    let feedback: Feedback = 'Correct!';
+    if (guess < opponent.secretNumber) feedback = 'Too Low';
+    if (guess > opponent.secretNumber) feedback = 'Too High';
+
+    const isWinner = feedback === 'Correct!';
+    const nextTurn = isWinner ? currentTurn : (currentTurn === 'player1' ? 'player2' : 'player1');
+
+    updateState(prev => ({
+      ...prev,
+      [currentTurn]: {
+        ...prev[currentTurn],
+        attempts: prev[currentTurn].attempts + 1,
+        history: [{ guess, feedback }, ...prev[currentTurn].history],
+      },
+      currentTurn: nextTurn as 'player1' | 'player2',
+      status: isWinner ? 'finished' : 'playing',
+      winner: isWinner ? currentTurn : null,
+    }));
+
+    if (channelRef.current) {
+      channelRef.current.publish('guess-made', { 
+        guess, 
+        feedback, 
+        nextTurn, 
+        isWinner 
+      });
+    }
+    return feedback;
+  }, [updateState]);
 
   const startGame = useCallback(() => {
     if (latestStateRef.current.playerId === 'player1' && channelRef.current) {
       channelRef.current.publish('start-duel', {});
-      setGameState(prev => ({ ...prev, status: 'playing' }));
+      updateState(prev => ({ ...prev, status: 'playing' }));
     }
-  }, []);
-
-  const makeGuess = useCallback((guess: number): Feedback => {
-    let feedback: Feedback = null;
-    const prev = latestStateRef.current;
-    
-    if (prev.status !== 'playing' || prev.winner) return null;
-
-    const currentPlayerKey = prev.currentTurn;
-    const opponentPlayerKey = prev.currentTurn === 'player1' ? 'player2' : 'player1';
-    const opponentSecret = prev[opponentPlayerKey].secretNumber;
-
-    if (guess > opponentSecret) feedback = 'Too High';
-    else if (guess < opponentSecret) feedback = 'Too Low';
-    else feedback = 'Correct!';
-
-    const isWinner = feedback === 'Correct!';
-    const nextTurn = isWinner ? prev.currentTurn : opponentPlayerKey;
-
-    setGameState(s => ({
-      ...s,
-      [currentPlayerKey]: {
-        ...s[currentPlayerKey],
-        attempts: s[currentPlayerKey].attempts + 1,
-        history: [{ guess, feedback }, ...s[currentPlayerKey].history],
-      },
-      currentTurn: nextTurn,
-      status: isWinner ? 'finished' : 'playing',
-      winner: isWinner ? currentPlayerKey : null,
-    }));
-
-    if (channelRef.current) {
-      channelRef.current.publish('guess-made', { guess, feedback, nextTurn, isWinner });
-    }
-
-    return feedback;
-  }, []);
+  }, [updateState]);
 
   const resetGame = useCallback(() => {
-    setGameState((prev) => {
-      const newState: GameState = {
-        ...prev,
-        player1: { ...prev.player1, attempts: 0, history: [] },
-        player2: { ...prev.player2, attempts: 0, history: [] },
-        currentTurn: 'player1',
-        status: 'playing',
-        winner: null,
-      };
-      if (channelRef.current) channelRef.current.publish('full-sync', newState);
-      return newState;
-    });
-  }, []);
+    updateState(prev => ({
+      ...initialState,
+      roomCode: prev.roomCode,
+      playerId: prev.playerId,
+      status: 'lobby',
+      player1: { ...prev.player1, attempts: 0, history: [] },
+      player2: { ...prev.player2, attempts: 0, history: [] },
+    }));
+  }, [updateState]);
 
   const startNewGame = useCallback(() => {
-    setGameState(initialState);
     if (channelRef.current) {
       channelRef.current.unsubscribe();
+      channelRef.current.presence.leave();
       channelRef.current = null;
     }
-  }, []);
+    updateState(initialState);
+  }, [updateState]);
 
   return (
-    <GameContext.Provider value={{ gameState, createRoom, joinRoom, setSetup, completeGuestSetup, makeGuess, resetGame, startNewGame, startGame }}>
+    <GameContext.Provider value={{ 
+      gameState, 
+      createRoom, 
+      joinRoom, 
+      completeGuestSetup,
+      makeGuess, 
+      resetGame,
+      startNewGame,
+      startGame
+    }}>
       {children}
     </GameContext.Provider>
   );
