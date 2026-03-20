@@ -67,6 +67,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const createRoom = useCallback(() => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    console.log('Creating room:', code);
     setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player1', status: 'lobby' }));
     
     if (ablyRef.current) {
@@ -74,6 +75,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Subscribe to updates
       channelRef.current.subscribe('state-update', (msg) => {
+        console.log('Received state-update:', msg.data);
         if (msg.connectionId !== ablyRef.current?.connection.id) {
           setGameState(prev => ({ 
             ...msg.data, 
@@ -86,6 +88,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Listen for state requests
       channelRef.current.subscribe('request-state', () => {
+        console.log('Received request-state from guest');
         if (channelRef.current) {
           channelRef.current.publish('state-update', {
             ...latestStateRef.current,
@@ -98,13 +101,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return code;
   }, []);
 
-  const joinRoom = useCallback((code: string) => {
+  const joinRoom = useCallback(async (code: string) => {
+    console.log('Joining room:', code);
     setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player2', isOpponentPresent: true }));
     
     if (ablyRef.current) {
       channelRef.current = ablyRef.current.channels.get(`room-${code}`);
       
       channelRef.current.subscribe('state-update', (msg) => {
+        console.log('Received state-update from host:', msg.data);
         if (msg.connectionId !== ablyRef.current?.connection.id) {
           setGameState(prev => ({ 
             ...msg.data, 
@@ -115,7 +120,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
-      // Request current state from host
+      // Ensure we are connected before requesting state
+      if (ablyRef.current.connection.state !== 'connected') {
+        console.log('Waiting for Ably connection...');
+        await new Promise(resolve => ablyRef.current?.connection.once('connected', resolve));
+      }
+
+      console.log('Publishing request-state');
       channelRef.current.publish('request-state', {});
     }
   }, []);
