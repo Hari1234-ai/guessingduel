@@ -57,7 +57,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Initialize Ably
   useEffect(() => {
     if (ABLY_KEY && ABLY_KEY !== 'your_ably_api_key_here') {
-      console.log('Ably: Initializing with API Key');
       const ably = new Ably.Realtime({ 
         key: ABLY_KEY,
         clientId: `user-${Math.random().toString(36).substring(2, 8)}`
@@ -65,22 +64,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       ablyRef.current = ably;
 
-      ably.connection.on('connected', () => {
-        console.log('Ably: Connected successfully');
-        setConnectionStatus('connected');
-      });
-
-      ably.connection.on('failed', () => {
-        console.error('Ably: Connection failed');
-        setConnectionStatus('failed');
-      });
-
-      ably.connection.on('disconnected', () => {
-        console.warn('Ably: Disconnected');
-        setConnectionStatus('disconnected');
-      });
+      ably.connection.on('connected', () => setConnectionStatus('connected'));
+      ably.connection.on('failed', () => setConnectionStatus('failed'));
+      ably.connection.on('disconnected', () => setConnectionStatus('disconnected'));
     } else {
-      console.error('Ably: API Key is missing or invalid');
       setConnectionStatus('failed');
     }
 
@@ -97,60 +84,43 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, []);
 
-  // Robust Presence Sync
-  const syncFromPresence = useCallback(async (channel: Ably.RealtimeChannel) => {
-    try {
-      const members = await channel.presence.get();
-      console.log('Ably Presence Sync: Members in room:', members.length);
+  // ---------------------------------------------------------
+  // THE ULTIMATE "DUAL-HEARTBEAT" SYNC SYSTEM (No Presence API)
+  // ---------------------------------------------------------
+  useEffect(() => {
+    const channel = channelRef.current;
+    if (!channel) return;
+
+    const interval = setInterval(() => {
+      const state = latestStateRef.current;
       
-      updateState(prev => {
-        let newState = { ...prev };
-        let opponentData: any = null;
+      // Host pulses to help Guests
+      if (state.playerId === 'player1' && state.status === 'lobby') {
+        const payload = {
+          name: state.player1.name,
+          secret: state.player1.secretNumber,
+          range: state.range,
+          isReady: state.isPlayer1Ready,
+        };
+        channel.publish('host-heartbeat', payload);
+      }
+      
+      // Guest pulses to help Hosts (Even during guest-setup, helps host know they are there)
+      if (state.playerId === 'player2' && (state.status === 'guest-setup' || state.status === 'lobby')) {
+        const payload = {
+          name: state.player2.name || 'Challenger Joining...',
+          secret: state.player2.secretNumber,
+          isReady: state.isPlayer2Ready,
+        };
+        channel.publish('guest-heartbeat', payload);
+      }
+    }, 2500); // Fast 2.5s pulse for near-instant sync
 
-        members.forEach((member) => {
-          if (!member.data || !member.data.playerId) return;
-          
-          // Identify the other player
-          if (member.clientId !== ablyRef.current?.clientId) {
-            opponentData = member.data;
-          }
-        });
-
-        if (opponentData) {
-          const isP1 = opponentData.playerId === 'player1';
-          console.log(`Ably Presence Sync: Found ${isP1 ? 'Host' : 'Guest'}:`, opponentData.name);
-          
-          if (isP1) {
-            newState = {
-              ...newState,
-              player1: { ...newState.player1, name: opponentData.name, secretNumber: opponentData.secret },
-              range: opponentData.range || newState.range,
-              isPlayer1Ready: opponentData.isReady,
-              isOpponentPresent: true
-            };
-          } else {
-            newState = {
-              ...newState,
-              player2: { ...newState.player2, name: opponentData.name, secretNumber: opponentData.secret },
-              isPlayer2Ready: opponentData.isReady,
-              isOpponentPresent: true
-            };
-          }
-        } else if (prev.roomCode && prev.isOpponentPresent) {
-          // If we had an opponent but don't anymore, mark them as gone
-          newState.isOpponentPresent = false;
-        }
-
-        return newState;
-      });
-    } catch (err) {
-      console.error('Ably Presence Sync: Error:', err);
-    }
-  }, [updateState]);
+    return () => clearInterval(interval);
+  }, [gameState.status, gameState.playerId]); // Re-bind if major phase changes
 
   const createRoom = useCallback(async (name: string, secret: number, min: number, max: number) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    console.log('Ably: Creating Room:', code);
     
     const newState: GameState = { 
       ...initialState, 
@@ -169,25 +139,27 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
-      
-      // Subscribe to Presence
-      channel.presence.subscribe(['enter', 'present', 'update', 'leave'], () => {
-        syncFromPresence(channel);
-      });
 
-      // Explicitly enter presence
-      await channel.presence.enter({ 
-        playerId: 'player1', 
-        name, 
-        secret, 
-        range: { min, max }, 
-        isReady: true 
+      // Host Listens for Guest Heartbeats
+      channel.subscribe('guest-heartbeat', (msg) => {
+        if (msg.clientId !== ablyRef.current?.clientId) {
+          const payload = msg.data;
+          updateState(prev => ({
+            ...prev,
+            isOpponentPresent: true,
+            player2: { 
+              ...prev.player2, 
+              // Don't overwrite empty guest name with placeholder if they actually became ready later
+              name: payload.name.includes('...') && prev.isPlayer2Ready ? prev.player2.name : payload.name, 
+              secretNumber: payload.secret 
+            },
+            isPlayer2Ready: payload.isReady,
+          }));
+        }
       });
 
       // Subscribe to actions
-      channel.subscribe('start-duel', () => {
-        updateState(prev => ({ ...prev, status: 'playing' }));
-      });
+      channel.subscribe('start-duel', () => updateState(prev => ({ ...prev, status: 'playing' })));
 
       channel.subscribe('guess-made', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
@@ -210,17 +182,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
     return code;
-  }, [syncFromPresence, updateState]);
+  }, [updateState]);
 
   const joinRoom = useCallback(async (code: string) => {
-    console.log('Ably: Joining Room:', code);
-    
     const newState: GameState = { 
       ...initialState, 
       roomCode: code, 
       playerId: 'player2', 
       status: 'guest-setup', 
-      isOpponentPresent: true 
+      isOpponentPresent: true // We assume the host is there if we have a code
     };
     latestStateRef.current = newState;
     setGameState(newState);
@@ -228,23 +198,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
-      
-      channel.presence.subscribe(['enter', 'present', 'update', 'leave'], () => {
-        syncFromPresence(channel);
+
+      // Guest Listens for Host Heartbeats
+      channel.subscribe('host-heartbeat', (msg) => {
+        if (msg.clientId !== ablyRef.current?.clientId) {
+          const payload = msg.data;
+          updateState(prev => ({
+            ...prev,
+            isOpponentPresent: true,
+            player1: { ...prev.player1, name: payload.name, secretNumber: payload.secret },
+            range: payload.range || prev.range,
+            isPlayer1Ready: payload.isReady,
+          }));
+        }
       });
 
-      // Enter as Guest (not ready)
-      await channel.presence.enter({ 
-        playerId: 'player2', 
-        name: 'Challenger', 
-        isReady: false 
-      });
-
-      syncFromPresence(channel);
-
-      channel.subscribe('start-duel', () => {
-        updateState(prev => ({ ...prev, status: 'playing' }));
-      });
+      channel.subscribe('start-duel', () => updateState(prev => ({ ...prev, status: 'playing' })));
 
       channel.subscribe('guess-made', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
@@ -265,12 +234,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
         }
       });
+      
+      // Send an immediate pulse to alert the host we arrived, don't wait 2.5s
+      channel.publish('guest-heartbeat', {
+        name: 'Challenger Joining...',
+        secret: 0,
+        isReady: false,
+      });
     }
-  }, [syncFromPresence, updateState]);
+  }, [updateState]);
 
   const completeGuestSetup = useCallback(async (name: string, secret: number) => {
-    console.log('Ably: Guest Ready:', name);
-    
     updateState(prev => ({
       ...prev,
       player2: initialPlayer(name, secret),
@@ -279,8 +253,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     if (channelRef.current) {
-      await channelRef.current.presence.update({ 
-        playerId: 'player2', 
+      // Immediate pulse of final Ready state
+      channelRef.current.publish('guest-heartbeat', { 
         name, 
         secret, 
         isReady: true 
@@ -313,12 +287,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     if (channelRef.current) {
-      channelRef.current.publish('guess-made', { 
-        guess, 
-        feedback, 
-        nextTurn, 
-        isWinner 
-      });
+      channelRef.current.publish('guess-made', { guess, feedback, nextTurn, isWinner });
     }
     return feedback;
   }, [updateState]);
@@ -343,7 +312,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const startNewGame = useCallback(() => {
     if (channelRef.current) {
-      channelRef.current.presence.leave();
       channelRef.current.unsubscribe();
       channelRef.current = null;
     }
