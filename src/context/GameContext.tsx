@@ -30,6 +30,7 @@ const initialState: GameState = {
   winner: null,
   roomCode: null,
   playerId: null,
+  isOpponentPresent: false,
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -66,7 +67,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const createRoom = useCallback(() => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player1' }));
+    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player1', status: 'lobby' }));
     
     if (ablyRef.current) {
       channelRef.current = ablyRef.current.channels.get(`room-${code}`);
@@ -77,7 +78,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setGameState(prev => ({ 
             ...msg.data, 
             roomCode: prev.roomCode, 
-            playerId: prev.playerId 
+            playerId: prev.playerId,
+            isOpponentPresent: true,
           }));
         }
       });
@@ -85,7 +87,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Listen for state requests
       channelRef.current.subscribe('request-state', () => {
         if (channelRef.current) {
-          channelRef.current.publish('state-update', latestStateRef.current);
+          channelRef.current.publish('state-update', {
+            ...latestStateRef.current,
+            isOpponentPresent: true,
+          });
+          setGameState(prev => ({ ...prev, isOpponentPresent: true }));
         }
       });
     }
@@ -93,7 +99,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const joinRoom = useCallback((code: string) => {
-    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player2' }));
+    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player2', isOpponentPresent: true }));
     
     if (ablyRef.current) {
       channelRef.current = ablyRef.current.channels.get(`room-${code}`);
@@ -103,7 +109,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setGameState(prev => ({ 
             ...msg.data, 
             roomCode: prev.roomCode, 
-            playerId: prev.playerId 
+            playerId: prev.playerId,
+            isOpponentPresent: true,
           }));
         }
       });
@@ -121,17 +128,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     p1Secret: number,
     p2Secret: number
   ) => {
-    // This is now only used locally or we should replace it with incremental updates
     setGameState(prev => {
       const newState: GameState = {
         ...prev,
-        player1: p1Name ? initialPlayer(p1Name, p1Secret) : prev.player1,
-        player2: p2Name ? initialPlayer(p2Name, p2Secret) : prev.player2,
-        range: min !== undefined ? { min, max } : prev.range,
         status: 'playing',
       };
       
-      // Update specifically what this player sent
       if (prev.playerId === 'player1') {
         newState.player1 = initialPlayer(p1Name, p1Secret);
         newState.range = { min, max };

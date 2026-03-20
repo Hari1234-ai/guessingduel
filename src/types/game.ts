@@ -1,4 +1,4 @@
-export type GameStatus = 'setup' | 'playing' | 'finished';
+export type GameStatus = 'setup' | 'lobby' | 'playing' | 'finished';
 
 export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | null;
 
@@ -23,4 +23,5 @@ export interface GameState {
   winner: 'player1' | 'player2' | null;
   roomCode: string | null;
   playerId: 'player1' | 'player2' | null;
+  isOpponentPresent: boolean;
 }

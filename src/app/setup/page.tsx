@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info } from 'lucide-react';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, Loader2 } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -11,7 +11,7 @@ import Input from '@/components/ui/Input';
 export default function Setup() {
   const router = useRouter();
   const { gameState, createRoom, joinRoom, setSetup } = useGame();
-  const { roomCode, playerId, status } = gameState;
+  const { roomCode, playerId, status, isOpponentPresent } = gameState;
 
   const [mode, setMode] = useState<'selection' | 'host' | 'join'>('selection');
   const [joinCode, setJoinCode] = useState('');
@@ -25,6 +25,13 @@ export default function Setup() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Auto-transition from Lobby to Setup when opponent joins
+  useEffect(() => {
+    if (status === 'lobby' && isOpponentPresent) {
+      setMode('host'); // This ensures the lobby screen disappears and form shows
+    }
+  }, [status, isOpponentPresent]);
 
   // Reset form name based on default if empty
   useEffect(() => {
@@ -77,11 +84,8 @@ export default function Setup() {
     e.preventDefault();
     if (validate()) {
       if (playerId === 'player1') {
-        // Host sets range and their own secret
-        // Note: For real multiplayer, we'd wait for guest to join
         setSetup(form.name, gameState.player2.name, form.min, form.max, parseInt(form.secret), gameState.player2.secretNumber);
       } else {
-        // Guest sets their own name and secret
         setSetup(gameState.player1.name, form.name, gameState.range.min, gameState.range.max, gameState.player1.secretNumber, parseInt(form.secret));
       }
       router.push('/game');
@@ -92,6 +96,46 @@ export default function Setup() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
+
+  // Lobby View (Host waiting for Guest)
+  if (status === 'lobby' && !isOpponentPresent) {
+    return (
+      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="max-w-md w-full space-y-10">
+          <header className="space-y-4">
+            <div className="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
+              <Users className="w-10 h-10 text-blue-500" />
+            </div>
+            <h1 className="text-4xl font-black text-white">Create Duel</h1>
+            <p className="text-slate-400">Your duel room has been created. Invite your opponent to begin.</p>
+          </header>
+
+          <div className="bg-slate-900 border-2 border-slate-800 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Duel Code</span>
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-5xl font-black text-white tracking-[0.2em] ml-4">{roomCode}</span>
+                <button type="button" onClick={copyCode} className="p-3 bg-slate-800 rounded-2xl hover:text-blue-400 transition-all hover:scale-110 active:scale-95 text-slate-400">
+                  {copied ? <Check size={24} className="text-green-500" /> : <Copy size={24} />}
+                </button>
+              </div>
+            </div>
+            
+            <div className="pt-4 flex flex-col items-center gap-3">
+              <div className="flex items-center gap-2 text-blue-400 text-sm font-bold animate-pulse">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Waiting for opponent to join...
+              </div>
+            </div>
+          </div>
+
+          <Button variant="ghost" onClick={() => router.push('/')}>
+            Cancel and Return
+          </Button>
+        </motion.div>
+      </main>
+    );
+  }
 
   if (mode === 'selection') {
     return (
