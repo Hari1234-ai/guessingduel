@@ -6,9 +6,10 @@ import { GameState, GameStatus, Player, Feedback } from '@/types/game';
 
 interface GameContextType {
   gameState: GameState;
-  createRoom: () => string;
+  createRoom: (name: string, secret: number, min: number, max: number) => string;
   joinRoom: (code: string) => void;
   setSetup: (p1Name: string, p2Name: string, min: number, max: number, p1Secret: number, p2Secret: number) => void;
+  completeGuestSetup: (name: string, secret: number) => void;
   makeGuess: (guess: number) => Feedback;
   resetGame: () => void;
   startNewGame: () => void;
@@ -62,10 +63,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const createRoom = useCallback(() => {
+  const createRoom = useCallback((name: string, secret: number, min: number, max: number) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    console.log('Creating room:', code);
-    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player1', status: 'lobby' }));
+    console.log('Creating room:', code, { name, secret, min, max });
+    
+    setGameState(prev => ({ 
+      ...prev, 
+      roomCode: code, 
+      playerId: 'player1', 
+      status: 'lobby',
+      player1: initialPlayer(name, secret),
+      range: { min, max },
+      isPlayer1Ready: true,
+    }));
     
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
@@ -138,7 +148,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const joinRoom = useCallback(async (code: string) => {
     console.log('Joining room:', code);
-    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player2', isOpponentPresent: true }));
+    setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player2', status: 'guest-setup', isOpponentPresent: true }));
     
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
@@ -201,6 +211,24 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  const completeGuestSetup = useCallback((name: string, secret: number) => {
+    setGameState(prev => ({
+      ...prev,
+      player2: initialPlayer(name, secret),
+      isPlayer2Ready: true,
+      status: 'lobby',
+    }));
+
+    if (channelRef.current) {
+      channelRef.current.publish('player-ready', { 
+        playerId: 'player2', 
+        name, 
+        secret, 
+        isReady: true 
+      });
+    }
+  }, []);
+
   const setSetup = useCallback((
     p1Name: string,
     p2Name: string,
@@ -209,24 +237,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     p1Secret: number,
     p2Secret: number
   ) => {
-    const pId = latestStateRef.current.playerId as 'player1' | 'player2';
-    if (!pId) return;
-
-    const name = pId === 'player1' ? p1Name : p2Name;
-    const secret = pId === 'player1' ? p1Secret : p2Secret;
-    const range = pId === 'player1' ? { min, max } : undefined;
-    const readyKey = pId === 'player1' ? 'isPlayer1Ready' : 'isPlayer2Ready';
-
-    setGameState(prev => ({
-      ...prev,
-      [pId]: { ...prev[pId], name, secretNumber: secret },
-      [readyKey]: true,
-      range: range || prev.range,
-    }));
-
-    if (channelRef.current) {
-      channelRef.current.publish('player-ready', { playerId: pId, name, secret, range, isReady: true });
-    }
+    // Kept for backward compatibility if needed, but not used in the new flow
   }, []);
 
   const startGame = useCallback(() => {
@@ -296,7 +307,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <GameContext.Provider value={{ gameState, createRoom, joinRoom, setSetup, makeGuess, resetGame, startNewGame, startGame }}>
+    <GameContext.Provider value={{ gameState, createRoom, joinRoom, setSetup, completeGuestSetup, makeGuess, resetGame, startNewGame, startGame }}>
       {children}
     </GameContext.Provider>
   );

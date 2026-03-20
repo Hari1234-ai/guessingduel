@@ -1,4 +1,4 @@
-export type GameStatus = 'setup' | 'lobby' | 'playing' | 'finished';
+export type GameStatus = 'setup' | 'lobby' | 'guest-setup' | 'playing' | 'finished';
 
 export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | null;
 

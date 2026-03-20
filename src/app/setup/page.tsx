@@ -10,10 +10,11 @@ import Input from '@/components/ui/Input';
 
 export default function Setup() {
   const router = useRouter();
-  const { gameState, createRoom, joinRoom, setSetup, startGame } = useGame();
-  const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready } = gameState;
+  const { gameState, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
+  const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
-  const [mode, setMode] = useState<'selection' | 'host' | 'join'>('selection');
+  // New multi-step state management
+  const [mode, setMode] = useState<'selection' | 'host-setup' | 'enter-code' | 'guest-setup' | 'lobby'>('selection');
   const [joinCode, setJoinCode] = useState('');
   const [copied, setCopied] = useState(false);
   
@@ -26,6 +27,14 @@ export default function Setup() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Sync mode with game status for guest
+  useEffect(() => {
+    if (playerId === 'player2') {
+      if (status === 'guest-setup') setMode('guest-setup');
+      if (status === 'lobby') setMode('lobby');
+    }
+  }, [status, playerId]);
+
   // Auto-redirect to game when status changes to 'playing'
   useEffect(() => {
     if (status === 'playing') {
@@ -33,31 +42,27 @@ export default function Setup() {
     }
   }, [status, router]);
 
-  // Auto-transition from Lobby to Setup when opponent joins
-  useEffect(() => {
-    if (status === 'lobby' && isOpponentPresent) {
-      setMode('host'); 
+  const handleCreateRoom = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) {
+      createRoom(form.name, parseInt(form.secret), form.min, form.max);
+      setMode('lobby');
     }
-  }, [status, isOpponentPresent]);
-
-  // Reset form name based on default if empty
-  useEffect(() => {
-    if (!form.name) {
-      setForm(prev => ({ ...prev, name: playerId === 'player1' ? 'Player 1' : 'Player 2' }));
-    }
-  }, [playerId, form.name]);
-
-  const handleCreateRoom = () => {
-    createRoom();
-    setMode('host');
   };
 
-  const handleJoinRoom = () => {
+  const handleJoinJoin = () => {
     if (joinCode.length === 6) {
       joinRoom(joinCode.toUpperCase());
-      setMode('join');
     } else {
       setErrors({ join: 'Enter a valid 6-character code' });
+    }
+  };
+
+  const handleGuestReady = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) {
+      completeGuestSetup(form.name, parseInt(form.secret));
+      setMode('lobby');
     }
   };
 
@@ -72,31 +77,24 @@ export default function Setup() {
   const validate = () => {
     const newErrors: Record<string, string> = {};
     
-    if (playerId === 'player1') {
+    // Host range validation
+    if (mode === 'host-setup') {
       if (form.min >= form.max) {
         newErrors.range = 'Min must be less than max';
       }
     }
 
+    // Secret validation (against current range)
+    const currentMin = mode === 'guest-setup' ? range.min : form.min;
+    const currentMax = mode === 'guest-setup' ? range.max : form.max;
+    
     const s = parseInt(form.secret);
-    if (isNaN(s) || s < form.min || s > form.max) {
-      newErrors.secret = `Must be between ${form.min} and ${form.max}`;
+    if (isNaN(s) || s < currentMin || s > currentMax) {
+      newErrors.secret = `Must be between ${currentMin} and ${currentMax}`;
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      if (playerId === 'player1') {
-        setSetup(form.name, gameState.player2.name, form.min, form.max, parseInt(form.secret), gameState.player2.secretNumber);
-      } else {
-        setSetup(gameState.player1.name, form.name, gameState.range.min, gameState.range.max, gameState.player1.secretNumber, parseInt(form.secret));
-      }
-      // Note: No router.push here, waiting for both and startGame
-    }
   };
 
   const containerVariants = {
@@ -104,195 +102,195 @@ export default function Setup() {
     visible: { opacity: 1, y: 0 },
   };
 
-  const isCurrentPlayerReady = playerId === 'player1' ? isPlayer1Ready : isPlayer2Ready;
-  const isBothReady = isPlayer1Ready && isPlayer2Ready;
-
-  // Lobby View (Host waiting for Guest)
-  if (status === 'lobby' && !isOpponentPresent) {
-    return (
-      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="max-w-md w-full space-y-10">
-          <header className="space-y-4">
-            <div className="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
-              <Users className="w-10 h-10 text-blue-500" />
-            </div>
-            <h1 className="text-4xl font-black text-white">Create Duel</h1>
-            <p className="text-slate-400">Your duel room has been created. Invite your opponent to begin.</p>
-          </header>
-
-          <div className="bg-slate-900 border-2 border-slate-800 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
-            <div className="space-y-2">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Duel Code</span>
-              <div className="flex items-center justify-center gap-4">
-                <span className="text-5xl font-black text-white tracking-[0.2em] ml-4">{roomCode}</span>
-                <button type="button" onClick={copyCode} className="p-3 bg-slate-800 rounded-2xl hover:text-blue-400 transition-all hover:scale-110 active:scale-95 text-slate-400">
-                  {copied ? <Check size={24} className="text-green-500" /> : <Copy size={24} />}
-                </button>
-              </div>
-            </div>
-            
-            <div className="pt-4 flex flex-col items-center gap-3">
-              <div className="flex items-center gap-2 text-blue-400 text-sm font-bold animate-pulse">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Waiting for opponent to join...
-              </div>
-            </div>
-          </div>
-
-          <Button variant="ghost" onClick={() => router.push('/')}>
-            Cancel and Return
-          </Button>
-        </motion.div>
-      </main>
-    );
-  }
-
+  // 1. SELECTION VIEW
   if (mode === 'selection') {
     return (
-      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="max-w-md w-full space-y-8">
-          <header>
-            <Users className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-            <h1 className="text-4xl font-black text-white mb-2">Multiplayer</h1>
-            <p className="text-slate-400">Choose how you want to start the duel.</p>
-          </header>
-          
+      <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20" />
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
           <div className="space-y-4">
-            <Button size="lg" fullWidth onClick={handleCreateRoom} className="h-20 text-xl font-bold">
-              Host a Duel
-            </Button>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-800" /></div>
-              <div className="relative flex justify-center text-xs uppercase"><span className="bg-slate-950 px-2 text-slate-500 font-bold">or</span></div>
-            </div>
-            <div className="space-y-2">
-              <Input
-                label="Enter Duel Code"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                placeholder="ABCDEF"
-                className="text-center tracking-widest uppercase font-black"
-                maxLength={6}
-                error={errors.join}
-                id="joinCode"
-              />
-              <Button variant="secondary" size="lg" fullWidth onClick={handleJoinRoom}>
-                Join Duel
-              </Button>
-            </div>
+            <h1 className="text-4xl font-black tracking-tighter sm:text-6xl bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
+              GET READY!
+            </h1>
+            <p className="text-slate-400 text-lg">Choose your side to begin the duel.</p>
           </div>
-          
-          <Button variant="ghost" onClick={() => router.push('/')}>
-            <ChevronLeft size={18} className="mr-1" /> Back Home
-          </Button>
+          <div className="grid gap-4 pt-8">
+            <Button onClick={() => setMode('host-setup')} size="lg" className="h-20 text-xl font-bold group">
+              <Users className="mr-3 group-hover:scale-110 transition-transform" />
+              HOST A DUEL
+            </Button>
+            <Button onClick={() => setMode('enter-code')} variant="secondary" size="lg" className="h-20 text-xl font-bold group">
+              <Hash className="mr-3 group-hover:scale-110 transition-transform" />
+              JOIN A DUEL
+            </Button>
+          </div>
+          <button onClick={() => router.push('/')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
+            <ChevronLeft size={18} /> Cancel and Return
+          </button>
         </motion.div>
       </main>
     );
   }
 
-  return (
-    <main className="min-h-screen bg-slate-950 p-6 pb-12">
-      <div className="max-w-2xl mx-auto">
-        <header className="mb-10 flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => setMode('selection')}>
-            <ChevronLeft size={20} className="mr-1" /> Back
-          </Button>
-          <div className="flex flex-col items-center">
-            <h1 className="text-2xl font-bold text-white tracking-tight">Duel Setup</h1>
-            <span className="text-xs bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
-              {playerId === 'player1' ? 'Host' : 'Guest'}
-            </span>
+  // 2. JOIN CODE VIEW
+  if (mode === 'enter-code') {
+    return (
+      <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8">
+          <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
+            <ChevronLeft size={18} /> Back
+          </button>
+          <div className="text-center space-y-3">
+            <h2 className="text-3xl font-black">ENTER DUEL CODE</h2>
+            <p className="text-slate-400">Ask your friend for their unique 6-character code.</p>
           </div>
-          <div className="w-10" />
-        </header>
-
-        <motion.form variants={containerVariants} initial="hidden" animate="visible" onSubmit={handleSubmit} className="space-y-8">
-          {/* Room Info (Host Only) */}
-          {playerId === 'player1' && (
-            <div className="bg-blue-600/10 border-2 border-dashed border-blue-500/30 p-6 rounded-3xl flex flex-col items-center gap-4">
-              <p className="text-slate-300 font-medium">Share this code with your opponent:</p>
-              <div className="flex items-center gap-3">
-                <span className="text-4xl font-black text-white tracking-widest">{roomCode}</span>
-                <button type="button" onClick={copyCode} className="p-2 bg-slate-900 rounded-xl hover:text-blue-400 transition-colors">
-                  {copied ? <Check size={24} className="text-green-500" /> : <Copy size={24} />}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Player Identity */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 text-blue-400 mb-2 font-bold uppercase tracking-wider text-sm">
-              <Users size={18} /> Your Identity
-            </div>
+          <div className="space-y-4">
             <Input
-              label="Game Name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              id="playerName"
+              label="Secret Code"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+              placeholder="e.g. XJ7K2P"
+              id="join-code"
+              error={errors.join}
             />
-          </section>
+            <Button fullWidth size="lg" onClick={handleJoinJoin}>
+              Find Duel
+              <ArrowRight className="ml-2" size={20} />
+            </Button>
+          </div>
+        </motion.div>
+      </main>
+    );
+  }
 
-          {/* Range (Host Only) */}
-          {playerId === 'player1' && (
+  // 3. HOST SETUP VIEW
+  if (mode === 'host-setup') {
+    return (
+      <main className="min-h-screen bg-[#050B18] text-white p-6">
+        <div className="max-w-xl mx-auto space-y-8 pt-12">
+          <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
+            <ChevronLeft size={18} /> Back
+          </button>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-black tracking-tight">DUEL SETUP</h2>
+            <p className="text-slate-400">Configure your duel settings before inviting a rival.</p>
+          </div>
+          <form onSubmit={handleCreateRoom} className="space-y-8 bg-slate-900/30 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-sm shadow-2xl">
             <section className="space-y-4">
-              <div className="flex items-center gap-2 text-purple-400 mb-2 font-bold uppercase tracking-wider text-sm">
-                <Hash size={18} /> Duel Range
+              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Maverick" id="name" />
+              <div className="flex gap-4">
+                <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" />
+                <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} />
               </div>
-              <div className="grid grid-cols-2 gap-4 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
-                <Input label="Min" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) || 0 })} id="min" />
-                <Input label="Max" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) || 0 })} id="max" />
-              </div>
-              {errors.range && <p className="text-sm text-red-500">{errors.range}</p>}
             </section>
-          )}
-
-          {/* Secret Number */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 text-green-400 mb-2 font-bold uppercase tracking-wider text-sm">
-              <ShieldCheck size={18} /> Your Secret Number
-            </div>
-            <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 relative overflow-hidden">
-              <Input
-                label="Secret Number"
-                type="password"
-                showPasswordToggle
-                value={form.secret}
-                onChange={(e) => setForm({ ...form, secret: e.target.value })}
-                error={errors.secret}
-                placeholder={playerId === 'player1' ? "e.g. 42" : "e.g. 73"}
-                id="secret"
-                disabled={isCurrentPlayerReady}
-              />
-              <div className="mt-4 flex items-start gap-2 text-slate-500 text-xs">
-                <Info size={14} className="mt-0.5 flex-shrink-0" />
-                <p>This is the number your opponent will try to guess. Keep it secret!</p>
+            <section className="space-y-4">
+              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-sm">
+                <ShieldCheck size={18} /> Your Secret Number
               </div>
+              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" />
+            </section>
+            <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
+              Create Duel
+              <ArrowRight className="ml-2" size={20} />
+            </Button>
+          </form>
+        </div>
+      </main>
+    );
+  }
 
-              {isCurrentPlayerReady && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center border-2 border-green-500/30 rounded-3xl"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="bg-green-500 text-white p-2 rounded-full">
-                      <Check size={24} />
-                    </div>
-                    <span className="text-green-500 font-black uppercase tracking-widest text-sm">You are Ready!</span>
-                  </div>
-                </motion.div>
+  // 4. GUEST SETUP VIEW
+  if (mode === 'guest-setup') {
+    return (
+      <main className="min-h-screen bg-[#050B18] text-white p-6">
+        <div className="max-w-xl mx-auto space-y-8 pt-12">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-black tracking-tight uppercase">JOIN THE DUEL</h2>
+            <p className="text-slate-400">A duel has been found! Prepare yourself.</p>
+          </div>
+          <form onSubmit={handleGuestReady} className="space-y-8 bg-slate-900/30 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-sm shadow-2xl">
+             <section className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-3xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Users className="text-blue-400" />
+                <span className="font-bold text-blue-400 tracking-wide">HOST RANGE</span>
+              </div>
+              <div className="text-xl font-black text-white px-4 py-1 bg-blue-500/20 rounded-full">
+                {range.min} - {range.max}
+              </div>
+            </section>
+            <section className="space-y-4">
+              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Iceman" id="name" />
+            </section>
+            <section className="space-y-4">
+              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-sm">
+                <ShieldCheck size={18} /> Your Secret Number
+              </div>
+              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" />
+            </section>
+            <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
+              Confirm & Ready
+              <ArrowRight className="ml-2" size={20} />
+            </Button>
+          </form>
+        </div>
+      </main>
+    );
+  }
+
+  // 5. LOBBY VIEW
+  if (mode === 'lobby') {
+    const isBothReady = isPlayer1Ready && isPlayer2Ready;
+    
+    return (
+      <main className="min-h-screen bg-[#050B18] text-white p-6 flex items-center justify-center">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-lg space-y-12">
+          <div className="text-center space-y-4">
+            <div className="bg-blue-500/20 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-blue-500/30">
+              <Users className="text-blue-400" size={32} />
+            </div>
+            <h1 className="text-4xl font-black tracking-tighter">DUEL LOBBY</h1>
+            <p className="text-slate-400">Everything is set. {playerId === 'player1' ? 'Invite your opponent.' : 'Wait for the host to start.'}</p>
+          </div>
+
+          {playerId === 'player1' && (
+            <div className="bg-slate-900 border border-white/10 p-8 rounded-[3rem] text-center space-y-6 shadow-2xl relative">
+              <div className="space-y-2">
+                <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">Room Identification Code</span>
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-6xl font-black tracking-widest text-white font-mono">{roomCode}</span>
+                  <button onClick={copyCode} className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-colors">
+                    {copied ? <Check size={24} className="text-green-400" /> : <Copy size={24} className="text-slate-400" />}
+                  </button>
+                </div>
+              </div>
+              {!isOpponentPresent && (
+                <div className="flex items-center justify-center gap-2 text-blue-400 font-bold animate-pulse text-sm">
+                  <Loader2 className="animate-spin" size={16} /> Waiting for opponent to join...
+                </div>
               )}
             </div>
-          </section>
+          )}
 
-          <div className="space-y-4 pt-4">
-            {!isCurrentPlayerReady ? (
-              <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
-                Confirm Details & Ready
-                <ArrowRight className="ml-2" size={20} />
-              </Button>
-            ) : isBothReady ? (
+          <div className="space-y-4">
+             {/* Readiness Status */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className={`p-6 rounded-[2rem] border-2 text-center transition-all ${isPlayer1Ready ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-900 border-slate-800'}`}>
+                <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Host</div>
+                <div className="font-black truncate">{gameState.player1.name}</div>
+                <div className={`mt-2 text-[10px] font-black uppercase ${isPlayer1Ready ? 'text-green-400' : 'text-slate-600'}`}>
+                  {isPlayer1Ready ? 'READY' : 'PREPARING'}
+                </div>
+              </div>
+              <div className={`p-6 rounded-[2rem] border-2 text-center transition-all ${isPlayer2Ready ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-900 border-slate-800'}`}>
+                <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Challenger</div>
+                <div className="font-black truncate">{isOpponentPresent ? gameState.player2.name : '???'}</div>
+                <div className={`mt-2 text-[10px] font-black uppercase ${isPlayer2Ready ? 'text-green-400' : 'text-slate-600'}`}>
+                  {isPlayer2Ready ? 'READY' : 'WAITING'}
+                </div>
+              </div>
+            </div>
+
+            {isBothReady ? (
               playerId === 'player1' ? (
                 <Button size="lg" fullWidth onClick={startGame} className="h-20 text-xl font-black bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)] border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all">
                   <Sparkles className="mr-2" /> START THE DUEL
@@ -303,24 +301,21 @@ export default function Setup() {
                     <Loader2 className="animate-spin" size={20} />
                     Waiting for Host to start...
                   </div>
-                  <p className="text-slate-500 text-xs">Both players are locked in. The host can now begin the game.</p>
+                  <p className="text-slate-500 text-xs text-center">Both players are locked in. Host will signal the start.</p>
                 </div>
               )
-            ) : (
-              <div className="bg-slate-900/50 border-2 border-slate-800 p-6 rounded-3xl text-center space-y-3">
-                <div className="flex items-center justify-center gap-3 text-slate-400 font-bold animate-pulse">
-                  <Loader2 className="animate-spin" size={20} />
-                  Waiting for opponent to be ready...
-                </div>
-                <div className="flex justify-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${isPlayer1Ready ? 'bg-green-500' : 'bg-slate-700 animate-pulse'}`} />
-                  <div className={`w-3 h-3 rounded-full ${isPlayer2Ready ? 'bg-green-500' : 'bg-slate-700 animate-pulse'}`} />
-                </div>
-              </div>
-            )}
+            ) : isPlayer2Ready ? (
+              <div className="text-center text-slate-500 font-bold animate-pulse p-4">Waiting for remaining player...</div>
+            ) : null}
           </div>
-        </motion.form>
-      </div>
-    </main>
-  );
+
+          <button onClick={() => router.push('/')} className="text-slate-600 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-sm font-bold uppercase tracking-widest">
+            Cancel and Return
+          </button>
+        </motion.div>
+      </main>
+    );
+  }
+
+  return null;
 }
