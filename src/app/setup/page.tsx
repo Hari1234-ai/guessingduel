@@ -23,7 +23,7 @@ export default function Setup() {
 function SetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { gameState, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
+  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
   // New multi-step state management
@@ -275,6 +275,16 @@ function SetupContent() {
     
     return (
       <main className="min-h-screen bg-[#050B18] text-white p-6 flex items-center justify-center">
+        {/* Connection Status Indicator */}
+        <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1.5 bg-slate-900/50 rounded-full border border-white/5 text-[10px] font-bold tracking-widest uppercase">
+          <div className={`w-1.5 h-1.5 rounded-full ${
+            connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
+            connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
+            'bg-red-500 shadow-[0_0_8px_#ef4444]'
+          }`} />
+          {connectionStatus}
+        </div>
+
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-lg space-y-12">
           <div className="text-center space-y-4">
             <div className="bg-blue-500/20 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-blue-500/30">
@@ -283,6 +293,13 @@ function SetupContent() {
             <h1 className="text-4xl font-black tracking-tighter">DUEL LOBBY</h1>
             <p className="text-slate-400">Everything is set. {playerId === 'player1' ? 'Invite your opponent.' : 'Wait for the host to start.'}</p>
           </div>
+
+          {connectionStatus === 'failed' && (
+            <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-red-500 text-xs text-center font-bold">
+              ERROR: Could not connect to the real-time network. <br/>
+              Please check your Ably API Key in Vercel settings.
+            </div>
+          )}
 
           {playerId === 'player1' && (
             <div className="bg-slate-900 border border-white/10 p-8 rounded-[3rem] text-center space-y-6 shadow-2xl relative">
