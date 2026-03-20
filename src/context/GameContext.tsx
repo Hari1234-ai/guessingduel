@@ -12,6 +12,7 @@ interface GameContextType {
   makeGuess: (guess: number) => Feedback;
   resetGame: () => void;
   startNewGame: () => void;
+  startGame: () => void;
 }
 
 const initialPlayer = (name: string = '', secretNumber: number = 0): Player => ({
@@ -31,6 +32,8 @@ const initialState: GameState = {
   roomCode: null,
   playerId: null,
   isOpponentPresent: false,
+  isPlayer1Ready: false,
+  isPlayer2Ready: false,
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -68,24 +71,31 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
       
-      // Subscribe to player updates (names, secrets, range)
+      // Subscribe to player updates
       channel.subscribe('player-ready', (msg) => {
         console.log('Player ready event:', msg.data);
-        const { playerId, name, secret, range } = msg.data;
+        const { playerId, name, secret, range, isReady } = msg.data;
         const pKey = playerId as 'player1' | 'player2';
+        const readyKey = pKey === 'player1' ? 'isPlayer1Ready' : 'isPlayer2Ready';
+        
         if (msg.connectionId !== ablyRef.current?.connection.id) {
           setGameState(prev => ({
             ...prev,
             [pKey]: { ...prev[pKey], name, secretNumber: secret },
+            [readyKey]: isReady,
             range: range || prev.range,
             isOpponentPresent: true,
           }));
         }
       });
 
-      // Subscribe to guesses
+      // Subscribe to start duel
+      channel.subscribe('start-duel', (msg) => {
+        console.log('Duel starting!');
+        setGameState(prev => ({ ...prev, status: 'playing' }));
+      });
+
       channel.subscribe('guess-made', (msg) => {
-        console.log('Guess received:', msg.data);
         if (msg.connectionId !== ablyRef.current?.connection.id) {
           const { guess, feedback, nextTurn, isWinner } = msg.data;
           setGameState(prev => {
@@ -107,7 +117,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       channel.subscribe('request-sync', () => {
-        console.log('Sync requested by peer');
         if (channelRef.current) {
           channelRef.current.publish('full-sync', latestStateRef.current);
         }
@@ -115,7 +124,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       channel.subscribe('full-sync', (msg) => {
         if (msg.connectionId !== ablyRef.current?.connection.id) {
-          console.log('Received full sync:', msg.data);
           setGameState(prev => ({
             ...msg.data,
             roomCode: prev.roomCode,
@@ -136,17 +144,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
       
-      // Setup same subscriptions for guest
       channel.subscribe('player-ready', (msg) => {
-        const { playerId, name, secret, range } = msg.data;
+        const { playerId, name, secret, range, isReady } = msg.data;
         const pKey = playerId as 'player1' | 'player2';
+        const readyKey = pKey === 'player1' ? 'isPlayer1Ready' : 'isPlayer2Ready';
         if (msg.connectionId !== ablyRef.current?.connection.id) {
           setGameState(prev => ({
             ...prev,
             [pKey]: { ...prev[pKey], name, secretNumber: secret },
+            [readyKey]: isReady,
             range: range || prev.range,
           }));
         }
+      });
+
+      channel.subscribe('start-duel', () => {
+        setGameState(prev => ({ ...prev, status: 'playing' }));
       });
 
       channel.subscribe('guess-made', (msg) => {
@@ -172,7 +185,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       channel.subscribe('full-sync', (msg) => {
         if (msg.connectionId !== ablyRef.current?.connection.id) {
-          console.log('Received full sync from host:', msg.data);
           setGameState(prev => ({
             ...msg.data,
             roomCode: prev.roomCode,
@@ -203,17 +215,24 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const name = pId === 'player1' ? p1Name : p2Name;
     const secret = pId === 'player1' ? p1Secret : p2Secret;
     const range = pId === 'player1' ? { min, max } : undefined;
+    const readyKey = pId === 'player1' ? 'isPlayer1Ready' : 'isPlayer2Ready';
 
     setGameState(prev => ({
       ...prev,
       [pId]: { ...prev[pId], name, secretNumber: secret },
+      [readyKey]: true,
       range: range || prev.range,
-      status: 'playing',
     }));
 
     if (channelRef.current) {
-      console.log('Sending player-ready:', { pId, name, secret, range });
-      channelRef.current.publish('player-ready', { playerId: pId, name, secret, range });
+      channelRef.current.publish('player-ready', { playerId: pId, name, secret, range, isReady: true });
+    }
+  }, []);
+
+  const startGame = useCallback(() => {
+    if (latestStateRef.current.playerId === 'player1' && channelRef.current) {
+      channelRef.current.publish('start-duel', {});
+      setGameState(prev => ({ ...prev, status: 'playing' }));
     }
   }, []);
 
@@ -277,7 +296,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <GameContext.Provider value={{ gameState, createRoom, joinRoom, setSetup, makeGuess, resetGame, startNewGame }}>
+    <GameContext.Provider value={{ gameState, createRoom, joinRoom, setSetup, makeGuess, resetGame, startNewGame, startGame }}>
       {children}
     </GameContext.Provider>
   );

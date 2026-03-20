@@ -24,4 +24,6 @@ export interface GameState {
   roomCode: string | null;
   playerId: 'player1' | 'player2' | null;
   isOpponentPresent: boolean;
+  isPlayer1Ready: boolean;
+  isPlayer2Ready: boolean;
 }

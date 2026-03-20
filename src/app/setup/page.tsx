@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, Loader2 } from 'lucide-react';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, Loader2, Sparkles } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
 export default function Setup() {
   const router = useRouter();
-  const { gameState, createRoom, joinRoom, setSetup } = useGame();
-  const { roomCode, playerId, status, isOpponentPresent } = gameState;
+  const { gameState, createRoom, joinRoom, setSetup, startGame } = useGame();
+  const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready } = gameState;
 
   const [mode, setMode] = useState<'selection' | 'host' | 'join'>('selection');
   const [joinCode, setJoinCode] = useState('');
@@ -26,10 +26,17 @@ export default function Setup() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Auto-redirect to game when status changes to 'playing'
+  useEffect(() => {
+    if (status === 'playing') {
+      router.push('/game');
+    }
+  }, [status, router]);
+
   // Auto-transition from Lobby to Setup when opponent joins
   useEffect(() => {
     if (status === 'lobby' && isOpponentPresent) {
-      setMode('host'); // This ensures the lobby screen disappears and form shows
+      setMode('host'); 
     }
   }, [status, isOpponentPresent]);
 
@@ -88,7 +95,7 @@ export default function Setup() {
       } else {
         setSetup(gameState.player1.name, form.name, gameState.range.min, gameState.range.max, gameState.player1.secretNumber, parseInt(form.secret));
       }
-      router.push('/game');
+      // Note: No router.push here, waiting for both and startGame
     }
   };
 
@@ -96,6 +103,9 @@ export default function Setup() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
+
+  const isCurrentPlayerReady = playerId === 'player1' ? isPlayer1Ready : isPlayer2Ready;
+  const isBothReady = isPlayer1Ready && isPlayer2Ready;
 
   // Lobby View (Host waiting for Guest)
   if (status === 'lobby' && !isOpponentPresent) {
@@ -242,7 +252,7 @@ export default function Setup() {
             <div className="flex items-center gap-2 text-green-400 mb-2 font-bold uppercase tracking-wider text-sm">
               <ShieldCheck size={18} /> Your Secret Number
             </div>
-            <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800">
+            <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 relative overflow-hidden">
               <Input
                 label="Secret Number"
                 type="password"
@@ -252,18 +262,63 @@ export default function Setup() {
                 error={errors.secret}
                 placeholder={playerId === 'player1' ? "e.g. 42" : "e.g. 73"}
                 id="secret"
+                disabled={isCurrentPlayerReady}
               />
               <div className="mt-4 flex items-start gap-2 text-slate-500 text-xs">
                 <Info size={14} className="mt-0.5 flex-shrink-0" />
                 <p>This is the number your opponent will try to guess. Keep it secret!</p>
               </div>
+
+              {isCurrentPlayerReady && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center border-2 border-green-500/30 rounded-3xl"
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="bg-green-500 text-white p-2 rounded-full">
+                      <Check size={24} />
+                    </div>
+                    <span className="text-green-500 font-black uppercase tracking-widest text-sm">You are Ready!</span>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </section>
 
-          <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
-            Ready for Duel
-            <ArrowRight className="ml-2" size={20} />
-          </Button>
+          <div className="space-y-4 pt-4">
+            {!isCurrentPlayerReady ? (
+              <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
+                Confirm Details & Ready
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            ) : isBothReady ? (
+              playerId === 'player1' ? (
+                <Button size="lg" fullWidth onClick={startGame} className="h-20 text-xl font-black bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)] border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all">
+                  <Sparkles className="mr-2" /> START THE DUEL
+                </Button>
+              ) : (
+                <div className="bg-slate-900/50 border-2 border-slate-800 p-6 rounded-3xl text-center space-y-3">
+                  <div className="flex items-center justify-center gap-3 text-blue-400 font-bold animate-pulse">
+                    <Loader2 className="animate-spin" size={20} />
+                    Waiting for Host to start...
+                  </div>
+                  <p className="text-slate-500 text-xs">Both players are locked in. The host can now begin the game.</p>
+                </div>
+              )
+            ) : (
+              <div className="bg-slate-900/50 border-2 border-slate-800 p-6 rounded-3xl text-center space-y-3">
+                <div className="flex items-center justify-center gap-3 text-slate-400 font-bold animate-pulse">
+                  <Loader2 className="animate-spin" size={20} />
+                  Waiting for opponent to be ready...
+                </div>
+                <div className="flex justify-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${isPlayer1Ready ? 'bg-green-500' : 'bg-slate-700 animate-pulse'}`} />
+                  <div className={`w-3 h-3 rounded-full ${isPlayer2Ready ? 'bg-green-500' : 'bg-slate-700 animate-pulse'}`} />
+                </div>
+              </div>
+            )}
+          </div>
         </motion.form>
       </div>
     </main>
