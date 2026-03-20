@@ -1,0 +1,27 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { GameProvider } from "@/context/GameContext";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Duel Guess",
+  description: "A turn-based 2-player guessing game.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className="h-full antialiased dark">
+      <body className={`${inter.className} min-h-screen bg-slate-950 text-slate-50 flex flex-col`}>
+        <GameProvider>
+          {children}
+        </GameProvider>
+      </body>
+    </html>
+  );
+}
