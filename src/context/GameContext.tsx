@@ -52,17 +52,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (ABLY_KEY && ABLY_KEY !== 'your_ably_api_key_here') {
       ablyRef.current = new Ably.Realtime({ key: ABLY_KEY });
+      console.log('Ably initialized');
     }
     return () => {
       ablyRef.current?.close();
     };
-  }, []);
-
-  // Sync state when changed (send to Ably)
-  const broadcastState = useCallback((newState: GameState) => {
-    if (channelRef.current) {
-      channelRef.current.publish('state-update', newState);
-    }
   }, []);
 
   const createRoom = useCallback(() => {
@@ -71,30 +65,63 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player1', status: 'lobby' }));
     
     if (ablyRef.current) {
-      channelRef.current = ablyRef.current.channels.get(`room-${code}`);
+      const channel = ablyRef.current.channels.get(`room-${code}`);
+      channelRef.current = channel;
       
-      // Subscribe to updates
-      channelRef.current.subscribe('state-update', (msg) => {
-        console.log('Received state-update:', msg.data);
+      // Subscribe to player updates (names, secrets, range)
+      channel.subscribe('player-ready', (msg) => {
+        console.log('Player ready event:', msg.data);
+        const { playerId, name, secret, range } = msg.data;
+        const pKey = playerId as 'player1' | 'player2';
         if (msg.connectionId !== ablyRef.current?.connection.id) {
-          setGameState(prev => ({ 
-            ...msg.data, 
-            roomCode: prev.roomCode, 
-            playerId: prev.playerId,
+          setGameState(prev => ({
+            ...prev,
+            [pKey]: { ...prev[pKey], name, secretNumber: secret },
+            range: range || prev.range,
             isOpponentPresent: true,
           }));
         }
       });
 
-      // Listen for state requests
-      channelRef.current.subscribe('request-state', () => {
-        console.log('Received request-state from guest');
-        if (channelRef.current) {
-          channelRef.current.publish('state-update', {
-            ...latestStateRef.current,
-            isOpponentPresent: true,
+      // Subscribe to guesses
+      channel.subscribe('guess-made', (msg) => {
+        console.log('Guess received:', msg.data);
+        if (msg.connectionId !== ablyRef.current?.connection.id) {
+          const { guess, feedback, nextTurn, isWinner } = msg.data;
+          setGameState(prev => {
+            const currentPlayerKey = prev.currentTurn;
+            const updatedPlayer = {
+              ...prev[currentPlayerKey],
+              attempts: prev[currentPlayerKey].attempts + 1,
+              history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
+            };
+            return {
+              ...prev,
+              [currentPlayerKey]: updatedPlayer,
+              currentTurn: nextTurn,
+              status: isWinner ? 'finished' : 'playing',
+              winner: isWinner ? currentPlayerKey : null,
+            };
           });
-          setGameState(prev => ({ ...prev, isOpponentPresent: true }));
+        }
+      });
+
+      channel.subscribe('request-sync', () => {
+        console.log('Sync requested by peer');
+        if (channelRef.current) {
+          channelRef.current.publish('full-sync', latestStateRef.current);
+        }
+      });
+
+      channel.subscribe('full-sync', (msg) => {
+        if (msg.connectionId !== ablyRef.current?.connection.id) {
+          console.log('Received full sync:', msg.data);
+          setGameState(prev => ({
+            ...msg.data,
+            roomCode: prev.roomCode,
+            playerId: prev.playerId,
+            isOpponentPresent: true
+          }));
         }
       });
     }
@@ -106,28 +133,59 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setGameState(prev => ({ ...prev, roomCode: code, playerId: 'player2', isOpponentPresent: true }));
     
     if (ablyRef.current) {
-      channelRef.current = ablyRef.current.channels.get(`room-${code}`);
+      const channel = ablyRef.current.channels.get(`room-${code}`);
+      channelRef.current = channel;
       
-      channelRef.current.subscribe('state-update', (msg) => {
-        console.log('Received state-update from host:', msg.data);
+      // Setup same subscriptions for guest
+      channel.subscribe('player-ready', (msg) => {
+        const { playerId, name, secret, range } = msg.data;
+        const pKey = playerId as 'player1' | 'player2';
         if (msg.connectionId !== ablyRef.current?.connection.id) {
-          setGameState(prev => ({ 
-            ...msg.data, 
-            roomCode: prev.roomCode, 
-            playerId: prev.playerId,
-            isOpponentPresent: true,
+          setGameState(prev => ({
+            ...prev,
+            [pKey]: { ...prev[pKey], name, secretNumber: secret },
+            range: range || prev.range,
           }));
         }
       });
 
-      // Ensure we are connected before requesting state
+      channel.subscribe('guess-made', (msg) => {
+        if (msg.connectionId !== ablyRef.current?.connection.id) {
+          const { guess, feedback, nextTurn, isWinner } = msg.data;
+          setGameState(prev => {
+            const currentPlayerKey = prev.currentTurn;
+            const updatedPlayer = {
+              ...prev[currentPlayerKey],
+              attempts: prev[currentPlayerKey].attempts + 1,
+              history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
+            };
+            return {
+              ...prev,
+              [currentPlayerKey]: updatedPlayer,
+              currentTurn: nextTurn,
+              status: isWinner ? 'finished' : 'playing',
+              winner: isWinner ? currentPlayerKey : null,
+            };
+          });
+        }
+      });
+
+      channel.subscribe('full-sync', (msg) => {
+        if (msg.connectionId !== ablyRef.current?.connection.id) {
+          console.log('Received full sync from host:', msg.data);
+          setGameState(prev => ({
+            ...msg.data,
+            roomCode: prev.roomCode,
+            playerId: prev.playerId,
+            isOpponentPresent: true
+          }));
+        }
+      });
+
       if (ablyRef.current.connection.state !== 'connected') {
-        console.log('Waiting for Ably connection...');
         await new Promise(resolve => ablyRef.current?.connection.once('connected', resolve));
       }
-
-      console.log('Publishing request-state');
-      channelRef.current.publish('request-state', {});
+      channel.publish('request-sync', {});
     }
   }, []);
 
@@ -139,71 +197,61 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     p1Secret: number,
     p2Secret: number
   ) => {
-    setGameState(prev => {
-      const newState: GameState = {
-        ...prev,
-        status: 'playing',
-      };
-      
-      if (prev.playerId === 'player1') {
-        newState.player1 = initialPlayer(p1Name, p1Secret);
-        newState.range = { min, max };
-      } else {
-        newState.player2 = initialPlayer(p2Name, p2Secret);
-      }
+    const pId = latestStateRef.current.playerId as 'player1' | 'player2';
+    if (!pId) return;
 
-      broadcastState(newState);
-      return newState;
-    });
-  }, [broadcastState]);
+    const name = pId === 'player1' ? p1Name : p2Name;
+    const secret = pId === 'player1' ? p1Secret : p2Secret;
+    const range = pId === 'player1' ? { min, max } : undefined;
+
+    setGameState(prev => ({
+      ...prev,
+      [pId]: { ...prev[pId], name, secretNumber: secret },
+      range: range || prev.range,
+      status: 'playing',
+    }));
+
+    if (channelRef.current) {
+      console.log('Sending player-ready:', { pId, name, secret, range });
+      channelRef.current.publish('player-ready', { playerId: pId, name, secret, range });
+    }
+  }, []);
 
   const makeGuess = useCallback((guess: number): Feedback => {
     let feedback: Feedback = null;
-    let finalState: GameState | null = null;
+    const prev = latestStateRef.current;
     
-    setGameState((prev) => {
-      if (prev.status !== 'playing' || prev.winner) return prev;
+    if (prev.status !== 'playing' || prev.winner) return null;
 
-      const currentPlayerKey = prev.currentTurn;
-      const opponentPlayerKey = prev.currentTurn === 'player1' ? 'player2' : 'player1';
-      const opponentSecret = prev[opponentPlayerKey].secretNumber;
+    const currentPlayerKey = prev.currentTurn;
+    const opponentPlayerKey = prev.currentTurn === 'player1' ? 'player2' : 'player1';
+    const opponentSecret = prev[opponentPlayerKey].secretNumber;
 
-      if (guess > opponentSecret) feedback = 'Too High';
-      else if (guess < opponentSecret) feedback = 'Too Low';
-      else feedback = 'Correct!';
+    if (guess > opponentSecret) feedback = 'Too High';
+    else if (guess < opponentSecret) feedback = 'Too Low';
+    else feedback = 'Correct!';
 
-      const updatedCurrentPlayer: Player = {
-        ...prev[currentPlayerKey],
-        attempts: prev[currentPlayerKey].attempts + 1,
-        history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
-      };
+    const isWinner = feedback === 'Correct!';
+    const nextTurn = isWinner ? prev.currentTurn : opponentPlayerKey;
 
-      const isWinner = feedback === 'Correct!';
-      
-      finalState = {
-        ...prev,
-        [currentPlayerKey]: updatedCurrentPlayer,
-        status: isWinner ? 'finished' : 'playing',
-        winner: isWinner ? currentPlayerKey : null,
-        currentTurn: isWinner ? prev.currentTurn : opponentPlayerKey,
-      };
-      
-      return finalState;
-    });
+    setGameState(s => ({
+      ...s,
+      [currentPlayerKey]: {
+        ...s[currentPlayerKey],
+        attempts: s[currentPlayerKey].attempts + 1,
+        history: [{ guess, feedback }, ...s[currentPlayerKey].history],
+      },
+      currentTurn: nextTurn,
+      status: isWinner ? 'finished' : 'playing',
+      winner: isWinner ? currentPlayerKey : null,
+    }));
 
-    // We can't use finalState here directly because setGameState is async, 
-    // but in a real app we'd broadcast the updated state.
-    // To fix this cleanly, we'd use a reducer or a more robust state sync.
-    // For now, I'll use a small trick: broadcast the state after it's set.
+    if (channelRef.current) {
+      channelRef.current.publish('guess-made', { guess, feedback, nextTurn, isWinner });
+    }
+
     return feedback;
   }, []);
-
-  // Effect to broadcast state after update
-  useEffect(() => {
-    if (gameState.status !== 'setup' && gameState.roomCode) {
-      broadcastState(gameState);
-    }
-  }, [gameState, broadcastState]);
 
   const resetGame = useCallback(() => {
     setGameState((prev) => {
@@ -215,6 +263,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         status: 'playing',
         winner: null,
       };
+      if (channelRef.current) channelRef.current.publish('full-sync', newState);
       return newState;
     });
   }, []);
