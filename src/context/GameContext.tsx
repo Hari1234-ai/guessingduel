@@ -138,6 +138,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       channel.subscribe('request-sync', () => {
         console.log('Sync requested by guest. Current state:', latestStateRef.current);
+        updateState(prev => ({ ...prev, isOpponentPresent: true }));
         if (channelRef.current) {
           channelRef.current.publish('full-sync', latestStateRef.current);
         }
