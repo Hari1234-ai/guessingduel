@@ -40,6 +40,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [gameState, setGameState] = useState<GameState>(initialState);
   const ablyRef = useRef<Ably.Realtime | null>(null);
   const channelRef = useRef<Ably.RealtimeChannel | null>(null);
+  const latestStateRef = useRef<GameState>(gameState);
+
+  // Keep ref in sync
+  useEffect(() => {
+    latestStateRef.current = gameState;
+  }, [gameState]);
 
   // Initialize Ably
   useEffect(() => {
@@ -64,10 +70,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     if (ablyRef.current) {
       channelRef.current = ablyRef.current.channels.get(`room-${code}`);
+      
+      // Subscribe to updates
       channelRef.current.subscribe('state-update', (msg) => {
-        // Only update if it's from the other player
         if (msg.connectionId !== ablyRef.current?.connection.id) {
-          setGameState(msg.data);
+          setGameState(prev => ({ 
+            ...msg.data, 
+            roomCode: prev.roomCode, 
+            playerId: prev.playerId 
+          }));
+        }
+      });
+
+      // Listen for state requests
+      channelRef.current.subscribe('request-state', () => {
+        if (channelRef.current) {
+          channelRef.current.publish('state-update', latestStateRef.current);
         }
       });
     }
@@ -79,12 +97,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     if (ablyRef.current) {
       channelRef.current = ablyRef.current.channels.get(`room-${code}`);
+      
       channelRef.current.subscribe('state-update', (msg) => {
         if (msg.connectionId !== ablyRef.current?.connection.id) {
-          setGameState(msg.data);
+          setGameState(prev => ({ 
+            ...msg.data, 
+            roomCode: prev.roomCode, 
+            playerId: prev.playerId 
+          }));
         }
       });
-      // Ping the host that we joined (optional, for presence)
+
+      // Request current state from host
+      channelRef.current.publish('request-state', {});
     }
   }, []);
 
@@ -96,18 +121,28 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     p1Secret: number,
     p2Secret: number
   ) => {
-    const newState: GameState = {
-      ...gameState,
-      player1: initialPlayer(p1Name || 'Player 1', p1Secret),
-      player2: initialPlayer(p2Name || 'Player 2', p2Secret),
-      range: { min, max },
-      currentTurn: 'player1',
-      status: 'playing',
-      winner: null,
-    };
-    setGameState(newState);
-    broadcastState(newState);
-  }, [gameState, broadcastState]);
+    // This is now only used locally or we should replace it with incremental updates
+    setGameState(prev => {
+      const newState: GameState = {
+        ...prev,
+        player1: p1Name ? initialPlayer(p1Name, p1Secret) : prev.player1,
+        player2: p2Name ? initialPlayer(p2Name, p2Secret) : prev.player2,
+        range: min !== undefined ? { min, max } : prev.range,
+        status: 'playing',
+      };
+      
+      // Update specifically what this player sent
+      if (prev.playerId === 'player1') {
+        newState.player1 = initialPlayer(p1Name, p1Secret);
+        newState.range = { min, max };
+      } else {
+        newState.player2 = initialPlayer(p2Name, p2Secret);
+      }
+
+      broadcastState(newState);
+      return newState;
+    });
+  }, [broadcastState]);
 
   const makeGuess = useCallback((guess: number): Feedback => {
     let feedback: Feedback = null;
