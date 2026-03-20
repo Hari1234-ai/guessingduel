@@ -9,9 +9,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  showCloseButton?: boolean;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, showCloseButton = true }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -55,13 +56,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           >
             <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
               <h2 className="text-xl font-bold text-white">{title}</h2>
-              <button
-                onClick={onClose}
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </button>
+              {showCloseButton && (
+                <button
+                  onClick={onClose}
+                  className="rounded-full p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+                  aria-label="Close modal"
+                >
+                  <X size={20} />
+                </button>
+              )}
             </div>
             <div className="p-6 max-h-[80vh] overflow-y-auto">
               {children}

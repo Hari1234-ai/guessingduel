@@ -51,11 +51,38 @@ export default function Game() {
     }
   };
 
+  const VICTORY_QUOTES = [
+    "The mind is sharper than any blade.",
+    "A tactical masterclass in deduction!",
+    "Prediction level: Legendary.",
+    "The secret was no match for your intuition.",
+    "Victory belongs to the most persevering.",
+    "Calculated, precise, and absolutely dominant.",
+    "The numbers have spoken, and you are the champion!",
+    "A game of wits well won."
+  ];
+
+  const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
+
+  useEffect(() => {
+    if (status === 'finished') {
+      const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
+      setVictoryQuote(randomQuote);
+    }
+  }, [status]);
+
   if (status === 'setup' && !roomCode) return null;
 
   return (
     <main className="min-h-screen bg-slate-950 p-4 md:p-8 flex flex-col items-center">
       {/* Room Code Header */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+          <Sparkles className="text-white" size={20} />
+        </div>
+        <h1 className="text-2xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
+      </div>
+
       <div className="mb-6 flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full text-sm">
         <Hash size={14} className="text-slate-500" />
         <span className="text-slate-500 font-bold uppercase tracking-tighter mr-1">Room:</span>
@@ -187,7 +214,7 @@ export default function Game() {
       </div>
 
       {/* Win Modal */}
-      <Modal isOpen={status === 'finished'} onClose={() => {}} title="Duel Result">
+      <Modal isOpen={status === 'finished'} onClose={() => {}} title="Duel Result" showCloseButton={false}>
         <div className="flex flex-col items-center text-center p-4">
           <motion.div
             initial={{ scale: 0 }}
@@ -202,7 +229,7 @@ export default function Game() {
             🎉 {winner ? gameState[winner].name : ''} Wins!
           </h2>
           <p className="text-slate-400 text-lg mb-8 leading-relaxed italic">
-            &quot;The mind is sharper than any blade.&quot;
+            &quot;{victoryQuote}&quot;
           </p>
 
           <div className="bg-slate-950/50 rounded-[2rem] border border-slate-800 p-8 w-full mb-10 grid grid-cols-2 gap-8 relative overflow-hidden">

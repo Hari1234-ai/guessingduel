@@ -159,7 +159,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       // Subscribe to actions
-      channel.subscribe('start-duel', () => updateState(prev => ({ ...prev, status: 'playing' })));
+      channel.subscribe('start-duel', () => {
+        updateState(prev => ({ ...prev, status: 'playing' }));
+      });
+
+      channel.subscribe('rematch', () => {
+        updateState(prev => ({
+          ...initialState,
+          roomCode: prev.roomCode,
+          playerId: prev.playerId,
+          status: 'lobby', // Host goes back to lobby/setup
+          player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
+          player2: { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+          isPlayer1Ready: false,
+          isPlayer2Ready: false,
+        }));
+      });
 
       channel.subscribe('guess-made', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
@@ -214,6 +229,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       channel.subscribe('start-duel', () => updateState(prev => ({ ...prev, status: 'playing' })));
+
+      channel.subscribe('rematch', () => {
+        updateState(prev => ({
+          ...initialState,
+          roomCode: prev.roomCode,
+          playerId: prev.playerId,
+          status: 'guest-setup', // Guest goes back to guest-setup
+          player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
+          player2: { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+          isPlayer1Ready: false,
+          isPlayer2Ready: false,
+        }));
+      });
 
       channel.subscribe('guess-made', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
@@ -300,14 +328,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [updateState]);
 
   const resetGame = useCallback(() => {
+    const isHost = latestStateRef.current.playerId === 'player1';
+    
     updateState(prev => ({
       ...initialState,
       roomCode: prev.roomCode,
       playerId: prev.playerId,
-      status: 'lobby',
-      player1: { ...prev.player1, attempts: 0, history: [] },
-      player2: { ...prev.player2, attempts: 0, history: [] },
+      status: isHost ? 'lobby' : 'guest-setup', 
+      player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
+      player2: { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+      isPlayer1Ready: false,
+      isPlayer2Ready: false,
     }));
+
+    if (channelRef.current) {
+      channelRef.current.publish('rematch', {});
+    }
   }, [updateState]);
 
   const startNewGame = useCallback(() => {
