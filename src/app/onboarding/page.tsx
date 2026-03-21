@@ -40,7 +40,7 @@ export default function OnboardingPage() {
         });
 
         await refreshProfile();
-        router.push('/dashboard');
+        router.push('/setup');
       }
     } catch (error) {
       console.error("Error creating profile:", error);

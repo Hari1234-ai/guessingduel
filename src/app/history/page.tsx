@@ -116,7 +116,7 @@ export default function HistoryPage() {
             </div>
             <h3 className="text-xl font-bold mb-2">No duels recorded yet.</h3>
             <p className="text-slate-500 text-sm mb-8 max-w-xs mx-auto">Start your first duel to begin building your competitive legacy.</p>
-            <Button onClick={() => router.push('/dashboard')} size="md" className="px-8 font-black h-12">
+            <Button onClick={() => router.push('/setup')} size="md" className="px-8 font-black h-12">
               Start New Duel
             </Button>
           </div>
