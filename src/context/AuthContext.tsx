@@ -10,7 +10,15 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   hasProfile: boolean;
-  profileData: any;
+  profileData: {
+    name: string;
+    email: string;
+    photoURL?: string;
+    coins: number;
+    weeklyCoins: number;
+    lastResetWeek: string;
+    createdAt: any;
+  } | null;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }

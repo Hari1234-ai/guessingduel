@@ -35,6 +35,9 @@ export default function OnboardingPage() {
           uid: user.uid,
           name: name.trim(),
           email: user.email,
+          coins: 0,
+          weeklyCoins: 0,
+          lastResetWeek: "",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         });

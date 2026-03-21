@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Settings, History, ChevronDown, UserCircle } from 'lucide-react';
+import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
@@ -22,6 +22,7 @@ export default function AvatarDropdown() {
   }, []);
 
   const menuItems = [
+    { label: 'Leaderboard', icon: <Trophy size={14} />, href: '/leaderboard' },
     { label: 'Account Settings', icon: <Settings size={14} />, href: '/settings' },
     { label: 'Duel History', icon: <History size={14} />, href: '/history' },
   ];
@@ -38,7 +39,12 @@ export default function AvatarDropdown() {
           {firstLetter}
         </div>
         <div className="flex flex-col items-start mr-1">
-          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] leading-none mb-1">Duelist</span>
+          <div className="flex items-center gap-1 mb-1">
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] leading-none">Duelist</span>
+            <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
+              <span className="text-[9px] font-black text-blue-400 leading-none">{profileData?.coins || 0}</span>
+            </div>
+          </div>
           <span className="text-xs font-black text-white truncate max-w-[80px]">{profileData?.name || 'Player'}</span>
         </div>
         <ChevronDown size={14} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -59,7 +65,13 @@ export default function AvatarDropdown() {
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-white leading-tight uppercase italic">{profileData?.name || 'Player'}</h4>
-                  <p className="text-[10px] text-slate-500 font-bold tracking-widest">{profileData?.email || 'No Email'}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] text-slate-500 font-bold tracking-widest">{profileData?.email || 'No Email'}</span>
+                    <div className="w-1 h-1 rounded-full bg-slate-800" />
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] font-black text-blue-400 uppercase italic">{profileData?.coins || 0} Coins</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

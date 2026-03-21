@@ -12,12 +12,13 @@ import ScoreBoard from '@/components/game/ScoreBoard';
 import GuessHistory from '@/components/game/GuessHistory';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, updateDoc, doc, increment, getDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
+import { getISOWeek } from '@/lib/utils';
 
 export default function Game() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const { gameState, makeGuess, resetGame, startNewGame } = useGame();
   const { player1, player2, currentTurn, status, winner, roomCode, playerId } = gameState;
 
@@ -83,8 +84,29 @@ export default function Game() {
             ],
             createdAt: serverTimestamp()
           });
+
+          // Reward coins to winner
+          if (winner === playerId) {
+            const currentWeek = getISOWeek();
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+            
+            if (userSnap.exists()) {
+              const userData = userSnap.data();
+              const needsWeeklyReset = userData.lastResetWeek !== currentWeek;
+              
+              await updateDoc(userRef, {
+                coins: increment(100),
+                weeklyCoins: needsWeeklyReset ? 100 : increment(100),
+                lastResetWeek: currentWeek,
+                updatedAt: serverTimestamp()
+              });
+              
+              await refreshProfile();
+            }
+          }
         } catch (error) {
-          console.error("Error saving match result:", error);
+          console.error("Error saving match result & rewards:", error);
         }
       };
       saveMatch();
@@ -92,7 +114,7 @@ export default function Game() {
       const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
       setTimeout(() => setVictoryQuote(randomQuote), 0);
     }
-  }, [status, winner, user, roomCode, player1, player2, VICTORY_QUOTES]);
+  }, [status, winner, user, roomCode, player1, player2, VICTORY_QUOTES, playerId, refreshProfile]);
 
   if (status === 'setup' && !roomCode) return null;
 
