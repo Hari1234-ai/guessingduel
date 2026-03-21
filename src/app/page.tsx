@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import Modal from '@/components/ui/Modal';
-import AvatarDropdown from '@/components/ui/AvatarDropdown';
+import Navbar from '@/components/ui/Navbar';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -35,36 +35,7 @@ export default function LandingPage() {
              style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
       </div>
 
-      {/* Navbar */}
-      <nav className="relative z-50 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
-            <Swords size={18} className="text-white" />
-          </div>
-          <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
-        </div>
-
-        {/* Middle Links */}
-        <div className="hidden md:flex items-center gap-8 lg:gap-12">
-          <Link href="/buy" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Buy</Link>
-          <Link href="/leaderboard" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Leaderboard</Link>
-          <Link href="/contact" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Contact Us</Link>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {user ? (
-            <AvatarDropdown />
-          ) : (
-            <Button 
-              size="md" 
-              onClick={() => router.push('/login')}
-              className="h-10 px-6 font-bold"
-            >
-              Play Now
-            </Button>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative z-10 pt-16 pb-24 px-6 flex flex-col items-center text-center max-w-5xl mx-auto">

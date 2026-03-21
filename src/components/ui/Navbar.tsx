@@ -1,0 +1,256 @@
+'use client';
+
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Swords, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import AvatarDropdown from './AvatarDropdown';
+import Button from './Button';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+
+export default function Navbar() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, profileData, logout } = useAuth();
+
+  const resetMyCoins = async () => {
+    if (!user || !db) return;
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        coins: 0,
+        weeklyCoins: 0,
+        updatedAt: serverTimestamp()
+      });
+      window.location.reload(); 
+    } catch (error) {
+      console.error('Reset error:', error);
+    }
+  };
+
+  const cleanupDuplicateMatches = async () => {
+    if (!user || !db) return;
+    try {
+      const q = query(
+        collection(db, 'matches'), 
+        where('participants', 'array-contains', user.uid)
+      );
+      const querySnapshot = await getDocs(q);
+      const matches = querySnapshot.docs
+        .map(d => ({ id: d.id, ...(d.data() as any) }))
+        .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      const seenRooms = new Set();
+      const docsToDelete: string[] = [];
+      matches.forEach((m) => {
+        const p1 = m.players?.[0]?.uid || '';
+        const p2 = m.players?.[1]?.uid || '';
+        const uids = [p1, p2].sort().join('_');
+        const roomKey = `${m.roomCode}_${uids}`;
+        if (seenRooms.has(roomKey)) docsToDelete.push(m.id);
+        else seenRooms.add(roomKey);
+      });
+      
+      if (docsToDelete.length === 0) {
+        alert("No duplicates found.");
+        return;
+      }
+
+      if (window.confirm(`Found ${docsToDelete.length} duplicates. Wipe?`)) {
+        for (const docId of docsToDelete) await deleteDoc(doc(db, 'matches', docId));
+        alert('Cleaned!');
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Cleanup error:', error);
+    }
+  };
+
+  const resetMyHistory = async () => {
+    if (!user || !db) return;
+    if (!window.confirm('WIPE ALL HISTORY?')) return;
+    try {
+      const q = query(collection(db, 'matches'), where('participants', 'array-contains', user.uid));
+      const querySnapshot = await getDocs(q);
+      for (const docSnap of querySnapshot.docs) await deleteDoc(doc(db, 'matches', docSnap.id));
+      alert('History wiped!');
+      window.location.reload();
+    } catch (error) {
+      console.error('Reset History error:', error);
+    }
+  };
+
+  const navLinks = [
+    { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
+    { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
+    { label: 'History', href: '/history', icon: <History size={18} /> },
+    { label: 'Contact', href: '/contact', icon: <MessageSquare size={18} /> },
+  ];
+
+  const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
+
+  return (
+    <>
+      <nav className="relative z-50 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
+            <Swords size={20} className="text-white" />
+          </div>
+          <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
+            Guessing Duel
+          </span>
+        </Link>
+
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8 lg:gap-12">
+          {navLinks.map((link) => (
+            <Link 
+              key={link.href}
+              href={link.href}
+              className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all italic underline-offset-8 hover:underline hover:text-blue-400 ${
+                pathname === link.href ? 'text-blue-400 underline' : 'text-slate-400'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              {/* Desktop Avatar */}
+              <div className="hidden md:block">
+                <AvatarDropdown />
+              </div>
+              
+              {/* Mobile Avatar Button (Opens Drawer) */}
+              <button 
+                onClick={() => setIsDrawerOpen(true)}
+                className="md:hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg shadow-blue-900/20 text-white font-black italic text-lg"
+              >
+                {firstLetter}
+              </button>
+            </>
+          ) : (
+            <Button 
+              size="md" 
+              onClick={() => router.push('/login')}
+              className="h-10 px-6 font-bold"
+            >
+              Play Now
+            </Button>
+          )}
+        </div>
+      </nav>
+
+      {/* Mobile Nav Drawer */}
+      <AnimatePresence>
+        {isDrawerOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDrawerOpen(false)}
+              className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100]"
+            />
+
+            {/* Drawer */}
+            <motion.div 
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-slate-900 border-l border-slate-800 shadow-2xl z-[101] flex flex-col"
+            >
+              {/* Drawer Header */}
+              <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black italic text-xl shadow-lg shadow-blue-900/20">
+                    {firstLetter}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-white uppercase italic">{profileData?.name || 'Duelist'}</h4>
+                    <div className="flex items-center gap-1.5 text-blue-400">
+                      <Zap size={12} className="fill-blue-400/20" />
+                      <span className="text-xs font-black italic">{profileData?.coins || 0} Coins</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <div className="p-4 flex-grow overflow-y-auto">
+                <div className="space-y-2 mb-8">
+                  <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-4">Navigation</p>
+                  {navLinks.map((link) => (
+                    <Link 
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsDrawerOpen(false)}
+                      className={`flex items-center gap-4 px-4 py-4 rounded-2xl transition-all font-bold group ${
+                        pathname === link.href ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                      }`}
+                    >
+                      <span className={pathname === link.href ? 'text-white' : 'text-slate-500 group-hover:text-blue-400'}>
+                        {link.icon}
+                      </span>
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Account Actions */}
+                <div className="space-y-2">
+                  <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-4">Account Utility</p>
+                  <Link href="/settings" onClick={() => setIsDrawerOpen(false)} className="flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-400 hover:bg-slate-800 transition-all font-bold text-sm">
+                    <Settings size={18} className="text-slate-600" /> Account Settings
+                  </Link>
+                  
+                  <div className="h-px bg-slate-800 my-4" />
+                  
+                  <button onClick={resetMyCoins} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-blue-400 hover:bg-blue-600/10 transition-all font-bold text-sm text-left">
+                    <RefreshCcw size={18} className="text-blue-400/50" /> Reset Coins (Debug)
+                  </button>
+                  
+                  <button onClick={cleanupDuplicateMatches} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-orange-400 hover:bg-orange-600/10 transition-all font-bold text-sm text-left">
+                    <Trash2 size={18} className="text-orange-400/50" /> Cleanup Duplicates
+                  </button>
+
+                  <button onClick={resetMyHistory} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-600/10 transition-all font-bold text-sm text-left">
+                    <History size={18} className="text-red-400/50" /> Wipe All History
+                  </button>
+                </div>
+              </div>
+
+              {/* Sign Out */}
+              <div className="p-6 border-t border-slate-800">
+                <button 
+                  onClick={() => { logout(); setIsDrawerOpen(false); }}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase italic tracking-tighter hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/10"
+                >
+                  <LogOut size={18} />
+                  Sign Out
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
