@@ -51,7 +51,9 @@ function SetupContent() {
     const room = searchParams.get('room');
     if (room && room.length === 6 && !roomCode) {
       console.log('Auto-joining room from URL:', room);
-      joinRoom(room.toUpperCase());
+      if (user?.uid) {
+        joinRoom(room.toUpperCase(), user.uid);
+      }
     }
   }, [searchParams, joinRoom, roomCode]);
 
@@ -72,15 +74,15 @@ function SetupContent() {
 
   const handleCreateRoom = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate() && profileData?.name) {
-      createRoom(profileData.name, parseInt(form.secret), form.min, form.max);
+    if (validate() && profileData?.name && user?.uid) {
+      createRoom(profileData.name, user.uid, parseInt(form.secret), form.min, form.max);
       setMode('lobby');
     }
   };
 
   const handleJoinJoin = () => {
-    if (joinCode.length === 6) {
-      joinRoom(joinCode.toUpperCase());
+    if (joinCode.length === 6 && user?.uid) {
+      joinRoom(joinCode.toUpperCase(), user.uid);
     } else {
       setErrors({ join: 'Enter a valid 6-character code' });
     }
@@ -88,8 +90,8 @@ function SetupContent() {
 
   const handleGuestReady = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate() && profileData?.name) {
-      completeGuestSetup(profileData.name, parseInt(form.secret));
+    if (validate() && profileData?.name && user?.uid) {
+      completeGuestSetup(profileData.name, user.uid, parseInt(form.secret));
       setMode('lobby');
     }
   };
@@ -347,7 +349,7 @@ function SetupContent() {
                   <div className="pt-4 border-t border-white/5">
                     <p className="text-[10px] font-bold text-slate-500 uppercase mb-4">No one around? Duel the machine.</p>
                     <Button 
-                      onClick={startWithAI}
+                      onClick={() => user?.uid && startWithAI(user.uid)}
                       variant="secondary"
                       size="sm"
                       className="w-full bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10 text-blue-400 h-12 rounded-2xl"

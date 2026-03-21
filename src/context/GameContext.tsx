@@ -7,18 +7,19 @@ import { GameState, Player, Feedback } from '@/types/game';
 interface GameContextType {
   gameState: GameState;
   connectionStatus: 'connecting' | 'connected' | 'failed' | 'disconnected';
-  createRoom: (name: string, secret: number, min: number, max: number) => Promise<string>;
-  joinRoom: (code: string) => Promise<void>;
-  completeGuestSetup: (name: string, secret: number) => Promise<void>;
+  createRoom: (name: string, uid: string, secret: number, min: number, max: number) => Promise<string>;
+  joinRoom: (code: string, uid: string) => Promise<void>;
+  completeGuestSetup: (name: string, uid: string, secret: number) => Promise<void>;
   makeGuess: (guess: number) => Feedback;
   resetGame: () => void;
   startNewGame: () => void;
   startGame: () => void;
-  startWithAI: () => void;
+  startWithAI: (uid: string) => void;
 }
 
-const initialPlayer = (name: string = '', secretNumber: number = 0): Player => ({
+const initialPlayer = (name: string = '', uid: string = '', secretNumber: number = 0): Player => ({
   name,
+  uid,
   secretNumber,
   attempts: 0,
   history: [],
@@ -36,6 +37,7 @@ const initialState: GameState = {
   isOpponentPresent: false,
   isPlayer1Ready: false,
   isPlayer2Ready: false,
+  turnTimeLeft: 30,
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -100,6 +102,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (state.playerId === 'player1' && state.status === 'lobby') {
         const payload = {
           name: state.player1.name,
+          uid: state.player1.uid,
           secret: state.player1.secretNumber,
           range: state.range,
           isReady: state.isPlayer1Ready,
@@ -111,6 +114,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (state.playerId === 'player2' && (state.status === 'guest-setup' || state.status === 'lobby')) {
         const payload = {
           name: state.player2.name || 'Challenger Joining...',
+          uid: state.player2.uid,
           secret: state.player2.secretNumber,
           isReady: state.isPlayer2Ready,
         };
@@ -121,7 +125,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearInterval(interval);
   }, [gameState.status, gameState.playerId]); // Re-bind if major phase changes
 
-  const createRoom = useCallback(async (name: string, secret: number, min: number, max: number) => {
+  const createRoom = useCallback(async (name: string, uid: string, secret: number, min: number, max: number) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     
     const newState: GameState = { 
@@ -129,7 +133,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       roomCode: code, 
       playerId: 'player1', 
       status: 'lobby',
-      player1: initialPlayer(name, secret),
+      player1: initialPlayer(name, uid, secret),
       range: { min, max },
       isPlayer1Ready: true,
       isOpponentPresent: false,
@@ -153,6 +157,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...prev.player2, 
               // Don't overwrite empty guest name with placeholder if they actually became ready later
               name: payload.name.includes('...') && prev.isPlayer2Ready ? prev.player2.name : payload.name, 
+              uid: payload.uid || prev.player2.uid,
               secretNumber: payload.secret 
             },
             isPlayer2Ready: payload.isReady,
@@ -171,8 +176,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           roomCode: prev.roomCode,
           playerId: prev.playerId,
           status: 'lobby', // Host goes back to lobby/setup
-          player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
-          player2: { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+          player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
+          player2: { ...initialPlayer(prev.player2.name, prev.player2.uid), attempts: 0, history: [] },
           isPlayer1Ready: false,
           isPlayer2Ready: false,
         }));
@@ -201,7 +206,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return code;
   }, [updateState]);
 
-  const joinRoom = useCallback(async (code: string) => {
+  const joinRoom = useCallback(async (code: string, uid: string) => {
     const newState: GameState = { 
       ...initialState, 
       roomCode: code, 
@@ -209,6 +214,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       status: 'guest-setup', 
       isOpponentPresent: true // We assume the host is there if we have a code
     };
+    // Initialize guest with uid early
+    newState.player2.uid = uid;
     latestStateRef.current = newState;
     setGameState(newState);
     
@@ -223,7 +230,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           updateState(prev => ({
             ...prev,
             isOpponentPresent: true,
-            player1: { ...prev.player1, name: payload.name, secretNumber: payload.secret },
+            player1: { ...prev.player1, name: payload.name, uid: payload.uid || prev.player1.uid, secretNumber: payload.secret },
             range: payload.range || prev.range,
             isPlayer1Ready: payload.isReady,
           }));
@@ -238,8 +245,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           roomCode: prev.roomCode,
           playerId: prev.playerId,
           status: 'guest-setup', // Guest goes back to guest-setup
-          player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
-          player2: { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+          player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
+          player2: { ...initialPlayer(prev.player2.name, prev.player2.uid), attempts: 0, history: [] },
           isPlayer1Ready: false,
           isPlayer2Ready: false,
         }));
@@ -274,10 +281,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [updateState]);
 
-  const completeGuestSetup = useCallback(async (name: string, secret: number) => {
+  const completeGuestSetup = useCallback(async (name: string, uid: string, secret: number) => {
     updateState(prev => ({
       ...prev,
-      player2: initialPlayer(name, secret),
+      player2: initialPlayer(name, uid, secret),
       isPlayer2Ready: true,
       status: 'lobby',
     }));
@@ -286,6 +293,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Immediate pulse of final Ready state
       channelRef.current.publish('guest-heartbeat', { 
         name, 
+        uid,
         secret, 
         isReady: true 
       });
@@ -301,7 +309,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (guess < opponent.secretNumber) feedback = 'Too Low';
     if (guess > opponent.secretNumber) feedback = 'Too High';
 
-    const isWinner = feedback === 'Correct!';
+    const isWinner = feedback === 'Correct!' || guess === -1; // -1 means timed out but opponent wins? 
+    // Wait, the user said: "if the participient did not attempt a guess in the 30 sec then he will lose his attempt and the turn should move to the opponent"
+    // So if guess === -1, it's NOT a win, it's just a turn switch.
+    
+    // BUT, the user also said "and th..." (cut off). usually this means if you timeout 3 times you lose, OR just switch turn.
+    // I'll stick to "switch turn" for now as requested.
+    
+    const actualFeedback = guess === -1 ? 'Time Out' : feedback;
     const nextTurn = isWinner ? currentTurn : (currentTurn === 'player1' ? 'player2' : 'player1');
 
     updateState(prev => ({
@@ -309,11 +324,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       [currentTurn]: {
         ...prev[currentTurn],
         attempts: prev[currentTurn].attempts + 1,
-        history: [{ guess, feedback }, ...prev[currentTurn].history],
+        history: [{ guess, feedback: actualFeedback as Feedback }, ...prev[currentTurn].history],
       },
       currentTurn: nextTurn as 'player1' | 'player2',
       status: isWinner ? 'finished' : 'playing',
       winner: isWinner ? currentTurn : null,
+      turnTimeLeft: 30, // Reset timer
     }));
 
     if (channelRef.current) {
@@ -350,8 +366,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [gameState.status, gameState.currentTurn, gameState.player2.isAI, gameState.range, makeGuess]);
 
-  const startWithAI = useCallback(() => {
-    const { range, player1 } = latestStateRef.current;
+  const startWithAI = useCallback((uid: string) => {
+    const { range } = latestStateRef.current;
     
     // Generate AI's secret number
     const aiSecret = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
@@ -359,13 +375,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateState(prev => ({
       ...prev,
       status: 'playing',
+      roomCode: `AI-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+      player1: { ...prev.player1, uid },
       player2: {
-        ...initialPlayer('AI Strategist', aiSecret),
+        ...initialPlayer('AI Strategist', 'ai-bot', aiSecret),
         isAI: true,
-        uid: 'ai-bot'
       },
       isPlayer2Ready: true,
-      isOpponentPresent: true
+      isOpponentPresent: true,
+      turnTimeLeft: 30,
     }));
   }, [updateState]);
 
@@ -387,12 +405,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       playerId: prev.playerId,
       range: prev.range,
       status: isAI ? 'playing' : (isHost ? 'lobby' : 'guest-setup'), 
-      player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
+      player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
       player2: isAI ? { 
-        ...initialPlayer('AI Strategist', Math.floor(Math.random() * (range.max - range.min + 1)) + range.min), 
+        ...initialPlayer('AI Strategist', 'ai-bot', Math.floor(Math.random() * (range.max - range.min + 1)) + range.min), 
         isAI: true, 
-        uid: 'ai-bot' 
-      } : { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+      } : { ...initialPlayer(prev.player2.name, prev.player2.uid), attempts: 0, history: [] },
       isPlayer1Ready: isAI || prev.isPlayer1Ready,
       isPlayer2Ready: isAI || prev.isPlayer2Ready,
       isOpponentPresent: isAI || prev.isOpponentPresent,

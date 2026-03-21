@@ -180,6 +180,13 @@ export default function Game() {
               currentTurn === 'player1' ? 'bg-blue-500' : 'bg-purple-500'
             }`} />
 
+            {/* Turn Timer */}
+            <div className="absolute top-8 right-12 flex items-center gap-2">
+              <div className={`text-4xl font-black ${gameState.turnTimeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-slate-800'}`}>
+                {gameState.turnTimeLeft}
+              </div>
+            </div>
+
             <div className="relative z-10 flex flex-col items-center text-center">
               <div className="mb-8 flex flex-col items-center">
                 <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 ${

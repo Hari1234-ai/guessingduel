@@ -28,4 +28,5 @@ export interface GameState {
   isOpponentPresent: boolean;
   isPlayer1Ready: boolean;
   isPlayer2Ready: boolean;
+  turnTimeLeft: number;
 }
