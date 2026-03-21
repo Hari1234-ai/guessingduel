@@ -51,7 +51,7 @@ export default function LeaderboardPage() {
   }, [view]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-4 md:p-8 relative overflow-hidden">
+    <main className="min-h-screen bg-slate-950 text-white overflow-hidden relative">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
