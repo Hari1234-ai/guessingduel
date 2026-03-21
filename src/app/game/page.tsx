@@ -10,9 +10,14 @@ import Input from '@/components/ui/Input';
 import Modal from '@/components/ui/Modal';
 import ScoreBoard from '@/components/game/ScoreBoard';
 import GuessHistory from '@/components/game/GuessHistory';
+import AvatarDropdown from '@/components/ui/AvatarDropdown';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Game() {
   const router = useRouter();
+  const { user } = useAuth();
   const { gameState, makeGuess, resetGame, startNewGame } = useGame();
   const { player1, player2, currentTurn, status, winner, roomCode, playerId } = gameState;
 
@@ -65,22 +70,43 @@ export default function Game() {
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
   useEffect(() => {
-    if (status === 'finished') {
+    if (status === 'finished' && winner && user && db) {
+      const saveMatch = async () => {
+        try {
+          await addDoc(collection(db, 'matches'), {
+            roomCode,
+            winner,
+            participants: [player1.uid, player2.uid],
+            players: [
+              { uid: player1.uid, name: player1.name, secretNumber: player1.secretNumber, guesses: player1.guesses },
+              { uid: player2.uid, name: player2.name, secretNumber: player2.secretNumber, guesses: player2.guesses }
+            ],
+            createdAt: serverTimestamp()
+          });
+        } catch (error) {
+          console.error("Error saving match result:", error);
+        }
+      };
+      saveMatch();
+      
       const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
       setTimeout(() => setVictoryQuote(randomQuote), 0);
     }
-  }, [status, VICTORY_QUOTES]);
+  }, [status, winner, user, roomCode, player1, player2, VICTORY_QUOTES]);
 
   if (status === 'setup' && !roomCode) return null;
 
   return (
     <main className="min-h-screen bg-slate-950 p-4 md:p-8 flex flex-col items-center">
-      {/* Room Code Header */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
-          <Sparkles className="text-white" size={16} />
+      {/* Header */}
+      <div className="w-full max-w-5xl flex items-center justify-between mb-8">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
+            <Sparkles className="text-white" size={16} />
+          </div>
+          <h1 className="text-xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
         </div>
-        <h1 className="text-xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
+        <AvatarDropdown />
       </div>
 
       <div className="mb-4 flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-full text-xs">

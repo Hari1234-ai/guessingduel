@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import Modal from '@/components/ui/Modal';
+import AvatarDropdown from '@/components/ui/AvatarDropdown';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -51,13 +52,17 @@ export default function LandingPage() {
           >
             How it works
           </Button>
-          <Button 
-            size="md" 
-            onClick={() => router.push(user ? '/dashboard' : '/login')}
-            className="h-10 px-6 font-bold"
-          >
-            {user ? 'Open Dashboard' : 'Play Now'}
-          </Button>
+          {user ? (
+            <AvatarDropdown />
+          ) : (
+            <Button 
+              size="md" 
+              onClick={() => router.push('/login')}
+              className="h-10 px-6 font-bold"
+            >
+              Play Now
+            </Button>
+          )}
         </div>
       </nav>
 

@@ -8,6 +8,7 @@ import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
+import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import { LogOut } from 'lucide-react';
 
 export default function Setup() {
@@ -151,14 +152,9 @@ function SetupContent() {
       <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20" />
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
-          {/* Top Auth Button */}
+          {/* Avatar / Auth */}
           <div className="absolute -top-32 right-0">
-            <button 
-              onClick={logout} 
-              className="bg-slate-900/50 hover:bg-red-500/10 text-slate-400 hover:text-red-400 px-4 py-2 rounded-xl border border-slate-800 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest backdrop-blur-sm"
-            >
-              <LogOut size={16} /> Sign Out
-            </button>
+            <AvatarDropdown />
           </div>
 
           <div className="space-y-4 text-center">

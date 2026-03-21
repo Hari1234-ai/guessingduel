@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Play, HelpCircle, Swords, LogOut } from 'lucide-react';
+import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import { useAuth } from '@/context/AuthContext';
@@ -125,14 +126,9 @@ export default function Dashboard() {
         </div>
       </Modal>
 
-      {/* Top Navigation / Auth */}
+      {/* Avatar / Auth */}
       <div className="absolute top-6 right-6 z-20">
-        <button 
-          onClick={logout} 
-          className="bg-slate-900/50 hover:bg-red-500/10 text-slate-400 hover:text-red-400 px-4 py-2 rounded-xl border border-slate-800 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest backdrop-blur-sm"
-        >
-          <LogOut size={14} /> Sign Out
-        </button>
+        <AvatarDropdown />
       </div>
 
       <footer className="absolute bottom-6 flex flex-col items-center gap-3">
