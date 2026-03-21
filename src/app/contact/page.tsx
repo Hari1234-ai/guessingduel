@@ -9,6 +9,7 @@ import Input from '@/components/ui/Input';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import Navbar from '@/components/ui/Navbar';
 
 export default function ContactPage() {
   const router = useRouter();
@@ -21,27 +22,7 @@ export default function ContactPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
       </div>
 
-      <nav className="relative z-50 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
-            <Swords size={16} className="text-white" />
-          </div>
-          <span className="text-base font-black italic tracking-tighter uppercase">Guessing Duel</span>
-        </Link>
-
-        {/* Middle Links */}
-        <div className="hidden md:flex items-center gap-8 lg:gap-12">
-          <Link href="/buy" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all underline-offset-8 hover:underline">Buy</Link>
-          <Link href="/leaderboard" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all underline-offset-8 hover:underline">Leaderboard</Link>
-          <Link href="/contact" className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 transition-all underline-offset-8 underline">Contact Us</Link>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {user ? <AvatarDropdown /> : (
-            <Button size="md" onClick={() => router.push('/login')} className="h-9 px-5 text-xs font-bold">Play Now</Button>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       <section className="relative z-10 pt-20 pb-24 px-6 max-w-4xl mx-auto flex justify-center">
         <motion.div 

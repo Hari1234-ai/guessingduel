@@ -102,17 +102,6 @@ export default function HistoryPage() {
       <Navbar />
 
       <div className="max-w-4xl mx-auto relative z-10 pt-12">
-        <header className="flex items-center justify-between mb-12">
-          <button 
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors group"
-          >
-            <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:border-slate-700">
-              <ArrowLeft size={16} />
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest">Back</span>
-          </button>
-        </header>
 
         <div className="mb-12">
           <h1 className="text-2xl font-black tracking-tighter uppercase flex items-center gap-4">
