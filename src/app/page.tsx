@@ -53,7 +53,9 @@ export default function LandingPage() {
             How it works
           </Button>
           {user ? (
-            <AvatarDropdown />
+            <div className="fixed top-6 right-6 z-50">
+              <AvatarDropdown />
+            </div>
           ) : (
             <Button 
               size="md" 

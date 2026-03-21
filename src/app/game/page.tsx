@@ -98,6 +98,11 @@ export default function Game() {
 
   return (
     <main className="min-h-screen bg-slate-950 p-4 md:p-8 flex flex-col items-center">
+      {/* Global Avatar */}
+      <div className="fixed top-6 right-6 z-50">
+        <AvatarDropdown />
+      </div>
+
       {/* Header */}
       <div className="w-full max-w-5xl flex items-center justify-between mb-8">
         <div className="flex items-center gap-2">
@@ -106,7 +111,6 @@ export default function Game() {
           </div>
           <h1 className="text-xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
         </div>
-        <AvatarDropdown />
       </div>
 
       <div className="mb-4 flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-full text-xs">

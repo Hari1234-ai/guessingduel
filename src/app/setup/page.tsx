@@ -153,7 +153,7 @@ function SetupContent() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20" />
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
           {/* Avatar / Auth */}
-          <div className="absolute -top-32 right-0">
+          <div className="fixed top-6 right-6 z-50">
             <AvatarDropdown />
           </div>
 

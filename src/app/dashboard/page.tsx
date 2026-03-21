@@ -126,8 +126,8 @@ export default function Dashboard() {
         </div>
       </Modal>
 
-      {/* Avatar / Auth */}
-      <div className="absolute top-6 right-6 z-20">
+      {/* Top Header / Avatar */}
+      <div className="fixed top-6 right-6 z-50">
         <AvatarDropdown />
       </div>
 

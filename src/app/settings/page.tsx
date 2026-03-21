@@ -55,6 +55,11 @@ export default function SettingsPage() {
       <div className="absolute top-1/4 -left-24 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 -right-24 w-96 h-96 bg-purple-600/5 rounded-full blur-[120px]" />
 
+      {/* Global Avatar */}
+      <div className="fixed top-6 right-6 z-50">
+        <AvatarDropdown />
+      </div>
+
       <div className="max-w-4xl mx-auto relative z-10 pt-12">
         <header className="flex items-center justify-between mb-12">
           <button 
@@ -66,7 +71,6 @@ export default function SettingsPage() {
             </div>
             <span className="text-xs font-bold uppercase tracking-widest">Back</span>
           </button>
-          <AvatarDropdown />
         </header>
 
         <div className="grid md:grid-cols-12 gap-12">
