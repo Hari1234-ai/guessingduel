@@ -2,14 +2,31 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap } from 'lucide-react';
+import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap, RefreshCcw } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function AvatarDropdown() {
-  const { profileData, logout } = useAuth();
+  const { user, profileData, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const resetMyCoins = async () => {
+    if (!user || !db) return;
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        coins: 0,
+        weeklyCoins: 0,
+        updatedAt: serverTimestamp()
+      });
+      window.location.reload(); 
+    } catch (error) {
+      console.error('Reset error:', error);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -91,6 +108,14 @@ export default function AvatarDropdown() {
                 </Link>
               ))}
               
+              <button 
+                onClick={resetMyCoins}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-all font-bold text-xs group"
+              >
+                <RefreshCcw size={14} className="text-blue-400/50 group-hover:text-blue-400 transition-colors" />
+                Reset Coins (Debug)
+              </button>
+
               <div className="h-px bg-slate-800 my-2 mx-2" />
               
               <button 
