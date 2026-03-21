@@ -28,14 +28,14 @@ export default function ContactPage() {
         <motion.div 
           initial={{ opacity: 0, y: 30 }} 
           animate={{ opacity: 1, y: 0 }}
-          className="text-center md:text-left space-y-12"
+          className="text-center space-y-12 w-full"
         >
-          <div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-[0.85] mb-8">
+          <div className="flex flex-col items-center">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-[0.85] mb-8 text-center">
               Send a <br />
               <span className="text-blue-500">Transmission.</span>
             </h1>
-            <p className="text-slate-400 text-base leading-relaxed max-w-xl">
+            <p className="text-slate-400 text-base leading-relaxed max-w-xl mx-auto text-center">
               Connect with the creator or share your feedback directly. All signals are routed to the founder's secure line.
             </p>
           </div>

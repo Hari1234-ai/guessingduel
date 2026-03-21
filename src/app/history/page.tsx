@@ -103,8 +103,8 @@ export default function HistoryPage() {
 
       <div className="max-w-4xl mx-auto relative z-10 pt-12">
 
-        <div className="mb-12">
-          <h1 className="text-2xl font-black tracking-tighter uppercase flex items-center gap-4">
+        <div className="mb-12 text-center flex flex-col items-center">
+          <h1 className="text-2xl font-black tracking-tighter uppercase flex items-center justify-center gap-4">
             <History size={24} className="text-blue-500" />
             Duel History
           </h1>
