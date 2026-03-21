@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       
-      const publicRoutes = ['/', '/login', '/privacy', '/terms', '/reset-password'];
+      const publicRoutes = ['/', '/login', '/privacy', '/terms', '/reset-password', '/buy', '/leaderboard', '/history', '/contact'];
       const isPublicRoute = publicRoutes.includes(pathname);
 
       if (user) {

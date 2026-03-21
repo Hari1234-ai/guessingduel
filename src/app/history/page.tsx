@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { History, ArrowLeft, Trophy, Search, Filter, Swords, Calendar } from 'lucide-react';
+import { History, ArrowLeft, Trophy, Search, Filter, Swords, Calendar, Zap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
@@ -130,12 +130,16 @@ export default function HistoryPage() {
         ) : matches.length === 0 ? (
           <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] p-16 text-center shadow-2xl backdrop-blur-xl">
             <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-600">
-              <Swords size={32} />
+               {user ? <Swords size={32} /> : <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20"><Zap className="text-blue-400" size={32} /></div>}
             </div>
-            <h3 className="text-xl font-bold mb-2">No duels recorded yet.</h3>
-            <p className="text-slate-500 text-sm mb-8 max-w-xs mx-auto">Start your first duel to begin building your competitive legacy.</p>
-            <Button onClick={() => router.push('/setup')} size="md" className="px-8 font-black h-12">
-              Start New Duel
+            <h3 className="text-xl font-bold mb-2">
+              {user ? "No duels recorded yet." : "Duel History Locked."}
+            </h3>
+            <p className="text-slate-500 text-sm mb-8 max-w-xs mx-auto">
+              {user ? "Start your first duel to begin building your competitive legacy." : "Sign in to view your complete combat record and historical signals."}
+            </p>
+            <Button onClick={() => router.push(user ? '/setup' : '/login')} size="md" className="px-8 font-black h-12">
+              {user ? "Start New Duel" : "Sign in to Arena"}
             </Button>
           </div>
         ) : (
