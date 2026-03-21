@@ -220,37 +220,37 @@ export default function Game() {
             initial={{ scale: 0 }}
             animate={{ scale: 1, rotate: [0, -10, 10, -10, 0] }}
             transition={{ type: 'spring', duration: 0.8 }}
-            className="w-24 h-24 bg-yellow-500/20 rounded-full flex items-center justify-center mb-6 border-4 border-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.2)]"
+            className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]"
           >
-            <Trophy size={48} className="text-yellow-500" />
+            <Trophy size={32} className="text-yellow-500" />
           </motion.div>
           
-          <h2 className="text-4xl font-black text-white mb-2 uppercase tracking-tight">
+          <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">
             🎉 {winner ? gameState[winner].name : ''} Wins!
           </h2>
-          <p className="text-slate-400 text-lg mb-8 leading-relaxed italic">
+          <p className="text-slate-400 text-sm mb-6 leading-relaxed italic">
             &quot;{victoryQuote}&quot;
           </p>
 
-          <div className="bg-slate-950/50 rounded-[2rem] border border-slate-800 p-8 w-full mb-10 grid grid-cols-2 gap-8 relative overflow-hidden">
+          <div className="bg-slate-950/50 rounded-2xl border border-slate-800 p-6 w-full mb-8 grid grid-cols-2 gap-6 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500/50" />
             <div className="absolute top-0 right-0 w-1 h-full bg-purple-500/50" />
             
             <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2">{player1.name}&apos;s Secret</p>
-              <p className="text-4xl font-black text-white">{player1.secretNumber}</p>
+              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{player1.name}&apos;s Secret</p>
+              <p className="text-2xl font-black text-white">{player1.secretNumber}</p>
             </div>
             <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2">{player2.name}&apos;s Secret</p>
-              <p className="text-4xl font-black text-white">{player2.secretNumber}</p>
+              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{player2.name}&apos;s Secret</p>
+              <p className="text-2xl font-black text-white">{player2.secretNumber}</p>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 w-full">
-            <Button size="lg" fullWidth onClick={resetGame} className="h-16 text-lg">
-              <Sparkles size={20} className="mr-2" /> Rematch
+            <Button size="md" fullWidth onClick={resetGame} className="h-12 text-sm">
+              <Sparkles size={16} className="mr-2" /> Rematch
             </Button>
-            <Button variant="secondary" size="lg" fullWidth onClick={startNewGame} className="h-16 text-lg">
+            <Button variant="secondary" size="md" fullWidth onClick={startNewGame} className="h-12 text-sm text-slate-400">
               Main Menu
             </Button>
           </div>
@@ -260,10 +260,10 @@ export default function Game() {
       {/* Restart Confirmation Modal */}
       <Modal isOpen={isRestartModalOpen} onClose={() => setIsRestartModalOpen(false)} title="Restart Game?">
         <div className="p-4 text-center">
-          <p className="text-slate-400 mb-8 text-lg">This will reset progress for all players. Are you sure?</p>
-          <div className="flex gap-4">
-            <Button variant="secondary" fullWidth onClick={() => setIsRestartModalOpen(false)}>Cancel</Button>
-            <Button fullWidth onClick={() => { resetGame(); setIsRestartModalOpen(false); }} className="bg-red-600 hover:bg-red-700">Yes, Restart</Button>
+          <p className="text-slate-400 mb-6 text-sm">This will reset progress for all players. Are you sure?</p>
+          <div className="flex gap-3">
+            <Button variant="secondary" fullWidth onClick={() => setIsRestartModalOpen(false)} className="h-10 text-xs">Cancel</Button>
+            <Button fullWidth onClick={() => { resetGame(); setIsRestartModalOpen(false); }} className="bg-red-600 hover:bg-red-700 h-10 text-xs">Yes, Restart</Button>
           </div>
         </div>
       </Modal>
@@ -271,10 +271,10 @@ export default function Game() {
       {/* Give Up Confirmation Modal */}
       <Modal isOpen={isGiveUpModalOpen} onClose={() => setIsGiveUpModalOpen(false)} title="Forfeit Match?">
         <div className="p-4 text-center">
-          <p className="text-slate-400 mb-8 text-lg">Are you sure you want to forfeit this duel? Your rival will win immediately.</p>
-          <div className="flex gap-4">
-            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)}>Stay in Duel</Button>
-            <Button fullWidth onClick={() => { setIsGiveUpModalOpen(false); startNewGame(); }} className="bg-red-600 hover:bg-red-700">Forfeit Match</Button>
+          <p className="text-slate-400 mb-6 text-sm">Are you sure you want to forfeit this duel? Your rival will win immediately.</p>
+          <div className="flex gap-3">
+            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)} className="h-10 text-xs">Stay in Duel</Button>
+            <Button fullWidth onClick={() => { setIsGiveUpModalOpen(false); startNewGame(); }} className="bg-red-600 hover:bg-red-700 h-10 text-xs">Forfeit Match</Button>
           </div>
         </div>
       </Modal>
