@@ -103,7 +103,7 @@ export default function LandingPage() {
               onClick={() => router.push(user ? '/setup' : '/login')}
               className="h-14 px-10 text-lg font-black group w-full sm:w-auto"
             >
-              Start for free
+              {user ? 'Play now' : 'Start for free'}
               <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
