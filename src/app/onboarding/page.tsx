@@ -19,7 +19,7 @@ export default function OnboardingPage() {
   // Redirect if profile already exists
   useEffect(() => {
     if (hasProfile) {
-      router.replace('/dashboard');
+      router.replace('/setup');
     }
   }, [hasProfile, router]);
 
