@@ -94,32 +94,32 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-4 relative z-10">
             <StepItem 
-              icon={<Users size={28} />} 
+              icon={<Users size={28} className="text-blue-400" />} 
               title="Secure the Room" 
               desc="Join or create a battle with a secret duel code." 
-              color="bg-blue-600" 
-              glow="shadow-blue-600/20"
+              border="border-blue-500/30" 
+              glow="shadow-blue-500/10"
             />
             <StepItem 
-              icon={<Shield size={28} />} 
+              icon={<Shield size={28} className="text-blue-400" />} 
               title="Calibrate Your Secret" 
               desc="Choose a hidden number and shield your thoughts." 
-              color="bg-blue-500"
-              glow="shadow-blue-500/20"
+              border="border-blue-500/30"
+              glow="shadow-blue-500/10"
             />
             <StepItem 
-              icon={<Zap size={28} />} 
+              icon={<Zap size={28} className="text-purple-400" />} 
               title="Analyze & Strike" 
               desc="Decode your rival's number with High/Low insights." 
-              color="bg-purple-600"
-              glow="shadow-purple-600/20"
+              border="border-purple-500/30"
+              glow="shadow-purple-500/10"
             />
             <StepItem 
-              icon={<Swords size={28} />} 
+              icon={<Swords size={28} className="text-purple-400" />} 
               title="Claim Victory" 
               desc="Master the board and earn your gold credits." 
-              color="bg-purple-500"
-              glow="shadow-purple-500/20"
+              border="border-purple-500/30"
+              glow="shadow-purple-500/10"
             />
           </div>
         </div>
@@ -219,10 +219,10 @@ function RuleItem({ number, title, desc }: { number: string, title: string, desc
   );
 }
 
-function StepItem({ icon, title, desc, color, glow }: { icon: React.ReactNode, title: string, desc: string, color: string, glow: string }) {
+function StepItem({ icon, title, desc, border, glow }: { icon: React.ReactNode, title: string, desc: string, border: string, glow: string }) {
   return (
     <div className="flex flex-col items-center text-center group">
-      <div className={`w-20 h-20 rounded-full ${color} flex items-center justify-center text-white mb-6 shadow-2xl ${glow} group-hover:scale-110 transition-transform relative z-10`}>
+      <div className={`w-20 h-20 rounded-full bg-white/5 backdrop-blur-xl border ${border} flex items-center justify-center text-white mb-6 shadow-2xl ${glow} group-hover:scale-110 group-hover:bg-white/10 transition-all relative z-10`}>
         {icon}
       </div>
       <h3 className="text-lg font-black uppercase tracking-tight mb-2 text-white">{title}</h3>
