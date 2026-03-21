@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, RotateCcw, LogOut, Trophy, Sparkles, Loader2, Hash } from 'lucide-react';
@@ -26,6 +26,7 @@ export default function Game() {
   const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
   const [isRestartModalOpen, setIsRestartModalOpen] = useState(false);
   const [isGiveUpModalOpen, setIsGiveUpModalOpen] = useState(false);
+  const processedMatchRef = useRef<string | null>(null);
 
   // Redirect if no setup or room
   useEffect(() => {
@@ -71,7 +72,8 @@ export default function Game() {
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
   useEffect(() => {
-    if (status === 'finished' && winner && user && db) {
+    if (status === 'finished' && winner && user && db && roomCode && processedMatchRef.current !== roomCode) {
+      processedMatchRef.current = roomCode; // Lock immediately
       const saveMatch = async () => {
         try {
           await addDoc(collection(db, 'matches'), {
@@ -292,6 +294,18 @@ export default function Game() {
           <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">
             🎉 {winner ? gameState[winner].name : ''} Wins!
           </h2>
+          
+          {winner === playerId && (
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="mb-4 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full flex items-center gap-2 shadow-[0_0_15px_rgba(234,179,8,0.1)]"
+            >
+              <Sparkles size={14} className="text-yellow-500" />
+              <span className="text-xs font-black text-yellow-500 uppercase tracking-widest">+100 Coins Reward Added</span>
+            </motion.div>
+          )}
+
           <p className="text-slate-400 text-sm mb-6 leading-relaxed italic">
             &quot;{victoryQuote}&quot;
           </p>
