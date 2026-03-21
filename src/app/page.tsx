@@ -43,7 +43,7 @@ export default function LandingPage() {
           </div>
           <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 pr-32">
           <Button 
             variant="secondary" 
             size="md" 
