@@ -266,9 +266,9 @@ export default function LoginPage() {
 
         <p className="mt-8 text-center text-xs text-slate-500 space-x-2">
           <span>By continuing, you agree to our</span>
-          <a href="/terms" className="text-slate-400 hover:text-blue-400 underline transition-colors">Terms of Service</a>
+          <Link href="/terms" className="text-slate-400 hover:text-blue-400 underline transition-colors">Terms of Service</Link>
           <span>and</span>
-          <a href="/privacy" className="text-slate-400 hover:text-blue-400 underline transition-colors">Privacy Policy</a>
+          <Link href="/privacy" className="text-slate-400 hover:text-blue-400 underline transition-colors">Privacy Policy</Link>
         </p>
       </motion.div>
     </div>
