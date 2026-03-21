@@ -6,9 +6,12 @@ import { motion } from 'framer-motion';
 import { Play, HelpCircle, Swords } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
+import { useAuth } from '@/context/AuthContext';
+import { LogOut } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
+  const { logout } = useAuth();
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
 
   const containerVariants = {
@@ -122,8 +125,14 @@ export default function Home() {
         </div>
       </Modal>
 
-      <footer className="absolute bottom-8 text-slate-600 text-sm font-medium">
-        Built with Next.js & Framer Motion
+      <footer className="absolute bottom-8 flex flex-col items-center gap-4">
+        <button 
+          onClick={logout} 
+          className="text-red-500/60 hover:text-red-500 transition-colors flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest"
+        >
+          <LogOut size={14} /> Sign Out
+        </button>
+        <span className="text-slate-600 text-sm font-medium">Built with Next.js & Framer Motion</span>
       </footer>
     </main>
   );

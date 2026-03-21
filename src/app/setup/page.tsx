@@ -7,6 +7,8 @@ import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, L
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { useAuth } from '@/context/AuthContext';
+import { LogOut } from 'lucide-react';
 
 export default function Setup() {
   return (
@@ -24,6 +26,7 @@ function SetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
+  const { user, logout } = useAuth();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
   // New multi-step state management
@@ -40,6 +43,15 @@ function SetupContent() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Pre-fill name from auth
+  useEffect(() => {
+    if (user?.email && !form.name) {
+      // Use email prefix as default name if none exists (everything before @)
+      const namePrefix = user.email.split('@')[0];
+      setForm(prev => ({ ...prev, name: namePrefix }));
+    }
+  }, [user]);
 
   // Auto-join if room code in URL
   useEffect(() => {
@@ -159,6 +171,15 @@ function SetupContent() {
           <button onClick={() => router.push('/')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
             <ChevronLeft size={18} /> Cancel and Return
           </button>
+          
+          <div className="pt-4 border-t border-white/5">
+            <button 
+              onClick={logout} 
+              className="text-red-500/60 hover:text-red-500 transition-colors flex items-center justify-center gap-2 mx-auto text-sm font-bold uppercase tracking-widest"
+            >
+              <LogOut size={16} /> Sign Out
+            </button>
+          </div>
         </motion.div>
       </main>
     );
