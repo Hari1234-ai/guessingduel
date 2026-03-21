@@ -30,14 +30,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
       
       // Public routes that don't require authentication
-      const publicRoutes = ['/login', '/privacy', '/terms', '/reset-password'];
+      const publicRoutes = ['/', '/login', '/privacy', '/terms', '/reset-password'];
       const isPublicRoute = publicRoutes.includes(pathname);
 
       // Redirect logic
       if (!user && !isPublicRoute) {
         router.push('/login');
       } else if (user && pathname === '/login') {
-        router.push('/');
+        router.push('/dashboard');
       }
     });
 
