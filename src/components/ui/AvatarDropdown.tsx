@@ -33,25 +33,40 @@ export default function AvatarDropdown() {
     try {
       const q = query(
         collection(db, 'matches'), 
-        where('participants', 'array-contains', user.uid),
-        orderBy('createdAt', 'desc')
+        where('participants', 'array-contains', user.uid)
       );
       const querySnapshot = await getDocs(q);
+      
+      // Map and sort in memory to avoid needing a composite index in Firestore
+      const matches = querySnapshot.docs
+        .map(d => ({ id: d.id, ...(d.data() as any) }))
+        .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       
       const seenRooms = new Set();
       const docsToDelete: string[] = [];
       
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const roomKey = `${data.roomCode}_${data.player1?.uid}_${data.player2?.uid}`;
+      matches.forEach((m) => {
+        // Build a unique key for the match based on participants and room code
+        const p1 = m.players?.[0]?.uid || '';
+        const p2 = m.players?.[1]?.uid || '';
+        // Sort UIDs to ensure the key is stable regardless of player order
+        const uids = [p1, p2].sort().join('_');
+        const roomKey = `${m.roomCode}_${uids}`;
+
         if (seenRooms.has(roomKey)) {
-          docsToDelete.push(doc.id);
+          docsToDelete.push(m.id);
         } else {
           seenRooms.add(roomKey);
         }
       });
       
-      console.log(`Found ${docsToDelete.length} duplicates to delete.`);
+      if (docsToDelete.length === 0) {
+        alert("No duplicates found. Your history is already clean!");
+        return;
+      }
+
+      const confirmed = window.confirm(`Found ${docsToDelete.length} duplicates. Wipe them?`);
+      if (!confirmed) return;
       
       for (const docId of docsToDelete) {
         await deleteDoc(doc(db, 'matches', docId));
@@ -61,6 +76,31 @@ export default function AvatarDropdown() {
       window.location.reload();
     } catch (error) {
       console.error('Cleanup error:', error);
+      alert('Error during cleanup. Check console for details.');
+    }
+  };
+
+  const resetMyHistory = async () => {
+    if (!user || !db) return;
+    const confirmed = window.confirm('WIPE ALL HISTORY? This cannot be undone.');
+    if (!confirmed) return;
+    
+    try {
+      const q = query(
+        collection(db, 'matches'), 
+        where('participants', 'array-contains', user.uid)
+      );
+      const querySnapshot = await getDocs(q);
+      
+      for (const docSnap of querySnapshot.docs) {
+        await deleteDoc(doc(db, 'matches', docSnap.id));
+      }
+      
+      alert('History wiped!');
+      window.location.reload();
+    } catch (error) {
+      console.error('Reset History error:', error);
+      alert('Error during history wipe.');
     }
   };
 
@@ -158,6 +198,14 @@ export default function AvatarDropdown() {
               >
                 <Trash2 size={14} className="text-orange-400/50 group-hover:text-orange-400 transition-colors" />
                 Cleanup Duplicates
+              </button>
+
+              <button 
+                onClick={resetMyHistory}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-bold text-xs group"
+              >
+                <History size={14} className="text-red-400/50 group-hover:text-red-400 transition-colors" />
+                Wipe All History (Debug)
               </button>
 
               <div className="h-px bg-slate-800 my-2 mx-2" />
