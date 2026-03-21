@@ -71,10 +71,10 @@ export default function LeaderboardPage() {
           >
             <Trophy size={14} /> Global Rankings
           </motion.div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase italic leading-none mb-6">
+          <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none mb-6">
             Hall of <span className="text-blue-500">Legends.</span>
           </h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto italic">
+          <p className="text-slate-400 text-lg max-w-xl mx-auto">
             Weekly rewards reset every Monday. Duel your way to the top of the signal chain.
           </p>
         </div>
@@ -125,19 +125,19 @@ export default function LeaderboardPage() {
                     {idx === 0 ? <Crown className="text-yellow-500" size={24} /> :
                      idx === 1 ? <Medal className="text-slate-300" size={22} /> :
                      idx === 2 ? <Medal className="text-amber-600" size={20} /> :
-                     <span className="text-slate-600 font-black italic">{idx + 1}</span>}
+                     <span className="text-slate-600 font-black">{idx + 1}</span>}
                   </div>
 
                   {/* Duelist */}
                   <div className="flex items-center gap-4 flex-grow px-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg text-white font-black italic shadow-blue-900/20">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg text-white font-black shadow-blue-900/20">
                       {entry.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="font-black text-white uppercase italic tracking-tight flex items-center gap-2">
+                      <h4 className="font-black text-white uppercase tracking-tight flex items-center gap-2">
                         {entry.name}
                         {user?.uid === entry.uid && (
-                          <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-[8px] text-blue-400 uppercase italic">You</span>
+                          <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-[8px] text-blue-400 uppercase">You</span>
                         )}
                       </h4>
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Active Duelist</p>
@@ -148,7 +148,7 @@ export default function LeaderboardPage() {
                   <div className="text-right shrink-0">
                     <div className="flex items-center justify-end gap-1.5 text-blue-400 mb-1">
                       <Zap size={14} className="fill-blue-400/20" />
-                      <span className="text-xl font-black italic tracking-tighter">
+                      <span className="text-xl font-black tracking-tighter">
                         {view === 'weekly' ? entry.weeklyCoins : entry.coins}
                       </span>
                     </div>

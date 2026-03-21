@@ -129,7 +129,7 @@ export default function AvatarDropdown() {
         <div className="w-5 h-5 rounded-lg bg-blue-600/20 flex items-center justify-center">
           <Zap size={10} className="text-blue-400 fill-blue-400/20" />
         </div>
-        <span className="text-sm font-black text-white italic tracking-tighter">
+        <span className="text-sm font-black text-white tracking-tighter">
           {profileData?.coins || 0}
         </span>
         <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest hidden sm:inline">Coins</span>
@@ -139,7 +139,7 @@ export default function AvatarDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 p-1 pr-3 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all backdrop-blur-sm group"
       >
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg shadow-blue-900/20 text-white font-black italic text-sm">
+        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg shadow-blue-900/20 text-white font-black text-sm">
           {firstLetter}
         </div>
         <div className="flex flex-col items-start mr-1">
@@ -159,11 +159,11 @@ export default function AvatarDropdown() {
           >
             <div className="p-4 border-b border-slate-800 bg-slate-800/20">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black italic shadow-inner shadow-black/20 text-lg">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black shadow-inner shadow-black/20 text-lg">
                    {firstLetter}
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-white leading-tight uppercase italic">{profileData?.name || 'Player'}</h4>
+                  <h4 className="text-sm font-black text-white leading-tight uppercase">{profileData?.name || 'Player'}</h4>
                   <p className="text-[10px] text-slate-500 font-bold tracking-widest">{profileData?.email || 'No Email'}</p>
                 </div>
               </div>

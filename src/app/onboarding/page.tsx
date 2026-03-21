@@ -67,7 +67,7 @@ export default function OnboardingPage() {
           <div className="w-16 h-16 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-900/40">
             <Swords className="text-white" size={32} />
           </div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase italic leading-none mb-4">
+          <h1 className="text-4xl font-black tracking-tighter uppercase leading-none mb-4">
             Welcome, <br />
             <span className="text-blue-500">Challenger.</span>
           </h1>
@@ -79,7 +79,7 @@ export default function OnboardingPage() {
         <form onSubmit={handleSubmit} className="space-y-8 bg-slate-900/40 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
           <section className="space-y-6">
             <div className="flex justify-center mb-2">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 border-2 border-slate-700 flex items-center justify-center text-3xl font-black italic text-white shadow-inner shadow-black/20">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 border-2 border-slate-700 flex items-center justify-center text-3xl font-black text-white shadow-inner shadow-black/20">
                 {name ? name.charAt(0).toUpperCase() : <User size={32} className="text-white/50" />}
               </div>
             </div>

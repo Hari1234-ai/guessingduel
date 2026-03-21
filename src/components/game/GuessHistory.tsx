@@ -64,7 +64,7 @@ const GuessHistory: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
         {history.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-600 italic">
+          <div className="h-full flex flex-col items-center justify-center text-slate-600">
             <p>No guesses yet.</p>
           </div>
         ) : (

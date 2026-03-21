@@ -98,7 +98,7 @@ export default function Navbar() {
       <nav className="relative z-50 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
             <Swords size={20} className="text-white" />
           </div>
           <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
@@ -112,7 +112,7 @@ export default function Navbar() {
             <Link 
               key={link.href}
               href={link.href}
-              className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all italic underline-offset-8 hover:underline hover:text-blue-400 ${
+              className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all underline-offset-8 hover:underline hover:text-blue-400 ${
                 pathname === link.href ? 'text-blue-400 underline' : 'text-slate-400'
               }`}
             >
@@ -133,7 +133,7 @@ export default function Navbar() {
               {/* Mobile Avatar Button (Opens Drawer) */}
               <button 
                 onClick={() => setIsDrawerOpen(true)}
-                className="md:hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg shadow-blue-900/20 text-white font-black italic text-lg"
+                className="md:hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg shadow-blue-900/20 text-white font-black text-lg"
               >
                 {firstLetter}
               </button>
@@ -174,14 +174,14 @@ export default function Navbar() {
               {/* Drawer Header */}
               <div className="p-6 border-b border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black italic text-xl shadow-lg shadow-blue-900/20">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-900/20">
                     {firstLetter}
                   </div>
                   <div>
-                    <h4 className="text-sm font-black text-white uppercase italic">{profileData?.name || 'Duelist'}</h4>
+                    <h4 className="text-sm font-black text-white uppercase">{profileData?.name || 'Duelist'}</h4>
                     <div className="flex items-center gap-1.5 text-blue-400">
                       <Zap size={12} className="fill-blue-400/20" />
-                      <span className="text-xs font-black italic">{profileData?.coins || 0} Coins</span>
+                      <span className="text-xs font-black">{profileData?.coins || 0} Coins</span>
                     </div>
                   </div>
                 </div>
@@ -241,7 +241,7 @@ export default function Navbar() {
               <div className="p-6 border-t border-slate-800">
                 <button 
                   onClick={() => { logout(); setIsDrawerOpen(false); }}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase italic tracking-tighter hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/10"
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase tracking-tighter hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/10"
                 >
                   <LogOut size={18} />
                   Sign Out

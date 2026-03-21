@@ -115,7 +115,7 @@ export default function HistoryPage() {
         </header>
 
         <div className="mb-12">
-          <h1 className="text-4xl font-black tracking-tighter uppercase italic flex items-center gap-4">
+          <h1 className="text-4xl font-black tracking-tighter uppercase flex items-center gap-4">
             <History size={32} className="text-blue-500" />
             Duel History
           </h1>
@@ -165,7 +165,7 @@ export default function HistoryPage() {
                           <Calendar size={10} /> {match.date}
                         </span>
                       </div>
-                      <h3 className="text-lg font-black italic uppercase tracking-tight">vs {match.opponentName}</h3>
+                      <h3 className="text-lg font-black uppercase tracking-tight">vs {match.opponentName}</h3>
                     </div>
                   </div>
 

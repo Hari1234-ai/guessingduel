@@ -135,8 +135,8 @@ export default function Game() {
       {/* Header */}
       <div className="w-full max-w-5xl flex items-center justify-between mb-8">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
-            <Sparkles className="text-white" size={16} />
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+            <Sparkles className="text-white" size={20} />
           </div>
           <h1 className="text-xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
         </div>
@@ -306,7 +306,7 @@ export default function Game() {
             </motion.div>
           )}
 
-          <p className="text-slate-400 text-sm mb-6 leading-relaxed italic">
+          <p className="text-slate-400 text-sm mb-6 leading-relaxed">
             &quot;{victoryQuote}&quot;
           </p>
 

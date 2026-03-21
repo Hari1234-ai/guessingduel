@@ -33,7 +33,7 @@ export default function TermsOfService() {
           <div className="w-12 h-12 bg-blue-600/20 rounded-2xl flex items-center justify-center border border-blue-500/30">
             <FileText className="text-blue-400" size={24} />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight uppercase italic">Terms of Service</h1>
+          <h1 className="text-3xl font-black text-white tracking-tight uppercase">Terms of Service</h1>
         </div>
 
         <div className="bg-slate-900/30 border border-slate-800 p-8 rounded-3xl backdrop-blur-sm space-y-8 leading-relaxed">
@@ -68,7 +68,7 @@ export default function TermsOfService() {
           </section>
 
           <div className="pt-8 border-t border-slate-800">
-            <p className="text-sm text-slate-500 italic">Last Updated: March 2024</p>
+            <p className="text-sm text-slate-500">Last Updated: March 2024</p>
           </div>
         </div>
 

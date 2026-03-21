@@ -157,7 +157,7 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
         {icon}
       </div>
-      <h3 className="text-xl font-black mb-3 italic uppercase tracking-tight">{title}</h3>
+      <h3 className="text-xl font-black mb-3 uppercase tracking-tight">{title}</h3>
       <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
     </div>
   );

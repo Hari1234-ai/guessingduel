@@ -76,7 +76,7 @@ export default function SettingsPage() {
         <div className="grid md:grid-cols-12 gap-12">
           {/* Side Nav */}
           <div className="md:col-span-4 space-y-2">
-            <h1 className="text-3xl font-black tracking-tighter uppercase italic mb-8">Account</h1>
+            <h1 className="text-3xl font-black tracking-tighter uppercase mb-8">Account</h1>
             <nav className="flex flex-col gap-1">
               <button className="flex items-center gap-3 px-4 py-3 bg-blue-600/10 text-blue-400 rounded-2xl border border-blue-500/20 font-bold text-sm text-left">
                 <User size={18} />
@@ -99,11 +99,11 @@ export default function SettingsPage() {
               <form onSubmit={handleSubmit} className="space-y-10">
                 {/* Profile Avatar Section */}
                 <div className="flex items-center gap-8">
-                  <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 border-2 border-slate-700 flex items-center justify-center overflow-hidden shadow-lg shadow-blue-900/20 text-white font-black italic text-4xl">
+                  <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 border-2 border-slate-700 flex items-center justify-center overflow-hidden shadow-lg shadow-blue-900/20 text-white font-black text-4xl">
                     {firstLetter}
                   </div>
                   <div>
-                    <h3 className="text-lg font-black uppercase italic tracking-tight">Active Identity</h3>
+                    <h3 className="text-lg font-black uppercase tracking-tight">Active Identity</h3>
                     <p className="text-slate-500 text-xs">Generated from your display name.</p>
                   </div>
                 </div>
@@ -121,7 +121,7 @@ export default function SettingsPage() {
                   <div className="p-4 bg-slate-950/50 rounded-2xl border border-slate-800">
                     <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-2">Registered Email</label>
                     <p className="text-sm font-bold text-slate-300">{user?.email}</p>
-                    <p className="text-[10px] text-slate-600 mt-2 italic">Contact support to change your email.</p>
+                    <p className="text-[10px] text-slate-600 mt-2">Contact support to change your email.</p>
                   </div>
                 </div>
 
@@ -149,7 +149,7 @@ export default function SettingsPage() {
 
             {/* Danger Zone */}
             <div className="mt-8 p-8 border border-red-900/20 bg-red-950/5 rounded-[2.5rem]">
-              <h3 className="text-red-500 font-black uppercase tracking-tighter italic mb-2">Danger Zone</h3>
+              <h3 className="text-red-500 font-black uppercase tracking-tighter mb-2">Danger Zone</h3>
               <p className="text-slate-500 text-xs mb-6">Permanently delete your account and all Duel data.</p>
               <Button variant="secondary" className="border-red-900/20 text-red-500 hover:bg-red-500/10 h-10 text-xs">
                 <Trash2 size={14} className="mr-2" /> Delete Account
