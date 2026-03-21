@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Duel Guess",
   description: "A turn-based 2-player guessing game.",
+  verification: {
+    google: "6W_4J_J-gwwAVodQi3si23pVzZTq9iWsUMh1tW_L7E4",
+  },
 };
 
 export default function RootLayout({
