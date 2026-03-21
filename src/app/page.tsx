@@ -43,6 +43,13 @@ export default function LandingPage() {
           </div>
           <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
         </div>
+
+        {/* Middle Links */}
+        <div className="hidden md:flex items-center gap-12">
+          <Link href="/buy" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Buy</Link>
+          <Link href="/contact" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Contact Us</Link>
+        </div>
+
         <div className="flex items-center gap-4">
           <Button 
             variant="secondary" 
