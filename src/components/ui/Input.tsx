@@ -7,6 +7,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   showPasswordToggle?: boolean;
+  leftIcon?: React.ReactNode;
   labelClassName?: string;
 }
 
@@ -14,6 +15,7 @@ const Input: React.FC<InputProps> = ({
   label,
   error,
   showPasswordToggle = false,
+  leftIcon,
   labelClassName = '',
   type = 'text',
   className = '',
@@ -30,12 +32,18 @@ const Input: React.FC<InputProps> = ({
       <label htmlFor={id} className={`text-sm font-medium text-slate-300 ${labelClassName}`}>
         {label}
       </label>
-      <div className="relative">
+      <div className="relative flex items-center">
+        {leftIcon && (
+          <div className="absolute left-4 text-slate-500 pointer-events-none">
+            {leftIcon}
+          </div>
+        )}
         <input
           id={id}
           type={inputType}
           className={`w-full bg-slate-900 border-2 rounded-xl px-4 py-3 text-white placeholder-slate-500 transition-all outline-none focus:ring-2 focus:ring-blue-500/50 
             ${error ? 'border-red-500 ring-red-500/20' : 'border-slate-800 focus:border-blue-500'} 
+            ${leftIcon ? 'pl-11' : ''}
             ${className}`}
           {...props}
         />

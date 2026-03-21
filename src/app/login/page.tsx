@@ -131,22 +131,19 @@ export default function LoginPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <Mail className="absolute left-3 top-[2.2rem] translate-y-[-50%] text-slate-500 z-10" size={14} />
-            <Input
-              label="Email Address"
-              type="email"
-              placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="pl-10 h-10 text-sm"
-              labelClassName="text-[10px] mb-1"
-            />
-          </div>
+          <Input
+            label="Email Address"
+            type="email"
+            placeholder="name@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            leftIcon={<Mail size={16} />}
+            className="h-10 text-sm"
+            labelClassName="text-[10px] mb-1"
+          />
 
-          <div className="relative">
-            <Lock className="absolute left-3 top-[2.2rem] translate-y-[-50%] text-slate-500 z-10" size={14} />
+          <div className="flex flex-col">
             <Input
               label="Password"
               type="password"
@@ -154,7 +151,9 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="pl-10 h-10 text-sm"
+              leftIcon={<Lock size={16} />}
+              showPasswordToggle
+              className="h-10 text-sm"
               labelClassName="text-[10px] mb-1"
             />
             {mode === 'login' && (
