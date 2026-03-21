@@ -3,61 +3,37 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { User, Camera, Save, ArrowLeft, Loader2, Shield, Trash2 } from 'lucide-react';
+import { User, Save, ArrowLeft, Loader2, Shield, Trash2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db, storage } from '@/lib/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db } from '@/lib/firebase';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
 
 export default function SettingsPage() {
   const router = useRouter();
   const { user, profileData, refreshProfile } = useAuth();
   const [name, setName] = useState('');
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     if (profileData) {
       setName(profileData.name || '');
-      setImagePreview(profileData.photoURL || null);
     }
   }, [profileData]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !name) return;
+    if (!user || !name.trim()) return;
 
     setIsSubmitting(true);
     try {
-      let photoURL = profileData?.photoURL || '';
-      if (image && storage) {
-        const storageRef = ref(storage, `avatars/${user.uid}`);
-        await uploadBytes(storageRef, image);
-        photoURL = await getDownloadURL(storageRef);
-      }
-
       if (db) {
         const userRef = doc(db, 'users', user.uid);
         await updateDoc(userRef, {
-          name,
-          photoURL,
+          name: name.trim(),
           updatedAt: new Date().toISOString()
         });
         await refreshProfile();
@@ -70,6 +46,8 @@ export default function SettingsPage() {
       setIsSubmitting(false);
     }
   };
+
+  const firstLetter = name?.charAt(0).toUpperCase() || 'P';
 
   return (
     <main className="min-h-screen bg-slate-950 text-white p-6 relative overflow-hidden">
@@ -115,33 +93,14 @@ export default function SettingsPage() {
               className="bg-slate-900/40 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl"
             >
               <form onSubmit={handleSubmit} className="space-y-10">
-                {/* Profile Picture Section */}
+                {/* Profile Avatar Section */}
                 <div className="flex items-center gap-8">
-                  <div className="relative group">
-                    <div className="w-24 h-24 rounded-[2rem] bg-slate-800 border-2 border-slate-700 flex items-center justify-center overflow-hidden transition-all group-hover:border-blue-500/50">
-                      {imagePreview ? (
-                        <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <User className="text-slate-500" size={32} />
-                      )}
-                    </div>
-                    <label 
-                      htmlFor="avatar-upload"
-                      className="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-600 rounded-2xl border-4 border-slate-950 flex items-center justify-center cursor-pointer hover:bg-blue-500 transition-all shadow-lg"
-                    >
-                      <Camera size={16} className="text-white" />
-                    </label>
-                    <input 
-                      id="avatar-upload"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageChange}
-                    />
+                  <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 border-2 border-slate-700 flex items-center justify-center overflow-hidden shadow-lg shadow-blue-900/20 text-white font-black italic text-4xl">
+                    {firstLetter}
                   </div>
                   <div>
-                    <h3 className="text-lg font-black uppercase italic tracking-tight">Avatar</h3>
-                    <p className="text-slate-500 text-xs">JPG, GIF or PNG. Max size 2MB.</p>
+                    <h3 className="text-lg font-black uppercase italic tracking-tight">Active Identity</h3>
+                    <p className="text-slate-500 text-xs">Generated from your display name.</p>
                   </div>
                 </div>
 
@@ -166,7 +125,7 @@ export default function SettingsPage() {
                   <Button 
                     type="submit" 
                     size="md" 
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !name.trim()}
                     className="h-12 px-8 font-black group"
                   >
                     {isSubmitting ? (
