@@ -125,6 +125,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearInterval(interval);
   }, [gameState.status, gameState.playerId]); // Re-bind if major phase changes
 
+
   const createRoom = useCallback(async (name: string, uid: string, secret: number, min: number, max: number) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     
@@ -427,6 +428,38 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     updateState(initialState);
   }, [updateState]);
+
+  // TURN TIMER LOGIC
+  useEffect(() => {
+    if (gameState.status !== 'playing' || gameState.winner) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      updateState(prev => {
+        if (prev.turnTimeLeft <= 1) {
+          return { ...prev, turnTimeLeft: 0 };
+        }
+        return { ...prev, turnTimeLeft: prev.turnTimeLeft - 1 };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [gameState.status, gameState.winner, updateState]);
+
+  // Handle Turn Skip when timer reaches 0
+  useEffect(() => {
+    if (gameState.status === 'playing' && gameState.turnTimeLeft === 0 && !gameState.winner) {
+      const isMyTurn = gameState.currentTurn === gameState.playerId;
+      const isAIMatch = gameState.player2.isAI;
+      const isHost = gameState.playerId === 'player1';
+
+      if (isMyTurn || (isAIMatch && isHost && gameState.currentTurn === 'player2')) {
+        // Auto-skip turn
+        makeGuess(-1); // -1 = TIME OUT
+      }
+    }
+  }, [gameState.turnTimeLeft, gameState.status, gameState.currentTurn, gameState.playerId, gameState.winner, makeGuess]);
 
   return (
     <GameContext.Provider value={{ 
