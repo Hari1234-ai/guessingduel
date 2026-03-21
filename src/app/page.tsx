@@ -51,14 +51,6 @@ export default function LandingPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button 
-            variant="secondary" 
-            size="md" 
-            onClick={() => setIsHowToPlayOpen(true)}
-            className="hidden sm:flex border-none text-slate-400 hover:text-white h-10"
-          >
-            How it works
-          </Button>
           {user ? (
             <AvatarDropdown />
           ) : (
