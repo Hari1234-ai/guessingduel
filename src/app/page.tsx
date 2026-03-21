@@ -90,20 +90,20 @@ export default function LandingPage() {
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
-              size="lg" 
-              onClick={() => router.push(user ? '/setup' : '/login')}
-              className="h-14 px-10 text-lg font-black group w-full sm:w-auto"
-            >
-              Start Dueling
-              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button 
               variant="secondary" 
               size="lg" 
               onClick={() => setIsHowToPlayOpen(true)}
               className="h-14 px-10 text-lg font-black w-full sm:w-auto"
             >
               View Rules
+            </Button>
+            <Button 
+              size="lg" 
+              onClick={() => router.push(user ? '/setup' : '/login')}
+              className="h-14 px-10 text-lg font-black group w-full sm:w-auto"
+            >
+              Start for free
+              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
         </motion.div>
