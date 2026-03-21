@@ -83,7 +83,7 @@ function ContactLink({ icon, title, value, href }: { icon: React.ReactNode, titl
       </div>
       <div>
         <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">{title}</p>
-        <p className="text-sm font-black text-slate-200 group-hover:text-blue-400 transition-colors uppercase">{value}</p>
+        <p className="text-sm font-black text-slate-200 group-hover:text-blue-400 transition-colors">{value}</p>
       </div>
     </div>
   );

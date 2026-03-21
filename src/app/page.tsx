@@ -94,32 +94,32 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-4 relative z-10">
             <StepItem 
-              number="1" 
+              icon={<Users size={28} />} 
               title="Secure the Room" 
               desc="Join or create a battle with a secret duel code." 
-              color="bg-orange-500" 
-              glow="shadow-orange-500/20"
+              color="bg-blue-600" 
+              glow="shadow-blue-600/20"
             />
             <StepItem 
-              number="2" 
+              icon={<Shield size={28} />} 
               title="Calibrate Your Secret" 
               desc="Choose a hidden number and shield your thoughts." 
               color="bg-blue-500"
               glow="shadow-blue-500/20"
             />
             <StepItem 
-              number="3" 
+              icon={<Zap size={28} />} 
               title="Analyze & Strike" 
               desc="Decode your rival's number with High/Low insights." 
-              color="bg-purple-500"
-              glow="shadow-purple-500/20"
+              color="bg-purple-600"
+              glow="shadow-purple-600/20"
             />
             <StepItem 
-              number="4" 
+              icon={<Swords size={28} />} 
               title="Claim Victory" 
               desc="Master the board and earn your gold credits." 
-              color="bg-green-500"
-              glow="shadow-green-500/20"
+              color="bg-purple-500"
+              glow="shadow-purple-500/20"
             />
           </div>
         </div>
@@ -219,11 +219,11 @@ function RuleItem({ number, title, desc }: { number: string, title: string, desc
   );
 }
 
-function StepItem({ number, title, desc, color, glow }: { number: string, title: string, desc: string, color: string, glow: string }) {
+function StepItem({ icon, title, desc, color, glow }: { icon: React.ReactNode, title: string, desc: string, color: string, glow: string }) {
   return (
     <div className="flex flex-col items-center text-center group">
-      <div className={`w-20 h-20 rounded-full ${color} flex items-center justify-center text-white text-2xl font-black mb-6 shadow-2xl ${glow} group-hover:scale-110 transition-transform relative z-10`}>
-        {number}
+      <div className={`w-20 h-20 rounded-full ${color} flex items-center justify-center text-white mb-6 shadow-2xl ${glow} group-hover:scale-110 transition-transform relative z-10`}>
+        {icon}
       </div>
       <h3 className="text-lg font-black uppercase tracking-tight mb-2 text-white">{title}</h3>
       <p className="text-slate-500 text-xs leading-relaxed max-w-[200px] font-bold">{desc}</p>
