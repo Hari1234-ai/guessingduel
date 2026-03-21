@@ -76,15 +76,15 @@ export default function Game() {
   return (
     <main className="min-h-screen bg-slate-950 p-4 md:p-8 flex flex-col items-center">
       {/* Room Code Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
-          <Sparkles className="text-white" size={20} />
+      <div className="flex items-center gap-2 mb-6">
+        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
+          <Sparkles className="text-white" size={16} />
         </div>
-        <h1 className="text-2xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
+        <h1 className="text-xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
       </div>
 
-      <div className="mb-6 flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full text-sm">
-        <Hash size={14} className="text-slate-500" />
+      <div className="mb-4 flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-full text-xs">
+        <Hash size={12} className="text-slate-500" />
         <span className="text-slate-500 font-bold uppercase tracking-tighter mr-1">Room:</span>
         <span className="text-white font-black tracking-widest">{roomCode}</span>
       </div>
@@ -101,18 +101,18 @@ export default function Game() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 z-20 bg-slate-950/80 backdrop-blur-md rounded-[2.5rem] flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-slate-800"
+                className="absolute inset-0 z-20 bg-slate-950/80 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-800"
               >
-                <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-6">
-                  <Loader2 size={32} className="text-blue-500 animate-spin" />
+                <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
+                  <Loader2 size={24} className="text-blue-500 animate-spin" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">Waiting for Opponent</h3>
-                <p className="text-slate-400 max-w-xs">
-                  Your opponent is still setting up their secret number. Hang tight!
+                <h3 className="text-xl font-bold text-white mb-2">Waiting for Opponent</h3>
+                <p className="text-slate-400 text-sm max-w-[200px]">
+                  Your rival is still setting up.
                 </p>
-                <div className="mt-8 pt-8 border-t border-slate-800 w-full">
-                  <p className="text-xs text-slate-500 uppercase font-black tracking-widest mb-4">Duel Code</p>
-                  <div className="text-3xl font-black text-white tracking-widest">{roomCode}</div>
+                <div className="mt-6 pt-6 border-t border-slate-800 w-full">
+                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2">Duel Code</p>
+                  <div className="text-2xl font-black text-white tracking-widest">{roomCode}</div>
                 </div>
               </motion.div>
             )}
@@ -146,24 +146,24 @@ export default function Game() {
                   initial={{ opacity: 0, scale: 0.8, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 1.1 }}
-                  className={`text-5xl font-black mb-10 min-h-[60px] flex items-center justify-center ${
+                  className={`text-3xl font-black mb-8 min-h-[50px] flex items-center justify-center ${
                     lastFeedback.type === 'high' ? 'text-red-500' :
                     lastFeedback.type === 'low' ? 'text-blue-500' :
                     lastFeedback.type === 'correct' ? 'text-green-500' : 'text-slate-800'
                   }`}
                 >
-                  {lastFeedback.text || (isMyTurn ? "?" : <Loader2 className="animate-spin text-slate-800" size={40} />)}
+                  {lastFeedback.text || (isMyTurn ? "?" : <Loader2 className="animate-spin text-slate-800" size={30} />)}
                 </motion.div>
               </AnimatePresence>
 
-              <form onSubmit={handleGuess} className="w-full max-w-xs space-y-6">
+              <form onSubmit={handleGuess} className="w-full max-w-[200px] space-y-4">
                 <Input
                   label=""
                   type="number"
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
                   placeholder="00"
-                  className={`text-center text-5xl font-black h-24 rounded-3xl border-none shadow-inner transition-all ${
+                  className={`text-center text-3xl font-black h-16 rounded-2xl border-none shadow-inner transition-all ${
                     isMyTurn ? 'bg-slate-800/80' : 'bg-slate-900/30 text-slate-700'
                   }`}
                   disabled={!isMyTurn || status === 'finished' || !isOpponentReady}
@@ -171,14 +171,14 @@ export default function Game() {
                 
                 <Button 
                   type="submit" 
-                  size="lg" 
+                  size="md" 
                   fullWidth 
                   disabled={!guess || !isMyTurn || status === 'finished' || !isOpponentReady}
-                  className={`h-16 text-lg font-bold ${
+                  className={`h-11 text-sm font-bold ${
                     playerId === 'player1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-600 hover:bg-purple-700'
                   }`}
                 >
-                  <Send size={20} className="mr-2" />
+                  <Send size={16} className="mr-2" />
                   Launch Guess
                 </Button>
               </form>

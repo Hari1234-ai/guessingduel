@@ -161,18 +161,18 @@ function SetupContent() {
             </button>
           </div>
 
-          <div className="space-y-4">
-            <h1 className="text-4xl font-black tracking-tighter sm:text-6xl bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
+          <div className="space-y-4 text-center">
+            <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
               GET READY!
             </h1>
-            <p className="text-slate-400 text-lg">Choose your side to begin the duel.</p>
+            <p className="text-slate-400 text-sm">Choose your side to begin the duel.</p>
           </div>
-          <div className="grid gap-4 pt-8">
-            <Button onClick={() => setMode('host-setup')} size="lg" className="h-20 text-xl font-bold group">
+          <div className="grid gap-4 pt-6">
+            <Button onClick={() => setMode('host-setup')} size="md" className="h-14 text-lg font-bold group">
               <Users className="mr-3 group-hover:scale-110 transition-transform" />
               HOST A DUEL
             </Button>
-            <Button onClick={() => setMode('enter-code')} variant="secondary" size="lg" className="h-20 text-xl font-bold group">
+            <Button onClick={() => setMode('enter-code')} variant="secondary" size="md" className="h-14 text-lg font-bold group">
               <Hash className="mr-3 group-hover:scale-110 transition-transform" />
               JOIN A DUEL
             </Button>
@@ -193,9 +193,9 @@ function SetupContent() {
           <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
             <ChevronLeft size={18} /> Back
           </button>
-          <div className="text-center space-y-3">
-            <h2 className="text-3xl font-black">ENTER DUEL CODE</h2>
-            <p className="text-slate-400">Ask your friend for their unique 6-character code.</p>
+          <div className="text-center space-y-2">
+            <h2 className="text-xl font-black uppercase">ENTER DUEL CODE</h2>
+            <p className="text-slate-400 text-xs">Ask your friend for their unique 6-character code.</p>
           </div>
           <div className="space-y-4">
             <Input
@@ -205,10 +205,12 @@ function SetupContent() {
               placeholder="e.g. XJ7K2P"
               id="join-code"
               error={errors.join}
+              className="h-10 text-sm"
+              labelClassName="text-[10px]"
             />
-            <Button fullWidth size="lg" onClick={handleJoinJoin}>
+            <Button fullWidth size="md" onClick={handleJoinJoin} className="h-11">
               Find Duel
-              <ArrowRight className="ml-2" size={20} />
+              <ArrowRight className="ml-2" size={16} />
             </Button>
           </div>
         </motion.div>
@@ -224,27 +226,27 @@ function SetupContent() {
           <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
             <ChevronLeft size={18} /> Back
           </button>
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black tracking-tight">DUEL SETUP</h2>
-            <p className="text-slate-400">Configure your duel settings before inviting a rival.</p>
+          <div className="space-y-1">
+            <h2 className="text-xl font-black tracking-tight uppercase">DUEL SETUP</h2>
+            <p className="text-slate-400 text-xs text-center">Configure your duel settings before inviting a rival.</p>
           </div>
-          <form onSubmit={handleCreateRoom} className="space-y-8 bg-slate-900/30 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-sm shadow-2xl">
-            <section className="space-y-4">
-              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Maverick" id="name" />
+          <form onSubmit={handleCreateRoom} className="space-y-6 bg-slate-900/30 p-6 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl">
+            <section className="space-y-3">
+              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Maverick" id="name" className="h-10 text-sm" labelClassName="text-[10px]" />
               <div className="flex gap-4">
-                <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" />
-                <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} />
+                <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-10 text-sm" labelClassName="text-[10px]" />
+                <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-10 text-sm" labelClassName="text-[10px]" />
               </div>
             </section>
-            <section className="space-y-4">
-              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-sm">
-                <ShieldCheck size={18} /> Your Secret Number
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-[10px]">
+                <ShieldCheck size={14} /> Your Secret Number
               </div>
-              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" />
+              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" className="h-10 text-sm" labelClassName="text-[10px]" />
             </section>
-            <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
+            <Button type="submit" size="md" fullWidth className="h-12 text-sm font-bold">
               Create Duel
-              <ArrowRight className="ml-2" size={20} />
+              <ArrowRight className="ml-2" size={16} />
             </Button>
           </form>
         </div>
@@ -257,32 +259,32 @@ function SetupContent() {
     return (
       <main className="min-h-screen bg-[#050B18] text-white p-6">
         <div className="max-w-xl mx-auto space-y-8 pt-12">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black tracking-tight uppercase">JOIN THE DUEL</h2>
-            <p className="text-slate-400">A duel has been found! Prepare yourself.</p>
+          <div className="space-y-1">
+            <h2 className="text-xl font-black tracking-tight uppercase">JOIN THE DUEL</h2>
+            <p className="text-slate-400 text-xs">A duel has been found! Prepare yourself.</p>
           </div>
-          <form onSubmit={handleGuestReady} className="space-y-8 bg-slate-900/30 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-sm shadow-2xl">
-             <section className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-3xl flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Users className="text-blue-400" />
-                <span className="font-bold text-blue-400 tracking-wide">HOST RANGE</span>
+          <form onSubmit={handleGuestReady} className="space-y-6 bg-slate-900/30 p-6 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl">
+             <section className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="text-blue-400" size={18} />
+                <span className="font-bold text-blue-400 tracking-wide text-xs uppercase">Room Limits</span>
               </div>
-              <div className="text-xl font-black text-white px-4 py-1 bg-blue-500/20 rounded-full">
+              <div className="text-sm font-black text-white px-3 py-1 bg-blue-500/20 rounded-full">
                 {range.min} - {range.max}
               </div>
             </section>
-            <section className="space-y-4">
-              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Iceman" id="name" />
+            <section className="space-y-3">
+              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Iceman" id="name" className="h-10 text-sm" labelClassName="text-[10px]" />
             </section>
-            <section className="space-y-4">
-              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-sm">
-                <ShieldCheck size={18} /> Your Secret Number
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-[10px]">
+                <ShieldCheck size={14} /> Your Secret Number
               </div>
-              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" />
+              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" className="h-10 text-sm" labelClassName="text-[10px]" />
             </section>
-            <Button type="submit" size="lg" fullWidth className="h-16 text-lg">
+            <Button type="submit" size="md" fullWidth className="h-12 text-sm font-bold">
               Confirm & Ready
-              <ArrowRight className="ml-2" size={20} />
+              <ArrowRight className="ml-2" size={16} />
             </Button>
           </form>
         </div>

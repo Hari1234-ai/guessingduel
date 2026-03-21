@@ -132,7 +132,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <Mail className="absolute left-4 top-[3.2rem] translate-y-[-50%] text-slate-500 z-10" size={18} />
+            <Mail className="absolute left-3 top-[2.2rem] translate-y-[-50%] text-slate-500 z-10" size={14} />
             <Input
               label="Email Address"
               type="email"
@@ -140,12 +140,13 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="pl-12"
+              className="pl-10 h-10 text-sm"
+              labelClassName="text-[10px] mb-1"
             />
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-4 top-[3.2rem] translate-y-[-50%] text-slate-500 z-10" size={18} />
+            <Lock className="absolute left-3 top-[2.2rem] translate-y-[-50%] text-slate-500 z-10" size={14} />
             <Input
               label="Password"
               type="password"
@@ -153,14 +154,15 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="pl-12"
+              className="pl-10 h-10 text-sm"
+              labelClassName="text-[10px] mb-1"
             />
             {mode === 'login' && (
               <div className="flex justify-end mt-1">
                 <button
                   type="button"
                   onClick={handleResetPassword}
-                  className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                  className="text-[10px] text-blue-400 hover:text-blue-300 font-medium transition-colors"
                 >
                   Forgot Password?
                 </button>
@@ -188,26 +190,25 @@ export default function LoginPage() {
           <Button 
             type="submit" 
             fullWidth 
-            size="lg" 
             disabled={loading}
-            className="mt-6"
+            className="mt-6 h-10 text-sm"
           >
             {loading ? (
               'Processing...'
             ) : (
               <>
                 {mode === 'login' ? 'Sign In' : 'Sign Up'}
-                <ArrowRight className="ml-2" size={20} />
+                <ArrowRight className="ml-2" size={16} />
               </>
             )}
           </Button>
         </form>
 
-        <div className="relative my-8">
+        <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-800"></div>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
+          <div className="relative flex justify-center text-[10px] uppercase">
             <span className="bg-[#0a0f1e] px-4 text-slate-500 font-bold tracking-widest">Or continue with</span>
           </div>
         </div>
@@ -216,10 +217,9 @@ export default function LoginPage() {
           type="button"
           variant="secondary"
           fullWidth
-          size="lg"
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 shadow-lg"
+          className="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 shadow-lg h-10 text-sm"
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
             <path

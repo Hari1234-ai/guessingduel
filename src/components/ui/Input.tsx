@@ -7,12 +7,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   showPasswordToggle?: boolean;
+  labelClassName?: string;
 }
 
 const Input: React.FC<InputProps> = ({
   label,
   error,
   showPasswordToggle = false,
+  labelClassName = '',
   type = 'text',
   className = '',
   id,
@@ -24,8 +26,8 @@ const Input: React.FC<InputProps> = ({
   const inputType = isPassword && showPassword ? 'text' : type;
 
   return (
-    <div className="flex flex-col gap-1.5 w-full">
-      <label htmlFor={id} className="text-sm font-medium text-slate-300">
+    <div className="flex flex-col gap-1 w-full">
+      <label htmlFor={id} className={`text-sm font-medium text-slate-300 ${labelClassName}`}>
         {label}
       </label>
       <div className="relative">

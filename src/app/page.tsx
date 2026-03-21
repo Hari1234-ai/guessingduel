@@ -39,25 +39,25 @@ export default function Home() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="z-10 flex flex-col items-center text-center max-w-md w-full"
+        className="z-10 flex flex-col items-center text-center max-w-[20rem] w-full"
       >
         <motion.div 
           variants={itemVariants}
-          className="mb-8 p-4 bg-slate-900/50 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-sm"
+          className="mb-6 p-3 bg-slate-900/50 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-sm"
         >
-          <Swords className="w-16 h-16 text-blue-500 mb-2" />
+          <Swords className="w-12 h-12 text-blue-500 mb-2" />
         </motion.div>
         
         <motion.h1 
           variants={itemVariants}
-          className="text-6xl font-black tracking-tight text-white mb-4 bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-400"
+          className="text-4xl font-black tracking-tight text-white mb-3 bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-400"
         >
           Duel Guess
         </motion.h1>
         
         <motion.p 
           variants={itemVariants}
-          className="text-slate-400 text-lg mb-12 leading-relaxed"
+          className="text-slate-400 text-sm mb-8 leading-relaxed"
         >
           A high-stakes guessing game for two. <br />
           Outsmart your opponent to win the duel.
@@ -65,25 +65,26 @@ export default function Home() {
         
         <motion.div 
           variants={itemVariants}
-          className="flex flex-col gap-4 w-full"
+          className="flex flex-col gap-3 w-full"
         >
           <Button 
-            size="lg" 
+            size="md" 
             fullWidth 
             onClick={() => router.push('/setup')}
-            className="group"
+            className="group h-11 text-sm"
           >
-            <Play className="mr-2 group-hover:fill-current transition-all" size={20} />
+            <Play className="mr-2 group-hover:fill-current transition-all" size={16} />
             Start New Game
           </Button>
           
           <Button 
             variant="secondary" 
-            size="lg" 
+            size="md" 
             fullWidth 
             onClick={() => setIsHowToPlayOpen(true)}
+            className="h-11 text-sm"
           >
-            <HelpCircle className="mr-2" size={20} />
+            <HelpCircle className="mr-2" size={16} />
             How to Play
           </Button>
         </motion.div>
