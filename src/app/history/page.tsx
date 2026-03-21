@@ -115,11 +115,11 @@ export default function HistoryPage() {
         </header>
 
         <div className="mb-12">
-          <h1 className="text-4xl font-black tracking-tighter uppercase flex items-center gap-4">
-            <History size={32} className="text-blue-500" />
+          <h1 className="text-2xl font-black tracking-tighter uppercase flex items-center gap-4">
+            <History size={24} className="text-blue-500" />
             Duel History
           </h1>
-          <p className="text-slate-500 text-sm mt-2">Your legacy recorded in the halls of fate.</p>
+          <p className="text-slate-500 text-xs mt-2">Your legacy recorded in the halls of fate.</p>
         </div>
 
         {loading ? (
@@ -150,41 +150,41 @@ export default function HistoryPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
                   key={match.id}
-                  className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-6 hover:border-slate-700 transition-all group"
+                  className="bg-slate-900/40 border border-slate-800 p-4 md:p-6 rounded-3xl backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 hover:border-slate-700 transition-all group overflow-hidden"
                 >
-                  <div className="flex items-center gap-6 w-full md:w-auto">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 ${
+                  <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto min-w-0">
+                    <div className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 ${
                       match.result === 'win' ? 'bg-green-500/10 border-green-500/30 text-green-500' : 'bg-red-500/10 border-red-500/30 text-red-500'
                     }`}>
-                      {match.result === 'win' ? <Trophy size={28} /> : <Swords size={28} />}
+                      {match.result === 'win' ? <Trophy size={20} className="md:w-7 md:h-7" /> : <Swords size={20} className="md:w-7 md:h-7" />}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full ${
                           match.result === 'win' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
                         }`}>
                           {match.result.toUpperCase()}
                         </span>
-                        <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                          <Calendar size={10} /> {match.date}
+                        <span className="text-slate-500 text-[8px] font-bold uppercase tracking-widest flex items-center gap-1">
+                          <Calendar size={8} /> {match.date}
                         </span>
                       </div>
-                      <h3 className="text-lg font-black uppercase tracking-tight">vs {match.opponentName}</h3>
+                      <h3 className="text-sm md:text-lg font-black uppercase tracking-tight truncate">vs {match.opponentName}</h3>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-8 w-full md:w-auto justify-around opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-4 md:gap-8 w-full md:w-auto justify-around opacity-60 group-hover:opacity-100 transition-opacity pt-2 md:pt-0 border-t md:border-t-0 border-slate-800/50">
                     <div className="text-center">
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Guesses</p>
-                      <p className="font-black text-white">{match.totalGuesses}</p>
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Guesses</p>
+                      <p className="text-xs md:text-sm font-black text-white">{match.totalGuesses}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Your Num</p>
-                      <p className="font-black text-blue-400">{match.secretNumber}</p>
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Your Num</p>
+                      <p className="text-xs md:text-sm font-black text-blue-400">{match.secretNumber}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Rival Num</p>
-                      <p className="font-black text-purple-400">{match.opponentSecret}</p>
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Rival Num</p>
+                      <p className="text-xs md:text-sm font-black text-purple-400">{match.opponentSecret}</p>
                     </div>
                   </div>
                 </motion.div>

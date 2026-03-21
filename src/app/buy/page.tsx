@@ -27,7 +27,7 @@ export default function PlansPage() {
             Arena Upgrades
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none">
             Strategic <br />
             <span className="text-blue-500 text-shadow-glow">Plans.</span>
           </h1>
@@ -35,7 +35,7 @@ export default function PlansPage() {
           <div className="max-w-xl mx-auto p-12 rounded-[3rem] bg-slate-900/40 border border-slate-800 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600" />
             
-            <p className="text-slate-400 text-lg md:text-xl font-bold leading-relaxed">
+            <p className="text-slate-400 text-base md:text-lg font-bold leading-relaxed">
               &quot;We are curating the best plans for you coming soon.&quot;
             </p>
             

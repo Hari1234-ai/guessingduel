@@ -23,10 +23,10 @@ export default function ContactPage() {
 
       <nav className="relative z-50 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
-            <Swords size={20} className="text-white" />
+          <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+            <Swords size={16} className="text-white" />
           </div>
-          <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
+          <span className="text-base font-black italic tracking-tighter uppercase">Guessing Duel</span>
         </Link>
 
         {/* Middle Links */}
@@ -38,7 +38,7 @@ export default function ContactPage() {
 
         <div className="flex items-center gap-4">
           {user ? <AvatarDropdown /> : (
-            <Button size="md" onClick={() => router.push('/login')} className="h-10 px-6 font-bold">Play Now</Button>
+            <Button size="md" onClick={() => router.push('/login')} className="h-9 px-5 text-xs font-bold">Play Now</Button>
           )}
         </div>
       </nav>
@@ -50,11 +50,11 @@ export default function ContactPage() {
           className="text-center md:text-left space-y-12"
         >
           <div>
-            <h1 className="text-6xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85] mb-8">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-[0.85] mb-8">
               Send a <br />
               <span className="text-blue-500">Transmission.</span>
             </h1>
-            <p className="text-slate-400 text-lg leading-relaxed max-w-xl">
+            <p className="text-slate-400 text-base leading-relaxed max-w-xl">
               Connect with the creator or share your feedback directly. All signals are routed to the founder's secure line.
             </p>
           </div>
@@ -83,7 +83,7 @@ function ContactLink({ icon, title, value, href }: { icon: React.ReactNode, titl
       </div>
       <div>
         <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">{title}</p>
-        <p className="text-sm font-black text-slate-200 group-hover:text-blue-400 transition-colors">{value}</p>
+        <p className="text-xs font-black text-slate-200 group-hover:text-blue-400 transition-colors">{value}</p>
       </div>
     </div>
   );

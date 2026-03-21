@@ -71,7 +71,7 @@ export default function LeaderboardPage() {
           >
             <Trophy size={14} /> Global Rankings
           </motion.div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none mb-6">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none mb-6">
             Hall of <span className="text-blue-500">Legends.</span>
           </h1>
           <p className="text-slate-400 text-lg max-w-xl mx-auto">
@@ -116,7 +116,7 @@ export default function LeaderboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className={`flex items-center p-6 transition-colors hover:bg-slate-800/20 ${
+                  className={`flex items-center p-3.5 md:p-6 transition-colors hover:bg-slate-800/20 ${
                     user?.uid === entry.uid ? 'bg-blue-600/5' : ''
                   }`}
                 >
@@ -129,30 +129,30 @@ export default function LeaderboardPage() {
                   </div>
 
                   {/* Duelist */}
-                  <div className="flex items-center gap-4 flex-grow px-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg text-white font-black shadow-blue-900/20">
+                  <div className="flex items-center gap-2 md:gap-4 flex-grow px-2 md:px-4 min-w-0">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg text-white font-black shadow-blue-900/20 shrink-0">
                       {entry.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <h4 className="font-black text-white uppercase tracking-tight flex items-center gap-2">
+                    <div className="min-w-0">
+                      <h4 className="font-black text-white uppercase tracking-tight flex items-center gap-2 text-xs md:text-sm truncate">
                         {entry.name}
                         {user?.uid === entry.uid && (
-                          <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-[8px] text-blue-400 uppercase">You</span>
+                          <span className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-[7px] text-blue-400 uppercase shrink-0">You</span>
                         )}
                       </h4>
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Active Duelist</p>
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">Active Duelist</p>
                     </div>
                   </div>
 
                   {/* Score */}
                   <div className="text-right shrink-0">
-                    <div className="flex items-center justify-end gap-1.5 text-blue-400 mb-1">
-                      <Zap size={14} className="fill-blue-400/20" />
-                      <span className="text-xl font-black tracking-tighter">
+                    <div className="flex items-center justify-end gap-1 text-blue-400 mb-0.5">
+                      <Zap size={12} className="fill-blue-400/20 md:w-3.5 md:h-3.5" />
+                      <span className="text-base md:text-xl font-black tracking-tighter">
                         {view === 'weekly' ? entry.weeklyCoins : entry.coins}
                       </span>
                     </div>
-                    <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest">Signal Units</p>
+                    <p className="text-[7px] md:text-[9px] text-slate-600 font-bold uppercase tracking-widest">Signal Units</p>
                   </div>
                 </motion.div>
               )) : (

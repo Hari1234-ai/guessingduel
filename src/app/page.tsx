@@ -33,6 +33,23 @@ export default function LandingPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.03] pointer-events-none" 
              style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        
+        {/* Floating Background Assets */}
+        <FloatingElement className="top-[15%] left-[10%] text-blue-500" delay={0}>
+          <Swords size={40} />
+        </FloatingElement>
+        <FloatingElement className="top-[25%] right-[15%] text-purple-500" delay={2} duration={12}>
+          <Shield size={32} />
+        </FloatingElement>
+        <FloatingElement className="bottom-[30%] left-[15%] text-purple-500" delay={4} duration={15}>
+          <Zap size={24} />
+        </FloatingElement>
+        <FloatingElement className="bottom-[20%] right-[12%] text-blue-500" delay={1} duration={14}>
+          <Users size={36} />
+        </FloatingElement>
+        
+        <div className="absolute top-[40%] left-[20%] w-1 h-1 bg-white/20 rounded-full animate-ping" />
+        <div className="absolute top-[60%] right-[25%] w-1 h-1 bg-white/20 rounded-full animate-ping [animation-delay:1s]" />
       </div>
 
       <Navbar />
@@ -50,12 +67,12 @@ export default function LandingPage() {
             Season 1: The Awakening
           </motion.div>
 
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-[0.9]">
+          <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-[0.9]">
             Outsmart <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">Your Rivals.</span>
           </motion.h1>
 
-          <motion.p variants={itemVariants} className="text-slate-400 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+          <motion.p variants={itemVariants} className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
             Guessing Duel is the ultimate real-time testing of strategy and luck. 
             Challenge friends to a high-stakes duel where every guess count.
           </motion.p>
@@ -65,14 +82,14 @@ export default function LandingPage() {
               variant="secondary" 
               size="lg" 
               onClick={() => setIsHowToPlayOpen(true)}
-              className="h-14 px-10 text-lg font-black w-full sm:w-auto"
+              className="h-12 px-8 text-sm font-black w-full sm:w-auto"
             >
               View Rules
             </Button>
             <Button 
               size="lg" 
               onClick={() => router.push(user ? '/setup' : '/login')}
-              className="h-14 px-10 text-lg font-black group w-full sm:w-auto"
+              className="h-12 px-8 text-sm font-black group w-full sm:w-auto"
             >
               {user ? 'Play now' : 'Start for free'}
               <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -84,8 +101,8 @@ export default function LandingPage() {
       {/* How It Works Section */}
       <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase mb-4">How it works?</h2>
-          <p className="text-slate-500 text-sm md:text-base font-bold uppercase tracking-widest">Simple, strategic, and built for your success.</p>
+          <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-4">How it works?</h2>
+          <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">Simple, strategic, and built for your success.</p>
         </div>
 
         <div className="relative">
@@ -152,9 +169,9 @@ export default function LandingPage() {
           <div className="space-y-4 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2">
               <Swords size={20} className="text-blue-500" />
-              <span className="text-lg font-black tracking-tighter uppercase italic">Guessing Duel</span>
+              <span className="text-base font-black tracking-tighter uppercase italic">Guessing Duel</span>
             </div>
-            <p className="text-slate-500 text-sm max-w-xs">The strategic number guessing game for competitive spirits.</p>
+            <p className="text-slate-500 text-xs max-w-xs">The strategic number guessing game for competitive spirits.</p>
           </div>
 
           <div className="flex gap-12 text-sm font-bold uppercase tracking-widest">
@@ -201,8 +218,8 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
         {icon}
       </div>
-      <h3 className="text-xl font-black mb-3 uppercase tracking-tight">{title}</h3>
-      <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
+      <h3 className="text-lg font-black mb-3 uppercase tracking-tight">{title}</h3>
+      <p className="text-slate-500 text-xs leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -228,5 +245,26 @@ function StepItem({ icon, title, desc, border, glow }: { icon: React.ReactNode, 
       <h3 className="text-lg font-black uppercase tracking-tight mb-2 text-white">{title}</h3>
       <p className="text-slate-500 text-xs leading-relaxed max-w-[200px] font-bold">{desc}</p>
     </div>
+  );
+}
+
+function FloatingElement({ children, className, delay = 0, duration = 10 }: { children: React.ReactNode, className: string, delay?: number, duration?: number }) {
+  return (
+    <motion.div
+      initial={{ y: 0, rotate: 0 }}
+      animate={{ 
+        y: [0, -20, 0],
+        rotate: [0, 10, -10, 0],
+      }}
+      transition={{ 
+        duration,
+        repeat: Infinity,
+        delay,
+        ease: "easeInOut"
+      }}
+      className={`absolute pointer-events-none opacity-10 ${className}`}
+    >
+      {children}
+    </motion.div>
   );
 }
