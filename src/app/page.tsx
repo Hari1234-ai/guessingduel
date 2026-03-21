@@ -80,6 +80,50 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
       </section>
+      
+      {/* How It Works Section */}
+      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto">
+        <div className="text-center mb-20">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase mb-4">How it works?</h2>
+          <p className="text-slate-500 text-sm md:text-base font-bold uppercase tracking-widest">Simple, strategic, and built for your success.</p>
+        </div>
+
+        <div className="relative">
+          {/* Connecting Line (Desktop) */}
+          <div className="hidden md:block absolute top-10 left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-orange-500 via-blue-500 via-purple-500 to-green-500 opacity-30" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-4 relative z-10">
+            <StepItem 
+              number="1" 
+              title="Secure the Room" 
+              desc="Join or create a battle with a secret duel code." 
+              color="bg-orange-500" 
+              glow="shadow-orange-500/20"
+            />
+            <StepItem 
+              number="2" 
+              title="Calibrate Your Secret" 
+              desc="Choose a hidden number and shield your thoughts." 
+              color="bg-blue-500"
+              glow="shadow-blue-500/20"
+            />
+            <StepItem 
+              number="3" 
+              title="Analyze & Strike" 
+              desc="Decode your rival's number with High/Low insights." 
+              color="bg-purple-500"
+              glow="shadow-purple-500/20"
+            />
+            <StepItem 
+              number="4" 
+              title="Claim Victory" 
+              desc="Master the board and earn your gold credits." 
+              color="bg-green-500"
+              glow="shadow-green-500/20"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Features Grid */}
       <section className="relative z-10 py-12 px-6 max-w-7xl mx-auto">
@@ -171,6 +215,18 @@ function RuleItem({ number, title, desc }: { number: string, title: string, desc
         <h4 className="font-bold text-white mb-1">{title}</h4>
         <p className="text-xs text-slate-500">{desc}</p>
       </div>
+    </div>
+  );
+}
+
+function StepItem({ number, title, desc, color, glow }: { number: string, title: string, desc: string, color: string, glow: string }) {
+  return (
+    <div className="flex flex-col items-center text-center group">
+      <div className={`w-20 h-20 rounded-full ${color} flex items-center justify-center text-white text-2xl font-black mb-6 shadow-2xl ${glow} group-hover:scale-110 transition-transform relative z-10`}>
+        {number}
+      </div>
+      <h3 className="text-lg font-black uppercase tracking-tight mb-2 text-white">{title}</h3>
+      <p className="text-slate-500 text-xs leading-relaxed max-w-[200px] font-bold">{desc}</p>
     </div>
   );
 }
