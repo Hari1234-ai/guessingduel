@@ -188,7 +188,7 @@ export default function Game() {
                   {isMyTurn ? 'Your Action' : 'Opponent Action'}
                 </span>
                 <h2 className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                  {isMyTurn ? 'Enter Your Guess' : 'Opponent is thinking...'}
+                  {isMyTurn ? 'Enter Your Guess' : (player2.isAI ? 'AI is analyzing...' : 'Opponent is thinking...')}
                 </h2>
               </div>
               

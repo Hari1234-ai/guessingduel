@@ -8,6 +8,7 @@ export interface Player {
   secretNumber: number;
   attempts: number;
   history: { guess: number; feedback: Feedback }[];
+  isAI?: boolean;
 }
 
 export interface GameRange {

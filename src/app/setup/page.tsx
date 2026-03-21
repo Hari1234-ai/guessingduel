@@ -26,7 +26,7 @@ export default function Setup() {
 function SetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
+  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame, startWithAI } = useGame();
   const { user, profileData, logout } = useAuth();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
@@ -339,8 +339,23 @@ function SetupContent() {
               </button>
 
               {!isOpponentPresent && (
-                <div className="flex items-center justify-center gap-2 text-blue-400 font-bold animate-pulse text-sm">
-                  <Loader2 className="animate-spin" size={16} /> Waiting for opponent to join...
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center gap-2 text-blue-400 font-bold animate-pulse text-sm">
+                    <Loader2 className="animate-spin" size={16} /> Waiting for opponent to join...
+                  </div>
+                  
+                  <div className="pt-4 border-t border-white/5">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase mb-4">No one around? Duel the machine.</p>
+                    <Button 
+                      onClick={startWithAI}
+                      variant="secondary"
+                      size="sm"
+                      className="w-full bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10 text-blue-400 h-12 rounded-2xl"
+                    >
+                      <Sparkles size={16} className="mr-2" />
+                      DUEL WITH AI
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>

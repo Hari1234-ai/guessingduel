@@ -14,6 +14,7 @@ interface GameContextType {
   resetGame: () => void;
   startNewGame: () => void;
   startGame: () => void;
+  startWithAI: () => void;
 }
 
 const initialPlayer = (name: string = '', secretNumber: number = 0): Player => ({
@@ -75,6 +76,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ablyRef.current?.close();
     };
   }, []);
+
 
   const updateState = useCallback((updater: GameState | ((prev: GameState) => GameState)) => {
     setGameState(prev => {
@@ -320,6 +322,53 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return feedback;
   }, [updateState]);
 
+  // AI Logic: Automated turn when it's AI's turn
+  useEffect(() => {
+    const { status, currentTurn, player2, range } = gameState;
+    
+    if (status === 'playing' && currentTurn === 'player2' && player2.isAI) {
+      // AI "Thinking" delay
+      const timer = setTimeout(() => {
+        // AI Logic: Smart Binary Search based on its own history
+        let currentMin = range.min;
+        let currentMax = range.max;
+        
+        // Analyze history to narrow down his own bounds
+        player2.history.forEach(h => {
+          if (h.feedback === 'Too Low') {
+            currentMin = Math.max(currentMin, h.guess + 1);
+          } else if (h.feedback === 'Too High') {
+            currentMax = Math.min(currentMax, h.guess - 1);
+          }
+        });
+        
+        const guess = Math.floor((currentMin + currentMax) / 2);
+        makeGuess(guess);
+      }, 2000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [gameState.status, gameState.currentTurn, gameState.player2.isAI, gameState.range, makeGuess]);
+
+  const startWithAI = useCallback(() => {
+    const { range, player1 } = latestStateRef.current;
+    
+    // Generate AI's secret number
+    const aiSecret = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    
+    updateState(prev => ({
+      ...prev,
+      status: 'playing',
+      player2: {
+        ...initialPlayer('AI Strategist', aiSecret),
+        isAI: true,
+        uid: 'ai-bot'
+      },
+      isPlayer2Ready: true,
+      isOpponentPresent: true
+    }));
+  }, [updateState]);
+
   const startGame = useCallback(() => {
     if (latestStateRef.current.playerId === 'player1' && channelRef.current) {
       channelRef.current.publish('start-duel', {});
@@ -328,20 +377,28 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [updateState]);
 
   const resetGame = useCallback(() => {
-    const isHost = latestStateRef.current.playerId === 'player1';
+    const { playerId, player2, roomCode, player1, range } = latestStateRef.current;
+    const isHost = playerId === 'player1';
+    const isAI = player2.isAI;
     
     updateState(prev => ({
       ...initialState,
       roomCode: prev.roomCode,
       playerId: prev.playerId,
-      status: isHost ? 'lobby' : 'guest-setup', 
+      range: prev.range,
+      status: isAI ? 'playing' : (isHost ? 'lobby' : 'guest-setup'), 
       player1: { ...initialPlayer(prev.player1.name), attempts: 0, history: [] },
-      player2: { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
-      isPlayer1Ready: false,
-      isPlayer2Ready: false,
+      player2: isAI ? { 
+        ...initialPlayer('AI Strategist', Math.floor(Math.random() * (range.max - range.min + 1)) + range.min), 
+        isAI: true, 
+        uid: 'ai-bot' 
+      } : { ...initialPlayer(prev.player2.name), attempts: 0, history: [] },
+      isPlayer1Ready: isAI || prev.isPlayer1Ready,
+      isPlayer2Ready: isAI || prev.isPlayer2Ready,
+      isOpponentPresent: isAI || prev.isOpponentPresent,
     }));
 
-    if (channelRef.current) {
+    if (channelRef.current && !isAI) {
       channelRef.current.publish('rematch', {});
     }
   }, [updateState]);
@@ -364,7 +421,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       makeGuess, 
       resetGame,
       startNewGame,
-      startGame
+      startGame,
+      startWithAI
     }}>
       {children}
     </GameContext.Provider>
