@@ -71,13 +71,7 @@ export default function AvatarDropdown() {
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-white leading-tight uppercase italic">{profileData?.name || 'Player'}</h4>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] text-slate-500 font-bold tracking-widest">{profileData?.email || 'No Email'}</span>
-                    <div className="w-1 h-1 rounded-full bg-slate-800" />
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] font-black text-blue-400 uppercase italic">{profileData?.coins || 0} Coins</span>
-                    </div>
-                  </div>
+                  <p className="text-[10px] text-slate-500 font-bold tracking-widest">{profileData?.email || 'No Email'}</p>
                 </div>
               </div>
             </div>
