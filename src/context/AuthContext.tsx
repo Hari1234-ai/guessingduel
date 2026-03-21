@@ -71,9 +71,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!exists && pathname !== '/onboarding') {
           router.push('/onboarding');
         } else if (exists && pathname === '/onboarding') {
-          router.push('/dashboard');
+          router.push('/setup');
         } else if (pathname === '/login') {
-          router.push('/dashboard');
+          router.push('/setup');
         }
       } else {
         setHasProfile(false);

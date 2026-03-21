@@ -94,7 +94,7 @@ export default function LandingPage() {
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
-              onClick={() => router.push(user ? '/dashboard' : '/login')}
+              onClick={() => router.push(user ? '/setup' : '/login')}
               className="h-14 px-10 text-lg font-black group w-full sm:w-auto"
             >
               Start Dueling
