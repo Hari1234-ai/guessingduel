@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy } from 'lucide-react';
+import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
@@ -30,7 +30,18 @@ export default function AvatarDropdown() {
   const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative flex items-center gap-2" ref={dropdownRef}>
+      {/* Coin Balance Pill */}
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-slate-900/50 border border-slate-800 backdrop-blur-sm shadow-lg shadow-blue-900/5">
+        <div className="w-5 h-5 rounded-lg bg-blue-600/20 flex items-center justify-center">
+          <Zap size={10} className="text-blue-400 fill-blue-400/20" />
+        </div>
+        <span className="text-sm font-black text-white italic tracking-tighter">
+          {profileData?.coins || 0}
+        </span>
+        <span className="text-[8px] text-slate-600 font-bold uppercase tracking-widest hidden sm:inline">Coins</span>
+      </div>
+
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 p-1 pr-3 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all backdrop-blur-sm group"
@@ -39,12 +50,7 @@ export default function AvatarDropdown() {
           {firstLetter}
         </div>
         <div className="flex flex-col items-start mr-1">
-          <div className="flex items-center gap-1 mb-1">
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] leading-none">Duelist</span>
-            <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
-              <span className="text-[9px] font-black text-blue-400 leading-none">{profileData?.coins || 0}</span>
-            </div>
-          </div>
+          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] leading-none mb-1">Duelist</span>
           <span className="text-xs font-black text-white truncate max-w-[80px]">{profileData?.name || 'Player'}</span>
         </div>
         <ChevronDown size={14} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
