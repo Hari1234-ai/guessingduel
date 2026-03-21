@@ -118,13 +118,13 @@ export default function LoginPage() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800 p-8 rounded-3xl shadow-2xl relative z-10"
+        className="w-full max-w-[22rem] bg-slate-900/50 backdrop-blur-xl border border-slate-800 p-6 rounded-[1.5rem] shadow-2xl relative z-10"
       >
 
-        <h1 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+        <h1 className="text-xl font-bold text-center mb-1 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
           {mode === 'login' ? 'Welcome Back' : 'Create Account'}
         </h1>
-        <p className="text-slate-400 text-center mb-8">
+        <p className="text-slate-400 text-center mb-6 text-xs">
           {mode === 'login' 
             ? 'Login to challenge your rivals' 
             : 'Join the duel and start winning'}
