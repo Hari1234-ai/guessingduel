@@ -110,11 +110,16 @@ export default function Game() {
         }
       };
       saveMatch();
-      
-      const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
-      setTimeout(() => setVictoryQuote(randomQuote), 0);
     }
-  }, [status, winner, user, roomCode, player1, player2, VICTORY_QUOTES, playerId, refreshProfile]);
+  }, [status, winner, user, roomCode, player1, player2, playerId, refreshProfile]);
+
+  // Set victory quote once when game finishes
+  useEffect(() => {
+    if (status === 'finished' && winner) {
+      const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
+      setVictoryQuote(randomQuote);
+    }
+  }, [status, winner, VICTORY_QUOTES]);
 
   if (status === 'setup' && !roomCode) return null;
 
