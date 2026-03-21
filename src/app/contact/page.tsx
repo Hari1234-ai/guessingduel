@@ -22,12 +22,15 @@ export default function ContactPage() {
       </div>
 
       <nav className="relative z-50 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
-            <Swords size={18} className="text-white" />
-          </div>
           <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
         </Link>
+
+        {/* Middle Links */}
+        <div className="hidden md:flex items-center gap-12">
+          <Link href="/buy" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Buy</Link>
+          <Link href="/contact" className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400 transition-all italic underline-offset-8 underline">Contact Us</Link>
+        </div>
+
         <div className="flex items-center gap-4">
           {user ? <AvatarDropdown /> : (
             <Button size="md" onClick={() => router.push('/login')} className="h-10 px-6 font-bold">Play Now</Button>

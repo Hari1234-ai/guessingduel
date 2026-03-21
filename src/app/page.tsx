@@ -154,6 +154,7 @@ export default function LandingPage() {
               <span className="text-slate-600 text-[10px] mb-2">Legal</span>
               <Link href="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy</Link>
               <Link href="/terms" className="text-slate-400 hover:text-white transition-colors">Terms</Link>
+              <Link href="/contact" className="text-slate-400 hover:text-white transition-colors">Contact Us</Link>
             </div>
             <div className="flex flex-col gap-4 items-center md:items-start">
               <span className="text-slate-600 text-[10px] mb-2">Connect</span>
