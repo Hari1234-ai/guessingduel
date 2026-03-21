@@ -46,15 +46,36 @@ export default function HistoryPage() {
         
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          const isWinner = data.winner === user.uid;
-          const opponent = data.players.find((p: any) => p.uid !== user.uid);
-          const myData = data.players.find((p: any) => p.uid === user.uid);
+          const players = data.players || [];
+          const myData = players.find((p: any) => p.uid === user.uid);
+          const opponent = players.find((p: any) => p.uid !== user.uid);
+          
+          // Determine winner (handles both UID and 'player1'/'player2' labels)
+          let isWinner = false;
+          if (data.winner === user.uid) {
+            isWinner = true;
+          } else if (data.winner === 'player1' && players[0]?.uid === user.uid) {
+            isWinner = true;
+          } else if (data.winner === 'player2' && players[1]?.uid === user.uid) {
+            isWinner = true;
+          }
+
+          // Handle Firestore Timestamp
+          const timestamp = data.createdAt;
+          let dateStr = 'Invalid Date';
+          if (timestamp && typeof timestamp.toDate === 'function') {
+            const d = timestamp.toDate();
+            dateStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+          } else if (timestamp && timestamp.seconds) { // Fallback for plain objects
+            const d = new Date(timestamp.seconds * 1000);
+            dateStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+          }
 
           fetchedMatches.push({
             id: doc.id,
             opponentName: opponent?.name || 'Unknown Rival',
             result: isWinner ? 'win' : 'loss',
-            date: new Date(data.createdAt).toLocaleDateString(),
+            date: dateStr,
             secretNumber: myData?.secretNumber || 0,
             opponentSecret: opponent?.secretNumber || 0,
             totalGuesses: myData?.guesses?.length || 0
