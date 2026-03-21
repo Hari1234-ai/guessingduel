@@ -94,7 +94,7 @@ export default function HistoryPage() {
   }, [user]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-6 relative overflow-hidden">
+    <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-1/4 -right-24 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 -left-24 w-96 h-96 bg-purple-600/5 rounded-full blur-[120px]" />
