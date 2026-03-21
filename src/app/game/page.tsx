@@ -18,8 +18,8 @@ export default function Game() {
 
   const [guess, setGuess] = useState('');
   const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
-  const [guess, setGuess] = useState('');
-  const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
+  const [isRestartModalOpen, setIsRestartModalOpen] = useState(false);
+  const [isGiveUpModalOpen, setIsGiveUpModalOpen] = useState(false);
 
   // Redirect if no setup or room
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function Game() {
     }
   };
 
-  const VICTORY_QUOTES = [
+  const VICTORY_QUOTES = React.useMemo(() => [
     "The mind is sharper than any blade.",
     "A tactical masterclass in deduction!",
     "Prediction level: Legendary.",
@@ -60,10 +60,11 @@ export default function Game() {
     "Calculated, precise, and absolutely dominant.",
     "The numbers have spoken, and you are the champion!",
     "A game of wits well won."
-  ];
+  ], []);
 
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
+  useEffect(() => {
     if (status === 'finished') {
       const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
       setTimeout(() => setVictoryQuote(randomQuote), 0);
@@ -256,8 +257,27 @@ export default function Game() {
         </div>
       </Modal>
 
-      {/* Confirmation Modals remain similar but updated with forfeit terminology */}
-      {/* ... */}
+      {/* Restart Confirmation Modal */}
+      <Modal isOpen={isRestartModalOpen} onClose={() => setIsRestartModalOpen(false)} title="Restart Game?">
+        <div className="p-4 text-center">
+          <p className="text-slate-400 mb-8 text-lg">This will reset progress for all players. Are you sure?</p>
+          <div className="flex gap-4">
+            <Button variant="secondary" fullWidth onClick={() => setIsRestartModalOpen(false)}>Cancel</Button>
+            <Button fullWidth onClick={() => { resetGame(); setIsRestartModalOpen(false); }} className="bg-red-600 hover:bg-red-700">Yes, Restart</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Give Up Confirmation Modal */}
+      <Modal isOpen={isGiveUpModalOpen} onClose={() => setIsGiveUpModalOpen(false)} title="Forfeit Match?">
+        <div className="p-4 text-center">
+          <p className="text-slate-400 mb-8 text-lg">Are you sure you want to forfeit this duel? Your rival will win immediately.</p>
+          <div className="flex gap-4">
+            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)}>Stay in Duel</Button>
+            <Button fullWidth onClick={() => { setIsGiveUpModalOpen(false); startNewGame(); }} className="bg-red-600 hover:bg-red-700">Forfeit Match</Button>
+          </div>
+        </div>
+      </Modal>
     </main>
   );
 }
