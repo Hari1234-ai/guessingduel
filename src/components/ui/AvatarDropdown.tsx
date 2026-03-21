@@ -2,11 +2,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap, RefreshCcw } from 'lucide-react';
+import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap, RefreshCcw, Trash2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, deleteDoc, orderBy } from 'firebase/firestore';
 
 export default function AvatarDropdown() {
   const { user, profileData, logout } = useAuth();
@@ -25,6 +25,42 @@ export default function AvatarDropdown() {
       window.location.reload(); 
     } catch (error) {
       console.error('Reset error:', error);
+    }
+  };
+
+  const cleanupDuplicateMatches = async () => {
+    if (!user || !db) return;
+    try {
+      const q = query(
+        collection(db, 'matches'), 
+        where('participants', 'array-contains', user.uid),
+        orderBy('createdAt', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      const seenRooms = new Set();
+      const docsToDelete: string[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const roomKey = `${data.roomCode}_${data.player1?.uid}_${data.player2?.uid}`;
+        if (seenRooms.has(roomKey)) {
+          docsToDelete.push(doc.id);
+        } else {
+          seenRooms.add(roomKey);
+        }
+      });
+      
+      console.log(`Found ${docsToDelete.length} duplicates to delete.`);
+      
+      for (const docId of docsToDelete) {
+        await deleteDoc(doc(db, 'matches', docId));
+      }
+      
+      alert(`Cleaned up ${docsToDelete.length} duplicate records!`);
+      window.location.reload();
+    } catch (error) {
+      console.error('Cleanup error:', error);
     }
   };
 
@@ -114,6 +150,14 @@ export default function AvatarDropdown() {
               >
                 <RefreshCcw size={14} className="text-blue-400/50 group-hover:text-blue-400 transition-colors" />
                 Reset Coins (Debug)
+              </button>
+
+              <button 
+                onClick={cleanupDuplicateMatches}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 transition-all font-bold text-xs group"
+              >
+                <Trash2 size={14} className="text-orange-400/50 group-hover:text-orange-400 transition-colors" />
+                Cleanup Duplicates
               </button>
 
               <div className="h-px bg-slate-800 my-2 mx-2" />
