@@ -43,7 +43,7 @@ export default function LandingPage() {
           </div>
           <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
         </div>
-        <div className="flex items-center gap-4 pr-32">
+        <div className="flex items-center gap-4">
           <Button 
             variant="secondary" 
             size="md" 
@@ -53,9 +53,7 @@ export default function LandingPage() {
             How it works
           </Button>
           {user ? (
-            <div className="fixed top-6 right-6 z-50">
-              <AvatarDropdown />
-            </div>
+            <AvatarDropdown />
           ) : (
             <Button 
               size="md" 
