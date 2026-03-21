@@ -68,7 +68,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ably.connection.on('failed', () => setConnectionStatus('failed'));
       ably.connection.on('disconnected', () => setConnectionStatus('disconnected'));
     } else {
-      setConnectionStatus('failed');
+      setTimeout(() => setConnectionStatus('failed'), 0);
     }
 
     return () => {

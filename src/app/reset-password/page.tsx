@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { Lock, ShieldCheck, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 function ResetPasswordForm() {
   const [newPassword, setNewPassword] = useState('');

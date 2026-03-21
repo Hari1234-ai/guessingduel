@@ -125,13 +125,17 @@ export default function Home() {
         </div>
       </Modal>
 
-      <footer className="absolute bottom-8 flex flex-col items-center gap-4">
+      {/* Top Navigation / Auth */}
+      <div className="absolute top-6 right-6 z-20">
         <button 
           onClick={logout} 
-          className="text-red-500/60 hover:text-red-500 transition-colors flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest"
+          className="bg-slate-900/50 hover:bg-red-500/10 text-slate-400 hover:text-red-400 px-4 py-2 rounded-xl border border-slate-800 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest backdrop-blur-sm"
         >
           <LogOut size={14} /> Sign Out
         </button>
+      </div>
+
+      <footer className="absolute bottom-8 flex flex-col items-center gap-4">
         <span className="text-slate-600 text-sm font-medium">Built with Next.js & Framer Motion</span>
       </footer>
     </main>

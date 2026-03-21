@@ -1,0 +1,90 @@
+
+> guessingduel@0.1.0 lint
+> eslint
+
+
+/Users/aravindhari/Downloads/guessingduel/src/app/game/page.tsx
+   6:43  warning  'AlertCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  21:10  warning  'isRestartModalOpen' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  22:10  warning  'isGiveUpModalOpen' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  70:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aravindhari/Downloads/guessingduel/src/app/game/page.tsx:70:7
+  68 |     if (status === 'finished') {
+  69 |       const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
+> 70 |       setVictoryQuote(randomQuote);
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  71 |     }
+  72 |   }, [status]);
+  73 |  react-hooks/set-state-in-effect
+  72:6   warning  React Hook useEffect has a missing dependency: 'VICTORY_QUOTES'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+
+/Users/aravindhari/Downloads/guessingduel/src/app/reset-password/page.tsx
+  14:18  warning  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aravindhari/Downloads/guessingduel/src/app/setup/page.tsx
+   5:18  warning  'AnimatePresence' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   6:74  warning  'Info' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  52:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aravindhari/Downloads/guessingduel/src/app/setup/page.tsx:52:7
+  50 |       // Use email prefix as default name if none exists (everything before @)
+  51 |       const namePrefix = user.email.split('@')[0];
+> 52 |       setForm(prev => ({ ...prev, name: namePrefix }));
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  53 |     }
+  54 |   }, [user]);
+  55 |                     react-hooks/set-state-in-effect
+  54:6   warning  React Hook useEffect has a missing dependency: 'form.name'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  68:37  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aravindhari/Downloads/guessingduel/src/app/setup/page.tsx:68:37
+  66 |   useEffect(() => {
+  67 |     if (playerId === 'player2') {
+> 68 |       if (status === 'guest-setup') setMode('guest-setup');
+     |                                     ^^^^^^^ Avoid calling setState() directly within an effect
+  69 |       if (status === 'lobby') setMode('lobby');
+  70 |     }
+  71 |   }, [status, playerId]);  react-hooks/set-state-in-effect
+
+/Users/aravindhari/Downloads/guessingduel/src/components/game/GuessHistory.tsx
+  15:9  warning  'playerName' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aravindhari/Downloads/guessingduel/src/context/GameContext.tsx
+  71:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aravindhari/Downloads/guessingduel/src/context/GameContext.tsx:71:7
+  69 |       ably.connection.on('disconnected', () => setConnectionStatus('disconnected'));
+  70 |     } else {
+> 71 |       setConnectionStatus('failed');
+     |       ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  72 |     }
+  73 |
+  74 |     return () => {  react-hooks/set-state-in-effect
+
+✖ 13 problems (4 errors, 9 warnings)
+

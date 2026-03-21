@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Info, Loader2, Sparkles, Link as LinkIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -47,9 +47,8 @@ function SetupContent() {
   // Pre-fill name from auth
   useEffect(() => {
     if (user?.email && !form.name) {
-      // Use email prefix as default name if none exists (everything before @)
       const namePrefix = user.email.split('@')[0];
-      setForm(prev => ({ ...prev, name: namePrefix }));
+      setTimeout(() => setForm(prev => ({ ...prev, name: namePrefix })), 0);
     }
   }, [user]);
 
@@ -65,8 +64,8 @@ function SetupContent() {
   // Sync mode with game status for guest
   useEffect(() => {
     if (playerId === 'player2') {
-      if (status === 'guest-setup') setMode('guest-setup');
-      if (status === 'lobby') setMode('lobby');
+      if (status === 'guest-setup') setTimeout(() => setMode('guest-setup'), 0);
+      if (status === 'lobby') setTimeout(() => setMode('lobby'), 0);
     }
   }, [status, playerId]);
 
@@ -152,6 +151,16 @@ function SetupContent() {
       <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20" />
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
+          {/* Top Auth Button */}
+          <div className="absolute -top-32 right-0">
+            <button 
+              onClick={logout} 
+              className="bg-slate-900/50 hover:bg-red-500/10 text-slate-400 hover:text-red-400 px-4 py-2 rounded-xl border border-slate-800 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest backdrop-blur-sm"
+            >
+              <LogOut size={16} /> Sign Out
+            </button>
+          </div>
+
           <div className="space-y-4">
             <h1 className="text-4xl font-black tracking-tighter sm:text-6xl bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
               GET READY!
@@ -171,15 +180,6 @@ function SetupContent() {
           <button onClick={() => router.push('/')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
             <ChevronLeft size={18} /> Cancel and Return
           </button>
-          
-          <div className="pt-4 border-t border-white/5">
-            <button 
-              onClick={logout} 
-              className="text-red-500/60 hover:text-red-500 transition-colors flex items-center justify-center gap-2 mx-auto text-sm font-bold uppercase tracking-widest"
-            >
-              <LogOut size={16} /> Sign Out
-            </button>
-          </div>
         </motion.div>
       </main>
     );

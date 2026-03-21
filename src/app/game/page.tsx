@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, RotateCcw, LogOut, Trophy, AlertCircle, Sparkles, Loader2, Hash } from 'lucide-react';
+import { Send, RotateCcw, LogOut, Trophy, Sparkles, Loader2, Hash } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -18,8 +18,8 @@ export default function Game() {
 
   const [guess, setGuess] = useState('');
   const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
-  const [isRestartModalOpen, setIsRestartModalOpen] = useState(false);
-  const [isGiveUpModalOpen, setIsGiveUpModalOpen] = useState(false);
+  const [guess, setGuess] = useState('');
+  const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
 
   // Redirect if no setup or room
   useEffect(() => {
@@ -64,12 +64,11 @@ export default function Game() {
 
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
-  useEffect(() => {
     if (status === 'finished') {
       const randomQuote = VICTORY_QUOTES[Math.floor(Math.random() * VICTORY_QUOTES.length)];
-      setVictoryQuote(randomQuote);
+      setTimeout(() => setVictoryQuote(randomQuote), 0);
     }
-  }, [status]);
+  }, [status, VICTORY_QUOTES]);
 
   if (status === 'setup' && !roomCode) return null;
 
