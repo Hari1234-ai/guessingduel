@@ -22,6 +22,10 @@ export default function ContactPage() {
       </div>
 
       <nav className="relative z-50 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/40">
+            <Swords size={18} className="text-white" />
+          </div>
           <span className="text-xl font-black italic tracking-tighter uppercase">Guessing Duel</span>
         </Link>
 
