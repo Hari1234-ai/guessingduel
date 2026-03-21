@@ -45,8 +45,9 @@ export default function LandingPage() {
         </div>
 
         {/* Middle Links */}
-        <div className="hidden md:flex items-center gap-12">
+        <div className="hidden md:flex items-center gap-8 lg:gap-12">
           <Link href="/buy" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Buy</Link>
+          <Link href="/leaderboard" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Leaderboard</Link>
           <Link href="/contact" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-400 transition-all italic underline-offset-8 hover:underline">Contact Us</Link>
         </div>
 
