@@ -78,8 +78,8 @@ export default function Game() {
             winner,
             participants: [player1.uid, player2.uid],
             players: [
-              { uid: player1.uid, name: player1.name, secretNumber: player1.secretNumber, guesses: player1.guesses },
-              { uid: player2.uid, name: player2.name, secretNumber: player2.secretNumber, guesses: player2.guesses }
+              { uid: player1.uid || '', name: player1.name, secretNumber: player1.secretNumber, guesses: player1.history },
+              { uid: player2.uid || '', name: player2.name, secretNumber: player2.secretNumber, guesses: player2.history }
             ],
             createdAt: serverTimestamp()
           });

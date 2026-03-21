@@ -3,6 +3,7 @@ export type GameStatus = 'setup' | 'lobby' | 'guest-setup' | 'playing' | 'finish
 export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | null;
 
 export interface Player {
+  uid?: string;
   name: string;
   secretNumber: number;
   attempts: number;
