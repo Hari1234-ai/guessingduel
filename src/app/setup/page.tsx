@@ -27,7 +27,7 @@ function SetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame } = useGame();
-  const { user, logout } = useAuth();
+  const { user, profileData, logout } = useAuth();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
   // New multi-step state management
@@ -37,7 +37,6 @@ function SetupContent() {
   const [linkCopied, setLinkCopied] = useState(false);
   
   const [form, setForm] = useState({
-    name: '',
     min: 1,
     max: 100,
     secret: '',
@@ -46,12 +45,6 @@ function SetupContent() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Pre-fill name from auth
-  useEffect(() => {
-    if (user?.email && !form.name) {
-      const namePrefix = user.email.split('@')[0];
-      setTimeout(() => setForm(prev => ({ ...prev, name: namePrefix })), 0);
-    }
-  }, [user]);
 
   // Auto-join if room code in URL
   useEffect(() => {
@@ -79,8 +72,8 @@ function SetupContent() {
 
   const handleCreateRoom = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      createRoom(form.name, parseInt(form.secret), form.min, form.max);
+    if (validate() && profileData?.name) {
+      createRoom(profileData.name, parseInt(form.secret), form.min, form.max);
       setMode('lobby');
     }
   };
@@ -95,8 +88,8 @@ function SetupContent() {
 
   const handleGuestReady = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      completeGuestSetup(form.name, parseInt(form.secret));
+    if (validate() && profileData?.name) {
+      completeGuestSetup(profileData.name, parseInt(form.secret));
       setMode('lobby');
     }
   };
@@ -228,7 +221,6 @@ function SetupContent() {
           </div>
           <form onSubmit={handleCreateRoom} className="space-y-6 bg-slate-900/30 p-6 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl">
             <section className="space-y-3">
-              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Maverick" id="name" className="h-10 text-sm" labelClassName="text-[10px]" />
               <div className="flex gap-4">
                 <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-10 text-sm" labelClassName="text-[10px]" />
                 <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-10 text-sm" labelClassName="text-[10px]" />
@@ -268,9 +260,6 @@ function SetupContent() {
               <div className="text-sm font-black text-white px-3 py-1 bg-blue-500/20 rounded-full">
                 {range.min} - {range.max}
               </div>
-            </section>
-            <section className="space-y-3">
-              <Input label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Iceman" id="name" className="h-10 text-sm" labelClassName="text-[10px]" />
             </section>
             <section className="space-y-3">
               <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-[10px]">
