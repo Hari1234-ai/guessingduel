@@ -325,9 +325,6 @@ export default function Game() {
           </div>
 
           <div className="flex flex-col gap-3 w-full">
-            <Button size="md" fullWidth onClick={resetGame} className="h-12 text-sm">
-              <Sparkles size={16} className="mr-2" /> Rematch
-            </Button>
             <Button variant="secondary" size="md" fullWidth onClick={startNewGame} className="h-12 text-sm text-slate-400">
               Main Menu
             </Button>
