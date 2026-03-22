@@ -161,8 +161,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...prev.player2, 
               name: payload.name.includes('...') && prev.isPlayer2Ready ? prev.player2.name : payload.name, 
               uid: payload.uid || prev.player2.uid,
-              // Only update secret if it's non-zero or we weren't ready yet
-              secretNumber: (payload.secret !== 0 || !prev.isPlayer2Ready) ? payload.secret : prev.player2.secretNumber 
+              // Only update secret if it's non-zero AND we are not player2 ourselves
+              secretNumber: (prev.playerId !== 'player2' && (payload.secret !== 0 || !prev.isPlayer2Ready)) ? payload.secret : prev.player2.secretNumber 
             },
             isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
           }));
@@ -175,9 +175,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateState(prev => ({ 
           ...prev, 
           status: 'playing',
-          // Merge state if provided
-          player1: payload.player1 || prev.player1,
-          player2: payload.player2 || prev.player2,
+          // Merge state cautiously: Never overwrite our own player object
+          player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
+          player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
           range: payload.range || prev.range
         }));
       });
@@ -250,8 +250,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...prev.player1, 
               name: payload.name, 
               uid: payload.uid || prev.player1.uid, 
-              // Only update secret if it's non-zero
-              secretNumber: (payload.secret !== 0 || !prev.isPlayer1Ready) ? payload.secret : prev.player1.secretNumber 
+              // Only update secret if we are NOT player1 ourselves
+              secretNumber: (prev.playerId !== 'player1' && (payload.secret !== 0 || !prev.isPlayer1Ready)) ? payload.secret : prev.player1.secretNumber 
             },
             range: payload.range || prev.range,
             isPlayer1Ready: payload.isReady || prev.isPlayer1Ready,
@@ -264,8 +264,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateState(prev => ({ 
           ...prev, 
           status: 'playing',
-          player1: payload.player1 || prev.player1,
-          player2: payload.player2 || prev.player2,
+          player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
+          player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
           range: payload.range || prev.range
         }));
       });
