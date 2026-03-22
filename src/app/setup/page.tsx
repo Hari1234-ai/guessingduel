@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon } from 'lucide-react';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Swords } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
+import Link from 'next/link';
 import { LogOut } from 'lucide-react';
 
 export default function Setup() {
@@ -146,12 +147,26 @@ function SetupContent() {
     return (
       <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20" />
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
+        
+        {/* Header: Logo and Avatar */}
+        <div className="fixed top-6 left-6 right-6 z-50 flex items-center justify-between pointer-events-none">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group pointer-events-auto">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
+              <Swords size={20} className="text-white" />
+            </div>
+            <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
+              Guessing Duel
+            </span>
+          </Link>
+          
           {/* Avatar / Auth */}
-          <div className="fixed top-6 right-6 z-50">
+          <div className="pointer-events-auto">
             <AvatarDropdown />
           </div>
+        </div>
 
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
           <div className="space-y-4 text-center">
             <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
               GET READY!
