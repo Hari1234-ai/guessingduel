@@ -10,6 +10,7 @@ import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import Link from 'next/link';
+import Navbar from '@/components/ui/Navbar';
 import { LogOut } from 'lucide-react';
 
 export default function Setup() {
@@ -142,32 +143,16 @@ function SetupContent() {
     visible: { opacity: 1, y: 0 },
   };
 
-  // 1. SELECTION VIEW
   if (mode === 'selection') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20" />
+      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20 pointer-events-none" />
         
-        {/* Header: Logo and Avatar */}
-        <div className="fixed top-6 left-6 right-6 z-50 flex items-center justify-between pointer-events-none">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group pointer-events-auto">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
-              <Swords size={20} className="text-white" />
-            </div>
-            <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
-              Guessing Duel
-            </span>
-          </Link>
-          
-          {/* Avatar / Auth */}
-          <div className="pointer-events-auto">
-            <AvatarDropdown />
-          </div>
-        </div>
+        <Navbar />
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
-          <div className="space-y-4 text-center">
+        <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
+            <div className="space-y-4 text-center">
             <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
               GET READY!
             </h1>
@@ -187,39 +172,43 @@ function SetupContent() {
             <ChevronLeft size={18} /> Cancel and Return
           </button>
         </motion.div>
-      </main>
+      </div>
+    </main>
     );
   }
 
-  // 2. JOIN CODE VIEW
   if (mode === 'enter-code') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white p-6 flex flex-col items-center justify-center">
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8">
-          <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
-            <ChevronLeft size={18} /> Back
-          </button>
-          <div className="text-center space-y-2">
-            <h2 className="text-xl font-black uppercase">ENTER DUEL CODE</h2>
-            <p className="text-slate-400 text-xs">Ask your friend for their unique 6-character code.</p>
-          </div>
-          <div className="space-y-4">
-            <Input
-              label="Secret Code"
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-              placeholder="e.g. XJ7K2P"
-              id="join-code"
-              error={errors.join}
-              className="h-10 text-sm"
-              labelClassName="text-[10px]"
-            />
-            <Button fullWidth size="md" onClick={handleJoinJoin} className="h-11">
-              Find Duel
-              <ArrowRight className="ml-2" size={16} />
-            </Button>
-          </div>
-        </motion.div>
+      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
+            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2 mb-4 group">
+              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back
+            </button>
+            <div className="text-center space-y-2">
+              <h2 className="text-xl font-black uppercase italic tracking-tight">ENTER DUEL CODE</h2>
+              <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest leading-relaxed">Ask your friend for their unique 6-character code.</p>
+            </div>
+            <div className="space-y-4">
+              <Input
+                label="Secret Code"
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                placeholder="e.g. XJ7K2P"
+                id="join-code"
+                error={errors.join}
+                className="h-12 text-base font-mono tracking-widest text-center"
+                labelClassName="text-[10px]"
+              />
+              <Button fullWidth size="md" onClick={handleJoinJoin} className="h-14 font-black">
+                Find Duel
+                <ArrowRight className="ml-2" size={18} />
+              </Button>
+            </div>
+          </motion.div>
+        </div>
       </main>
     );
   }
@@ -227,33 +216,38 @@ function SetupContent() {
   // 3. HOST SETUP VIEW
   if (mode === 'host-setup') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white p-6">
-        <div className="max-w-xl mx-auto space-y-8 pt-12">
-          <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
-            <ChevronLeft size={18} /> Back
-          </button>
-          <div className="space-y-1">
-            <h2 className="text-xl font-black tracking-tight uppercase">DUEL SETUP</h2>
-            <p className="text-slate-400 text-xs text-center">Configure your duel settings before inviting a rival.</p>
+      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+        <Navbar />
+        <div className="flex-1 p-6 pb-20 overflow-y-auto">
+          <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12">
+            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2 group">
+              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back
+            </button>
+            <div className="space-y-2 text-center md:text-left">
+              <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">DUEL SETUP</h2>
+              <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your duel settings before inviting a rival.</p>
+            </div>
+            <form onSubmit={handleCreateRoom} className="space-y-8 bg-slate-900/40 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+              <section className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-12 text-base font-bold" labelClassName="text-[10px]" />
+                  <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-12 text-base font-bold" labelClassName="text-[10px]" />
+                </div>
+              </section>
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-green-400 font-black uppercase tracking-[0.2em] text-[10px]">
+                  <ShieldCheck size={14} className="fill-green-400/10" /> Your Secret Number
+                </div>
+                <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
+              </section>
+              <Button type="submit" size="lg" fullWidth className="h-16 text-base font-black uppercase tracking-widest">
+                Create Duel
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            </form>
           </div>
-          <form onSubmit={handleCreateRoom} className="space-y-6 bg-slate-900/30 p-6 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl">
-            <section className="space-y-3">
-              <div className="flex gap-4">
-                <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-10 text-sm" labelClassName="text-[10px]" />
-                <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-10 text-sm" labelClassName="text-[10px]" />
-              </div>
-            </section>
-            <section className="space-y-3">
-              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-[10px]">
-                <ShieldCheck size={14} /> Your Secret Number
-              </div>
-              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" className="h-10 text-sm" labelClassName="text-[10px]" />
-            </section>
-            <Button type="submit" size="md" fullWidth className="h-12 text-sm font-bold">
-              Create Duel
-              <ArrowRight className="ml-2" size={16} />
-            </Button>
-          </form>
         </div>
       </main>
     );
@@ -262,33 +256,40 @@ function SetupContent() {
   // 4. GUEST SETUP VIEW
   if (mode === 'guest-setup') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white p-6">
-        <div className="max-w-xl mx-auto space-y-8 pt-12">
-          <div className="space-y-1">
-            <h2 className="text-xl font-black tracking-tight uppercase">JOIN THE DUEL</h2>
-            <p className="text-slate-400 text-xs">A duel has been found! Prepare yourself.</p>
+      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+        <Navbar />
+        <div className="flex-1 p-6 pb-20 overflow-y-auto">
+          <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12">
+            <div className="space-y-2 text-center md:text-left">
+              <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE DUEL</h2>
+              <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A duel has been found! Prepare yourself.</p>
+            </div>
+            <form onSubmit={handleGuestReady} className="space-y-8 bg-slate-900/40 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+               <section className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-3xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <Users className="text-blue-400" size={16} />
+                  </div>
+                  <span className="font-black text-blue-400 tracking-widest text-[10px] uppercase">Duel Range</span>
+                </div>
+                <div className="text-lg font-black text-white px-4 py-1.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                  {range.min} — {range.max}
+                </div>
+              </section>
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-green-400 font-black uppercase tracking-[0.2em] text-[10px]">
+                  <ShieldCheck size={14} className="fill-green-400/10" /> Your Secret Number
+                </div>
+                <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
+              </section>
+              <Button type="submit" size="lg" fullWidth className="h-16 text-base font-black uppercase tracking-widest">
+                Confirm & Ready
+                <ArrowRight className="ml-2" size={20} />
+              </Button>
+            </form>
           </div>
-          <form onSubmit={handleGuestReady} className="space-y-6 bg-slate-900/30 p-6 rounded-3xl border border-white/5 backdrop-blur-sm shadow-2xl">
-             <section className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-2xl flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="text-blue-400" size={18} />
-                <span className="font-bold text-blue-400 tracking-wide text-xs uppercase">Room Limits</span>
-              </div>
-              <div className="text-sm font-black text-white px-3 py-1 bg-blue-500/20 rounded-full">
-                {range.min} - {range.max}
-              </div>
-            </section>
-            <section className="space-y-3">
-              <div className="flex items-center gap-2 text-green-400 font-bold uppercase tracking-wider text-[10px]">
-                <ShieldCheck size={14} /> Your Secret Number
-              </div>
-              <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" className="h-10 text-sm" labelClassName="text-[10px]" />
-            </section>
-            <Button type="submit" size="md" fullWidth className="h-12 text-sm font-bold">
-              Confirm & Ready
-              <ArrowRight className="ml-2" size={16} />
-            </Button>
-          </form>
         </div>
       </main>
     );
@@ -299,9 +300,12 @@ function SetupContent() {
     const isBothReady = isPlayer1Ready && isPlayer2Ready;
     
     return (
-      <main className="min-h-screen bg-[#050B18] text-white p-6 flex items-center justify-center">
+      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+        <Navbar />
+        
         {/* Connection Status Indicator */}
-        <div className="absolute top-6 right-6 flex items-center gap-2 px-3 py-1.5 bg-slate-900/50 rounded-full border border-white/5 text-[10px] font-bold tracking-widest uppercase">
+        <div className="fixed top-24 right-6 flex items-center gap-2 px-3 py-1.5 bg-slate-900/50 rounded-full border border-white/5 text-[10px] font-bold tracking-widest uppercase z-40 backdrop-blur-sm">
           <div className={`w-1.5 h-1.5 rounded-full ${
             connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
             connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
@@ -310,7 +314,8 @@ function SetupContent() {
           {connectionStatus}
         </div>
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-lg space-y-12">
+        <div className="flex-1 p-6 pb-20 overflow-y-auto">
+          <div className="max-w-lg mx-auto space-y-10 pt-4 md:pt-8">
           <div className="text-center space-y-3">
             <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic">Lobby</h1>
             <p className="text-slate-500 text-xs md:text-sm max-w-[280px] mx-auto md:max-w-none">
@@ -424,8 +429,9 @@ function SetupContent() {
           <button onClick={() => router.push('/')} className="text-slate-600 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-sm font-bold uppercase tracking-widest">
             Cancel and Return
           </button>
-        </motion.div>
-      </main>
+        </div>
+      </div>
+    </main>
     );
   }
 
