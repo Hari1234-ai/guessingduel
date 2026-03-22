@@ -184,9 +184,6 @@ function SetupContent() {
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
-            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2 mb-4 group">
-              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back
-            </button>
             <div className="text-center space-y-2">
               <h2 className="text-xl font-black uppercase italic tracking-tight">ENTER DUEL CODE</h2>
               <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest leading-relaxed">Ask your friend for their unique 6-character code.</p>
@@ -207,6 +204,9 @@ function SetupContent() {
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </div>
+            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-2">
+              <ChevronLeft size={14} /> Cancel and Go Back
+            </button>
           </motion.div>
         </div>
       </main>
@@ -220,10 +220,7 @@ function SetupContent() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
-          <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12">
-            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2 group">
-              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back
-            </button>
+          <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12 text-center md:text-left">
             <div className="space-y-2 text-center md:text-left">
               <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">DUEL SETUP</h2>
               <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your duel settings before inviting a rival.</p>
@@ -247,6 +244,9 @@ function SetupContent() {
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </form>
+            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-4">
+              <ChevronLeft size={14} /> Cancel and Go Back
+            </button>
           </div>
         </div>
       </main>
@@ -289,6 +289,9 @@ function SetupContent() {
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </form>
+            <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-4">
+              <ChevronLeft size={14} /> Cancel and Go Back
+            </button>
           </div>
         </div>
       </main>
