@@ -6,10 +6,10 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="w-full py-16 px-6 border-t border-slate-900 bg-slate-950 mt-auto">
+    <footer className="w-full py-10 px-6 border-t border-slate-900 bg-slate-950 mt-auto">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
         {/* Logo/Icon */}
-        <div className="mb-8 opacity-20 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+        <div className="mb-4 opacity-20 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
            <Swords size={32} className="text-blue-500" />
         </div>
 
@@ -19,7 +19,7 @@ export default function Footer() {
           </p>
         </div>
         
-        <p className="text-sm text-slate-600 max-w-2xl mb-10 leading-relaxed font-medium">
+        <p className="text-sm text-slate-600 max-w-2xl mb-6 leading-relaxed font-medium">
           Guessing Duel is a competitive platform where players test their intuition and strategy in real-time duels. 
           Challenge your friends and climb the leaderboard in this high-stakes battle of wits.
         </p>
@@ -36,7 +36,7 @@ export default function Footer() {
           </Link>
         </div>
         
-        <div className="mt-12 h-px w-12 bg-slate-900" />
+        <div className="mt-8 h-px w-12 bg-slate-900" />
       </div>
     </footer>
   );
