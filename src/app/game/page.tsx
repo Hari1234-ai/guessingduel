@@ -119,6 +119,27 @@ export default function Game() {
       saveMatch();
     }
   }, [status, winner, user, roomCode, player1, player2, playerId, refreshProfile]);
+  
+  // Opponent Guess Toast Logic
+  useEffect(() => {
+    const opponent = playerId === 'player1' ? player2 : player1;
+    if (opponent.attempts > lastOpponentAttempts.current && opponent.history.length > 0) {
+      const lastGuess = opponent.history[0];
+      setOpponentToast({
+        show: true,
+        guess: lastGuess.guess,
+        feedback: lastGuess.feedback || '',
+        name: opponent.name
+      });
+      
+      const timer = setTimeout(() => {
+        setOpponentToast(prev => ({ ...prev, show: false }));
+      }, 4000);
+      
+      lastOpponentAttempts.current = opponent.attempts;
+      return () => clearTimeout(timer);
+    }
+  }, [player1.attempts, player2.attempts, player1.history, player2.history, player1.name, player2.name, playerId]);
 
   // Set victory quote once when game finishes
   useEffect(() => {
@@ -372,6 +393,41 @@ export default function Game() {
         </div>
       </Modal>
       </div>
+
+      {/* Opponent Guess Toast */}
+      <AnimatePresence>
+        {opponentToast.show && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm"
+          >
+            <div className="bg-slate-900/90 border border-white/10 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg ${
+                  opponentToast.feedback === 'Too High' ? 'bg-red-500/20 text-red-500' : 
+                  opponentToast.feedback === 'Too Low' ? 'bg-blue-500/20 text-blue-500' :
+                  'bg-green-500/20 text-green-500'
+                }`}>
+                  {opponentToast.guess}
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{opponentToast.name} Guessed</p>
+                  <p className="text-white font-black text-sm uppercase italic">{opponentToast.feedback}</p>
+                </div>
+              </div>
+              <div className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${
+                  opponentToast.feedback === 'Too High' ? 'text-red-400' : 
+                  opponentToast.feedback === 'Too Low' ? 'text-blue-400' :
+                  'text-green-400'
+              }`}>
+                {opponentToast.feedback === 'Too High' ? 'High' : opponentToast.feedback === 'Too Low' ? 'Low' : 'Correct'}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
