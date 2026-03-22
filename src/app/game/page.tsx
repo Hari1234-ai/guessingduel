@@ -20,7 +20,7 @@ import { getISOWeek } from '@/lib/utils';
 export default function Game() {
   const router = useRouter();
   const { user, refreshProfile } = useAuth();
-  const { gameState, makeGuess, resetGame, startNewGame } = useGame();
+  const { gameState, makeGuess, resetGame, startNewGame, latestReaction, sendReaction } = useGame();
   const { player1, player2, currentTurn, status, winner, roomCode, playerId } = gameState;
 
   const [guess, setGuess] = useState('');
@@ -30,8 +30,34 @@ export default function Game() {
   const [opponentToast, setOpponentToast] = useState<{ show: boolean, guess: number, feedback: string, name: string }>({ 
     show: false, guess: 0, feedback: '', name: '' 
   });
+  const [floatingEmojis, setFloatingEmojis] = useState<{ id: number, emoji: string, x: number }[]>([]);
+  const emojiIdRef = useRef(0);
   const processedMatchRef = useRef<string | null>(null);
   const lastOpponentAttempts = useRef(0);
+
+  const REACTION_EMOJIS = [
+    { emoji: '🥳', label: 'Party' },
+    { emoji: '💀', label: 'Skull' },
+    { emoji: '💩', label: 'Poop' },
+    { emoji: '😂', label: 'Joy' },
+    { emoji: '😢', label: 'Sad' },
+    { emoji: '😱', label: 'Shock' },
+  ];
+
+  // Listener for real-time reactions
+  useEffect(() => {
+    if (latestReaction) {
+      const id = emojiIdRef.current++;
+      const xOffset = Math.random() * 80 - 40; // Random horizontal spread
+      setFloatingEmojis(prev => [...prev, { id, emoji: latestReaction.emoji, x: xOffset }]);
+      
+      // Remove after animation
+      const timer = setTimeout(() => {
+        setFloatingEmojis(prev => prev.filter(e => e.id !== id));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [latestReaction]);
 
   // Redirect if no setup or room
   useEffect(() => {
@@ -288,7 +314,40 @@ export default function Game() {
                 </Button>
               </form>
 
-              <div className="flex gap-4 mt-12 w-full max-w-xs">
+              <div className="flex gap-4 mt-8 w-full max-w-xs justify-center relative">
+                {/* Floating Emojis Container */}
+                <div className="absolute -top-40 inset-x-0 pointer-events-none z-50">
+                  <AnimatePresence>
+                    {floatingEmojis.map((e) => (
+                      <motion.div
+                        key={e.id}
+                        initial={{ opacity: 0, y: 100, x: e.x, scale: 0.5 }}
+                        animate={{ opacity: [0, 1, 1, 0], y: -300, scale: [0.5, 1.5, 1.5, 2] }}
+                        transition={{ duration: 2.5, ease: "easeOut" }}
+                        className="absolute left-1/2 -translate-x-1/2 text-4xl select-none"
+                      >
+                        {e.emoji}
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+
+                {/* Emoji Selection Bar */}
+                <div className="flex items-center gap-1.5 p-1.5 bg-slate-950/60 rounded-2xl border border-white/5 backdrop-blur-md shadow-lg">
+                  {REACTION_EMOJIS.map((item) => (
+                    <button
+                      key={item.label}
+                      onClick={() => sendReaction(item.emoji)}
+                      className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-all active:scale-90 text-xl"
+                      title={item.label}
+                    >
+                      {item.emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-4 mt-8 w-full max-w-xs">
                 <Button 
                   variant="ghost" 
                   size="sm" 

@@ -15,6 +15,8 @@ interface GameContextType {
   startNewGame: () => void;
   startGame: () => void;
   startWithAI: (uid: string) => void;
+  latestReaction: { emoji: string; timestamp: number } | null;
+  sendReaction: (emoji: string) => void;
 }
 
 const initialPlayer = (name: string = '', uid: string = '', secretNumber: number = 0): Player => ({
@@ -47,6 +49,7 @@ const ABLY_KEY = process.env.NEXT_PUBLIC_ABLY_API_KEY;
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState>(initialState);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'failed' | 'disconnected'>('connecting');
+  const [latestReaction, setLatestReaction] = useState<{ emoji: string; timestamp: number } | null>(null);
   
   const ablyRef = useRef<Ably.Realtime | null>(null);
   const channelRef = useRef<Ably.RealtimeChannel | null>(null);
@@ -171,6 +174,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateState(prev => ({ ...prev, status: 'playing' }));
       });
 
+      channel.subscribe('reaction', (msg) => {
+        setLatestReaction({ emoji: msg.data.emoji, timestamp: Date.now() });
+      });
+
       channel.subscribe('rematch', () => {
         updateState(prev => ({
           ...initialState,
@@ -239,6 +246,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       channel.subscribe('start-duel', () => updateState(prev => ({ ...prev, status: 'playing' })));
+
+      channel.subscribe('reaction', (msg) => {
+        setLatestReaction({ emoji: msg.data.emoji, timestamp: Date.now() });
+      });
 
       channel.subscribe('rematch', () => {
         updateState(prev => ({
@@ -472,7 +483,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       resetGame,
       startNewGame,
       startGame,
-      startWithAI
+      startWithAI,
+      latestReaction,
+      sendReaction: useCallback((emoji: string) => {
+        if (channelRef.current) {
+          channelRef.current.publish('reaction', { emoji });
+          // Also show locally immediately
+          setLatestReaction({ emoji, timestamp: Date.now() });
+        }
+      }, [])
     }}>
       {children}
     </GameContext.Provider>
