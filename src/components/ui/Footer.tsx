@@ -6,37 +6,53 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="w-full py-10 px-6 border-t border-slate-900 bg-slate-950 mt-auto">
-      <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-        {/* Logo/Icon */}
-        <div className="mb-4 opacity-20 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-           <Swords size={32} className="text-blue-500" />
+    <footer className="w-full py-12 px-6 border-t border-white/5 bg-slate-950/50 backdrop-blur-md mt-auto relative z-10">
+      <div className="max-w-7xl mx-auto flex flex-col items-center">
+        {/* Logo/Icon Area */}
+        <div className="flex items-center gap-3 mb-8 group cursor-default">
+          <div className="w-10 h-10 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-center grayscale group-hover:grayscale-0 group-hover:bg-blue-600 group-hover:border-blue-500 transition-all duration-500 shadow-lg shadow-black/50">
+            <Swords size={20} className="text-slate-500 group-hover:text-white transition-colors" />
+          </div>
+          <span className="text-lg font-black tracking-tighter uppercase italic text-slate-400 group-hover:text-white transition-colors">
+            Guessing Duel
+          </span>
         </div>
 
-        <div className="mb-4">
-          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500 leading-loose">
-            © {currentYear} Guessing Duel <span className="mx-2 text-slate-800">|</span> The ultimate turn-based 2-player guessing game. <span className="block md:inline mt-1 md:mt-0">All rights reserved.</span>
+        {/* Links Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 mb-12 text-center md:text-left">
+          <div className="flex flex-col gap-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Platform</h4>
+            <Link href="/setup" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Play Duel</Link>
+            <Link href="/leaderboard" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Leaderboard</Link>
+            <Link href="/buy" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Plans</Link>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Legal</h4>
+            <Link href="/privacy" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Privacy Policy</Link>
+            <Link href="/terms" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Terms of Service</Link>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Support</h4>
+            <Link href="/contact" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Contact Us</Link>
+            <Link href="/faq" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all opacity-50 cursor-not-allowed">Help Center</Link>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Social</h4>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">GitHub</a>
+            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">X / Twitter</a>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="w-full pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+            © {currentYear} Guessing Duel. Built for competitive spirits.
           </p>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
+            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none">All Systems Operational</span>
+          </div>
         </div>
-        
-        <p className="text-sm text-slate-600 max-w-2xl mb-6 leading-relaxed font-medium">
-          Guessing Duel is a competitive platform where players test their intuition and strategy in real-time duels. 
-          Challenge your friends and climb the leaderboard in this high-stakes battle of wits.
-        </p>
-        
-        <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
-          <Link href="/privacy" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-blue-400 transition-all">
-            Privacy Policy
-          </Link>
-          <Link href="/terms" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-blue-400 transition-all">
-            Terms of Service
-          </Link>
-          <Link href="/contact" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-blue-400 transition-all">
-            Contact Support
-          </Link>
-        </div>
-        
-        <div className="mt-8 h-px w-12 bg-slate-900" />
       </div>
     </footer>
   );

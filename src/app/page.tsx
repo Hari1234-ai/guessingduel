@@ -163,27 +163,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 pt-24 pb-12 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="space-y-4 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <Swords size={20} className="text-blue-500" />
-              <span className="text-base font-black tracking-tighter uppercase italic">Guessing Duel</span>
-            </div>
-            <p className="text-slate-500 text-xs max-w-xs">The strategic number guessing game for competitive spirits.</p>
-          </div>
-
-          <div className="flex gap-12 text-sm font-bold uppercase tracking-widest">
-            <div className="flex flex-col gap-4 items-center md:items-start">
-              <span className="text-slate-600 text-[10px] mb-2">Legal</span>
-              <Link href="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy</Link>
-              <Link href="/terms" className="text-slate-400 hover:text-white transition-colors">Terms</Link>
-              <Link href="/contact" className="text-slate-400 hover:text-white transition-colors">Contact Us</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       {/* Modals */}
       <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="Game Rules">

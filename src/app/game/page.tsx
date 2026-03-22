@@ -152,7 +152,7 @@ export default function Game() {
   if (status === 'setup' && !roomCode) return null;
 
   return (
-    <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+    <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
       <Navbar />
 
