@@ -205,7 +205,7 @@ function SetupContent() {
               </Button>
             </div>
             <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-2">
-              <ChevronLeft size={14} /> Cancel and Go Back
+              <ChevronLeft size={14} /> Cancel and Return
             </button>
           </motion.div>
         </div>
@@ -245,7 +245,7 @@ function SetupContent() {
               </Button>
             </form>
             <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-4">
-              <ChevronLeft size={14} /> Cancel and Go Back
+              <ChevronLeft size={14} /> Cancel and Return
             </button>
           </div>
         </div>
@@ -290,7 +290,7 @@ function SetupContent() {
               </Button>
             </form>
             <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-4">
-              <ChevronLeft size={14} /> Cancel and Go Back
+              <ChevronLeft size={14} /> Cancel and Return
             </button>
           </div>
         </div>
