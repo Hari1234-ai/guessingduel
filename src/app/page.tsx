@@ -112,29 +112,29 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-4 relative z-10">
             <StepItem 
               icon={<Users size={28} className="text-blue-400" />} 
-              title="Secure the Room" 
-              desc="Join or create a battle with a secret duel code." 
+              title="Start a Room" 
+              desc="Join or create a game with a secret code." 
               border="border-blue-500/30" 
               glow="shadow-blue-500/10"
             />
             <StepItem 
               icon={<Shield size={28} className="text-blue-400" />} 
-              title="Calibrate Your Secret" 
-              desc="Choose a hidden number and shield your thoughts." 
+              title="Set Your Number" 
+              desc="Pick a secret number for your opponent to guess." 
               border="border-blue-500/30"
               glow="shadow-blue-500/10"
             />
             <StepItem 
               icon={<Zap size={28} className="text-purple-400" />} 
-              title="Analyze & Strike" 
-              desc="Decode your rival's number with High/Low insights." 
+              title="Guess & Strike" 
+              desc="Take turns guessing. We'll tell you if it's too high or low." 
               border="border-purple-500/30"
               glow="shadow-purple-500/10"
             />
             <StepItem 
               icon={<Swords size={28} className="text-purple-400" />} 
-              title="Claim Victory" 
-              desc="Master the board and earn your gold credits." 
+              title="Win the Duel" 
+              desc="Be the first to guess the exact number and win!" 
               border="border-purple-500/30"
               glow="shadow-purple-500/10"
             />
