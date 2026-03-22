@@ -11,6 +11,7 @@ import Modal from '@/components/ui/Modal';
 import ScoreBoard from '@/components/game/ScoreBoard';
 import GuessHistory from '@/components/game/GuessHistory';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
+import Navbar from '@/components/ui/Navbar';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, updateDoc, doc, increment, getDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
@@ -26,7 +27,11 @@ export default function Game() {
   const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
   const [isRestartModalOpen, setIsRestartModalOpen] = useState(false);
   const [isGiveUpModalOpen, setIsGiveUpModalOpen] = useState(false);
+  const [opponentToast, setOpponentToast] = useState<{ show: boolean, guess: number, feedback: string, name: string }>({ 
+    show: false, guess: 0, feedback: '', name: '' 
+  });
   const processedMatchRef = useRef<string | null>(null);
+  const lastOpponentAttempts = useRef(0);
 
   // Redirect if no setup or room
   useEffect(() => {
@@ -126,27 +131,15 @@ export default function Game() {
   if (status === 'setup' && !roomCode) return null;
 
   return (
-    <main className="min-h-screen bg-slate-950 p-4 md:p-8 flex flex-col items-center">
-      {/* Global Avatar */}
-      <div className="fixed top-6 right-6 z-50">
-        <AvatarDropdown />
-      </div>
+    <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+      <Navbar />
 
-      {/* Header */}
-      <div className="w-full max-w-5xl flex items-center justify-between mb-8">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
-            <Sparkles className="text-white" size={20} />
-          </div>
-          <h1 className="text-xl font-black text-white tracking-tighter uppercase italic">Guessing Duel</h1>
+      <div className="flex-1 p-4 md:p-8 flex flex-col items-center overflow-y-auto">
+        {/* Target Range Line */}
+        <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-slate-900/40 border border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 backdrop-blur-sm">
+          Target Range: <span className="text-white">{gameState.range.min} — {gameState.range.max}</span>
         </div>
-      </div>
-
-      <div className="mb-4 flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-full text-xs">
-        <Hash size={12} className="text-slate-500" />
-        <span className="text-slate-500 font-bold uppercase tracking-tighter mr-1">Room:</span>
-        <span className="text-white font-black tracking-widest">{roomCode}</span>
-      </div>
 
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
@@ -169,41 +162,57 @@ export default function Game() {
                 <p className="text-slate-400 text-sm max-w-[200px]">
                   Your rival is still setting up.
                 </p>
-                <div className="mt-6 pt-6 border-t border-slate-800 w-full">
-                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2">Duel Code</p>
-                  <div className="text-2xl font-black text-white tracking-widest">{roomCode}</div>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>
 
           <ScoreBoard />
           
-          <div className={`bg-slate-900/40 border-2 p-8 rounded-[2.5rem] backdrop-blur-md shadow-2xl relative overflow-hidden transition-all duration-500 ${
-            isMyTurn && isOpponentReady ? 'border-blue-500/30' : 'border-slate-800 opacity-90'
+          <div className={`bg-slate-900/60 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl shadow-2xl relative overflow-hidden transition-all duration-500 ${
+            isMyTurn && isOpponentReady ? 'border-blue-500/20' : 'border-white/5 opacity-80'
           }`}>
             {/* Turn Indicator Bar */}
-            <div className={`absolute top-0 left-0 w-full h-1.5 transition-all duration-500 ${
+            <div className={`absolute top-0 left-0 w-full h-1 transition-all duration-500 ${
               currentTurn === 'player1' ? 'bg-blue-500' : 'bg-purple-500'
             }`} />
 
-            {/* Turn Timer */}
-            <div className="absolute top-8 right-12 flex items-center gap-2">
-              <div className={`text-4xl font-black ${gameState.turnTimeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-slate-800'}`}>
+            {/* Turn Timer: Circular Progress */}
+            <div className="absolute top-6 right-8 flex items-center justify-center w-16 h-16">
+              <svg className="w-full h-full transform -rotate-90">
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="transparent"
+                  className="text-white/5"
+                />
+                <motion.circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="transparent"
+                  strokeDasharray="175.93"
+                  animate={{ strokeDashoffset: 175.93 - (gameState.turnTimeLeft / 30) * 175.93 }}
+                  className={`${gameState.turnTimeLeft <= 5 ? 'text-red-500' : isMyTurn ? 'text-blue-500' : 'text-purple-500'}`}
+                />
+              </svg>
+              <div className={`absolute inset-0 flex items-center justify-center text-xl font-black ${gameState.turnTimeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
                 {gameState.turnTimeLeft}
               </div>
             </div>
 
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="mb-8 flex flex-col items-center">
-                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 ${
-                  isMyTurn ? 'bg-blue-500 text-white' : 'bg-slate-800 text-slate-500'
-                }`}>
-                  {isMyTurn ? 'Your Action' : 'Opponent Action'}
-                </span>
-                <h2 className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                  {isMyTurn ? 'Enter Your Guess' : (player2.isAI ? 'AI is analyzing...' : 'Opponent is thinking...')}
+            <div className="relative z-10">
+              <div className="mb-8 items-start text-left">
+                <h2 className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-1">
+                  {isMyTurn ? 'Your Action' : 'Duel Status'}
                 </h2>
+                <h3 className="text-white font-black uppercase tracking-tight text-lg italic">
+                  {isMyTurn ? 'Enter Your Guess' : (player2.isAI ? 'AI is analyzing...' : 'Opponent is thinking...')}
+                </h3>
               </div>
               
               <AnimatePresence mode="wait">
@@ -223,29 +232,38 @@ export default function Game() {
               </AnimatePresence>
 
               <form onSubmit={handleGuess} className="w-full max-w-[200px] space-y-4">
-                <Input
-                  label=""
-                  type="number"
-                  value={guess}
-                  onChange={(e) => setGuess(e.target.value)}
-                  placeholder="00"
-                  className={`text-center text-3xl font-black h-16 rounded-2xl border-none shadow-inner transition-all ${
-                    isMyTurn ? 'bg-slate-800/80' : 'bg-slate-900/30 text-slate-700'
-                  }`}
-                  disabled={!isMyTurn || status === 'finished' || !isOpponentReady}
-                />
+                <div className="relative">
+                  <Input
+                    label=""
+                    type="number"
+                    value={guess}
+                    onChange={(e) => setGuess(e.target.value)}
+                    placeholder="00"
+                    className={`text-center text-4xl font-black h-20 rounded-2xl border-none shadow-inner transition-all ${
+                      isMyTurn ? 'bg-slate-800/80 ring-1 ring-white/10' : 'bg-slate-900/30 text-slate-700'
+                    }`}
+                    disabled={!isMyTurn || status === 'finished' || !isOpponentReady}
+                  />
+                  {isMyTurn && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }} 
+                      className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"
+                    />
+                  )}
+                </div>
                 
                 <Button 
                   type="submit" 
                   size="md" 
                   fullWidth 
                   disabled={!guess || !isMyTurn || status === 'finished' || !isOpponentReady}
-                  className={`h-11 text-sm font-bold ${
+                  className={`h-12 text-xs font-black uppercase tracking-[0.2em] ${
                     playerId === 'player1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-600 hover:bg-purple-700'
                   }`}
                 >
-                  <Send size={16} className="mr-2" />
-                  Launch Guess
+                  Confirm Guess
+                  <Send size={14} className="ml-2" />
                 </Button>
               </form>
 
@@ -353,6 +371,7 @@ export default function Game() {
           </div>
         </div>
       </Modal>
+      </div>
     </main>
   );
 }

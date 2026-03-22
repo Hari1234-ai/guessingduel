@@ -11,13 +11,6 @@ const ScoreBoard: React.FC = () => {
 
   return (
     <div className="w-full space-y-6">
-      {/* Range Display */}
-      <div className="flex items-center justify-center gap-3 bg-slate-900/50 border border-slate-800 py-3 px-6 rounded-2xl backdrop-blur-sm self-center">
-        <Target size={18} className="text-slate-400" />
-        <span className="text-slate-400 font-medium">Target Range:</span>
-        <span className="text-white font-bold text-lg">{range.min} — {range.max}</span>
-      </div>
-
       <div className="grid grid-cols-2 gap-4">
         {/* Player 1 Card */}
         <div className={`relative p-4 rounded-2xl border-2 transition-all duration-300 ${
