@@ -252,7 +252,7 @@ export default function Game() {
                 </motion.div>
               </AnimatePresence>
 
-              <form onSubmit={handleGuess} className="w-full max-w-[200px] space-y-4">
+              <form onSubmit={handleGuess} className="w-full max-w-[200px] space-y-4 mx-auto">
                 <div className="relative">
                   <Input
                     label=""
