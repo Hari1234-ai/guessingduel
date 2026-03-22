@@ -460,7 +460,7 @@ export default function Game() {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm"
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm md:hidden"
           >
             <div className="bg-slate-900/90 border border-white/10 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex items-center justify-between">
               <div className="flex items-center gap-4">
