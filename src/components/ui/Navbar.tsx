@@ -85,6 +85,7 @@ export default function Navbar() {
   };
 
   const navLinks = [
+    { label: 'Play Duel', href: '/setup', icon: <Swords size={18} /> },
     { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
