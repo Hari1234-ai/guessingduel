@@ -28,7 +28,7 @@ export default function Setup() {
 function SetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame, startWithAI, startNewGame } = useGame();
+  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame, startWithAI, startNewGame, debugLogs } = useGame();
   const { user, profileData, logout } = useAuth();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
@@ -360,6 +360,16 @@ function SetupContent() {
             <p className="text-slate-500 text-xs md:text-sm max-w-[280px] mx-auto md:max-w-none">
               {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
             </p>
+
+            {/* DEBUG PANEL */}
+            {debugLogs && debugLogs.length > 0 && (
+              <div className="mx-auto w-full max-w-[280px] text-[8px] bg-black/50 text-green-400 p-2 rounded border border-green-500/20 font-mono text-left opacity-75">
+                <div className="font-bold border-b border-green-500/20 mb-1 pb-1">ABLY DIAGNOSTICS:</div>
+                {debugLogs.map((log, i) => (
+                  <div key={i}>&gt; {log}</div>
+                ))}
+              </div>
+            )}
           </div>
 
           {connectionStatus === 'failed' && (

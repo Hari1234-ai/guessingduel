@@ -17,6 +17,7 @@ interface GameContextType {
   startWithAI: (uid: string) => void;
   latestReaction: { emoji: string; timestamp: number } | null;
   sendReaction: (emoji: string) => void;
+  debugLogs: string[];
 }
 
 const initialPlayer = (name: string = '', uid: string = '', secretNumber: number = 0): Player => ({
@@ -50,10 +51,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [gameState, setGameState] = useState<GameState>(initialState);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'failed' | 'disconnected'>('connecting');
   const [latestReaction, setLatestReaction] = useState<{ emoji: string; timestamp: number } | null>(null);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
   
   const ablyRef = useRef<Ably.Realtime | null>(null);
   const channelRef = useRef<Ably.RealtimeChannel | null>(null);
   const latestStateRef = useRef<GameState>(gameState);
+
+  const addLog = useCallback((msg: string) => {
+    console.log(msg);
+    setDebugLogs(prev => [...prev.slice(-4), msg]); // Keep last 5 logs
+  }, []);
 
   // Sync ref with state
   useEffect(() => {
@@ -130,6 +137,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const createRoom = useCallback(async (name: string, uid: string, secret: number, min: number, max: number) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    addLog(`Created room ${code}`);
     
     const newState: GameState = { 
       ...initialState, 
@@ -160,7 +168,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Host Listens for Guest Heartbeats
       channel.subscribe('guest-heartbeat', (msg) => {
         const payload = msg.data || {};
-        console.log('[Host] Received guest-heartbeat:', payload);
+        addLog(`[Host] Rx guest-heartbeat: ${payload.name}`);
         updateState(prev => {
           // Protect guest name from being overwritten by 'Challenger Joining...' if they are already ready
           const newGuestName = (payload.name && payload.name.includes('.')) && prev.isPlayer2Ready 
@@ -262,9 +270,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [updateState]);
 
   const joinRoom = useCallback(async (code: string, uid: string) => {
+    const cleanCode = code.trim().toUpperCase();
+    addLog(`Joining room ${cleanCode}`);
     const newState: GameState = { 
       ...initialState, 
-      roomCode: code, 
+      roomCode: cleanCode, 
       playerId: 'player2', 
       status: 'guest-setup', 
       isOpponentPresent: true // We assume the host is there if we have a code
@@ -280,7 +290,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Guest Listens for Host Heartbeats
       channel.subscribe('host-heartbeat', (msg) => {
         const payload = msg.data || {};
-        console.log('[Guest] Received host-heartbeat:', payload);
+        addLog(`[Guest] Rx host-heartbeat: ${payload.name}`);
         updateState(prev => ({
           ...prev,
           isOpponentPresent: true,
@@ -590,6 +600,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       startGame,
       startWithAI,
       latestReaction,
+      debugLogs,
       sendReaction: useCallback((emoji: string) => {
         if (channelRef.current) {
           channelRef.current.publish('reaction', { emoji });
