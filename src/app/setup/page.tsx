@@ -44,27 +44,6 @@ function SetupContent() {
     secret: '',
   });
 
-  const [lobbyTimer, setLobbyTimer] = useState(30);
-
-  // Lobby timeout countdown (Host only)
-  useEffect(() => {
-    if (mode === 'lobby' && playerId === 'player1' && !isOpponentPresent && lobbyTimer > 0) {
-      const timer = setInterval(() => {
-        setLobbyTimer(prev => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [mode, playerId, isOpponentPresent, lobbyTimer]);
-
-  // Handle timeout expiry
-  useEffect(() => {
-    if (mode === 'lobby' && playerId === 'player1' && !isOpponentPresent && lobbyTimer === 0) {
-      startNewGame(); // Resets context
-      setMode('selection');
-      setLobbyTimer(30);
-    }
-  }, [lobbyTimer, mode, playerId, isOpponentPresent, startNewGame]);
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Pre-fill name from auth
@@ -419,11 +398,6 @@ function SetupContent() {
                   <div className="flex flex-col items-center justify-center gap-2">
                     <div className="flex items-center justify-center gap-2 text-blue-400/60 font-medium animate-pulse text-[11px] uppercase tracking-widest">
                       <Loader2 className="animate-spin" size={14} /> Waiting for rival...
-                    </div>
-                    <div className="mx-auto flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                      <span className={`text-[9px] font-black tracking-widest ${lobbyTimer <= 10 ? 'text-red-500 animate-pulse' : 'text-blue-400/80'}`}>
-                        AUTO-CLOSE IN {lobbyTimer}S
-                      </span>
                     </div>
                   </div>
                   
