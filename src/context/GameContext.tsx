@@ -159,19 +159,27 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isOpponentPresent: true,
             player2: { 
               ...prev.player2, 
-              // Don't overwrite empty guest name with placeholder if they actually became ready later
               name: payload.name.includes('...') && prev.isPlayer2Ready ? prev.player2.name : payload.name, 
               uid: payload.uid || prev.player2.uid,
-              secretNumber: payload.secret 
+              // Only update secret if it's non-zero or we weren't ready yet
+              secretNumber: (payload.secret !== 0 || !prev.isPlayer2Ready) ? payload.secret : prev.player2.secretNumber 
             },
-            isPlayer2Ready: payload.isReady,
+            isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
           }));
         }
       });
 
       // Subscribe to actions
-      channel.subscribe('start-duel', () => {
-        updateState(prev => ({ ...prev, status: 'playing' }));
+      channel.subscribe('start-duel', (msg) => {
+        const payload = msg.data;
+        updateState(prev => ({ 
+          ...prev, 
+          status: 'playing',
+          // Merge state if provided
+          player1: payload.player1 || prev.player1,
+          player2: payload.player2 || prev.player2,
+          range: payload.range || prev.range
+        }));
       });
 
       channel.subscribe('reaction', (msg) => {
@@ -238,14 +246,29 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           updateState(prev => ({
             ...prev,
             isOpponentPresent: true,
-            player1: { ...prev.player1, name: payload.name, uid: payload.uid || prev.player1.uid, secretNumber: payload.secret },
+            player1: { 
+              ...prev.player1, 
+              name: payload.name, 
+              uid: payload.uid || prev.player1.uid, 
+              // Only update secret if it's non-zero
+              secretNumber: (payload.secret !== 0 || !prev.isPlayer1Ready) ? payload.secret : prev.player1.secretNumber 
+            },
             range: payload.range || prev.range,
-            isPlayer1Ready: payload.isReady,
+            isPlayer1Ready: payload.isReady || prev.isPlayer1Ready,
           }));
         }
       });
 
-      channel.subscribe('start-duel', () => updateState(prev => ({ ...prev, status: 'playing' })));
+      channel.subscribe('start-duel', (msg) => {
+        const payload = msg.data;
+        updateState(prev => ({ 
+          ...prev, 
+          status: 'playing',
+          player1: payload.player1 || prev.player1,
+          player2: payload.player2 || prev.player2,
+          range: payload.range || prev.range
+        }));
+      });
 
       channel.subscribe('reaction', (msg) => {
         setLatestReaction({ emoji: msg.data.emoji, timestamp: Date.now() });
@@ -400,8 +423,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [updateState]);
 
   const startGame = useCallback(() => {
-    if (latestStateRef.current.playerId === 'player1' && channelRef.current) {
-      channelRef.current.publish('start-duel', {});
+    const state = latestStateRef.current;
+    if (state.playerId === 'player1' && channelRef.current) {
+      channelRef.current.publish('start-duel', {
+        player1: state.player1,
+        player2: state.player2,
+        range: state.range
+      });
       updateState(prev => ({ ...prev, status: 'playing' }));
     }
   }, [updateState]);
