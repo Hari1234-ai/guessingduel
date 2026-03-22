@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Swords, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings } from 'lucide-react';
+import { Swords, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import AvatarDropdown from './AvatarDropdown';
 import Button from './Button';
 import { db } from '@/lib/firebase';
@@ -16,6 +17,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, profileData, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const resetMyCoins = async () => {
     if (!user || !db) return;
@@ -124,6 +126,15 @@ export default function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-100/50 hover:bg-slate-800 dark:hover:bg-slate-800 light:hover:bg-slate-200 text-slate-400 hover:text-white dark:text-slate-400 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900 transition-all border border-white/5 shadow-lg flex items-center justify-center"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
           {user ? (
             <>
               {/* Desktop Avatar */}
@@ -186,12 +197,20 @@ export default function Navbar() {
                     </div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-xl bg-slate-800 dark:bg-slate-800 light:bg-slate-100 text-slate-400 dark:text-slate-400 light:text-slate-600 hover:text-white dark:hover:text-white light:hover:text-slate-900 transition-colors"
+                  >
+                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                  </button>
+                  <button 
+                    onClick={() => setIsDrawerOpen(false)}
+                    className="p-2 rounded-xl bg-slate-800 dark:bg-slate-800 light:bg-slate-100 text-slate-400 dark:text-slate-400 light:text-slate-600 hover:text-white dark:hover:text-white light:hover:text-slate-900 transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
 
               {/* Navigation Links */}

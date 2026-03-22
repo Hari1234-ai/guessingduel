@@ -50,7 +50,7 @@ export default function SettingsPage() {
   const firstLetter = name?.charAt(0).toUpperCase() || 'P';
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-6 relative overflow-hidden">
+    <main className="min-h-screen bg-background text-foreground p-6 relative overflow-hidden transition-colors duration-300">
       {/* Background Decor */}
       <div className="absolute top-1/4 -left-24 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 -right-24 w-96 h-96 bg-purple-600/5 rounded-full blur-[120px]" />
@@ -60,9 +60,9 @@ export default function SettingsPage() {
         <header className="flex items-center justify-between mb-12">
           <button 
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors group"
+            className="flex items-center gap-2 text-slate-500 hover:text-foreground transition-colors group"
           >
-            <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:border-slate-700">
+            <div className="w-8 h-8 rounded-xl bg-card flex items-center justify-center border border-card-border group-hover:border-slate-700">
               <ArrowLeft size={16} />
             </div>
             <span className="text-xs font-bold uppercase tracking-widest">Back</span>
@@ -90,7 +90,7 @@ export default function SettingsPage() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-slate-900/40 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl"
+              className="bg-card border border-card-border p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl"
             >
               <form onSubmit={handleSubmit} className="space-y-10">
                 {/* Profile Avatar Section */}
@@ -114,9 +114,9 @@ export default function SettingsPage() {
                     className="h-12 font-bold"
                   />
                   
-                  <div className="p-4 bg-slate-950/50 rounded-2xl border border-slate-800">
+                  <div className="p-4 bg-background/50 rounded-2xl border border-card-border">
                     <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-2">Registered Email</label>
-                    <p className="text-sm font-bold text-slate-300">{user?.email}</p>
+                    <p className="text-sm font-bold text-foreground">{user?.email}</p>
                     <p className="text-[10px] text-slate-600 mt-2">Contact support to change your email.</p>
                   </div>
                 </div>

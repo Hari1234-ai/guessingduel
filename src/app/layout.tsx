@@ -16,21 +16,25 @@ export const metadata: Metadata = {
   },
 };
 
+import { ThemeProvider } from "@/context/ThemeContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased dark">
-      <body className={`${inter.className} min-h-screen bg-slate-950 text-slate-50 flex flex-col`}>
-        <AuthProvider>
-          <GameProvider>
-            {children}
-            <Footer />
-            <Analytics />
-          </GameProvider>
-        </AuthProvider>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen bg-slate-950 text-slate-50 dark:bg-slate-950 dark:text-slate-50 light:bg-slate-50 light:text-slate-950 flex flex-col transition-colors duration-300`}>
+        <ThemeProvider>
+          <AuthProvider>
+            <GameProvider>
+              {children}
+              <Footer />
+              <Analytics />
+            </GameProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

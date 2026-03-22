@@ -16,7 +16,7 @@ export default function ContactPage() {
   const { user } = useAuth();
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white overflow-hidden relative">
+    <main className="min-h-screen bg-background text-foreground overflow-hidden relative transition-colors duration-300">
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
@@ -61,12 +61,12 @@ export default function ContactPage() {
 function ContactLink({ icon, title, value, href }: { icon: React.ReactNode, title: string, value: string, href?: string }) {
   const content = (
     <div className="flex items-center gap-4 group cursor-pointer">
-      <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
+      <div className="w-12 h-12 rounded-2xl bg-card border border-card-border flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
         {icon}
       </div>
       <div>
         <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mb-1">{title}</p>
-        <p className="text-xs font-black text-slate-200 group-hover:text-blue-400 transition-colors">{value}</p>
+        <p className="text-xs font-black text-foreground group-hover:text-blue-400 transition-colors">{value}</p>
       </div>
     </div>
   );

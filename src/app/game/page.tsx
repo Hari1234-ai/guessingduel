@@ -178,14 +178,14 @@ export default function Game() {
   if (status === 'setup' && !roomCode) return null;
 
   return (
-    <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+    <main className="min-h-screen bg-background text-foreground flex flex-col relative transition-colors duration-300">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
       <Navbar />
 
       <div className="flex-1 p-4 md:p-8 flex flex-col items-center overflow-y-auto">
         {/* Target Range Line */}
-        <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-slate-900/40 border border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 backdrop-blur-sm">
-          Target Range: <span className="text-white">{gameState.range.min} — {gameState.range.max}</span>
+        <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-card border border-card-border rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 backdrop-blur-sm">
+          Target Range: <span className="text-foreground">{gameState.range.min} — {gameState.range.max}</span>
         </div>
 
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -200,12 +200,12 @@ export default function Game() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 z-20 bg-slate-950/80 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-800"
+                className="absolute inset-0 z-20 bg-background/80 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-card-border"
               >
                 <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
                   <Loader2 size={24} className="text-blue-500 animate-spin" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Waiting for Opponent</h3>
+                <h3 className="text-xl font-bold mb-2">Waiting for Opponent</h3>
                 <p className="text-slate-400 text-sm max-w-[200px]">
                   Your rival is still setting up.
                 </p>
@@ -215,8 +215,8 @@ export default function Game() {
 
           <ScoreBoard />
           
-          <div className={`bg-slate-900/60 border border-white/5 p-6 rounded-[2rem] backdrop-blur-xl shadow-2xl relative overflow-hidden transition-all duration-500 ${
-            isMyTurn && isOpponentReady ? 'border-blue-500/20' : 'border-white/5 opacity-80'
+          <div className={`bg-card border border-card-border p-6 rounded-[2rem] backdrop-blur-xl shadow-2xl relative overflow-hidden transition-all duration-500 ${
+            isMyTurn && isOpponentReady ? 'border-blue-500/20' : 'opacity-80'
           }`}>
             {/* Turn Indicator Bar */}
             <div className={`absolute top-0 left-0 w-full h-1 transition-all duration-500 ${
@@ -231,9 +231,8 @@ export default function Game() {
                   cy="32"
                   r="28"
                   stroke="currentColor"
-                  strokeWidth="3"
                   fill="transparent"
-                  className="text-white/5"
+                  className="text-foreground/5"
                 />
                 <motion.circle
                   cx="32"
@@ -257,7 +256,7 @@ export default function Game() {
                 <h2 className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-1">
                   {isMyTurn ? 'Your Action' : 'Duel Status'}
                 </h2>
-                <h3 className="text-white font-black uppercase tracking-tight text-lg italic">
+                <h3 className="text-foreground font-black uppercase tracking-tight text-lg italic">
                   {isMyTurn ? 'Enter Your Guess' : (player2.isAI ? 'AI is analyzing...' : 'Opponent is thinking...')}
                 </h3>
               </div>
@@ -287,7 +286,7 @@ export default function Game() {
                     onChange={(e) => setGuess(e.target.value)}
                     placeholder="00"
                     className={`text-center text-4xl font-black h-20 rounded-2xl border-none shadow-inner transition-all ${
-                      isMyTurn ? 'bg-slate-800/80 ring-1 ring-white/10' : 'bg-slate-900/30 text-slate-700'
+                      isMyTurn ? 'bg-card/80 ring-1 ring-card-border' : 'bg-card/30 text-slate-700'
                     }`}
                     disabled={!isMyTurn || status === 'finished' || !isOpponentReady}
                   />
@@ -324,7 +323,7 @@ export default function Game() {
                         initial={{ opacity: 0, y: 100, x: e.x, scale: 0.5 }}
                         animate={{ opacity: [0, 1, 1, 0], y: -300, scale: [0.5, 1.5, 1.5, 2] }}
                         transition={{ duration: 2.5, ease: "easeOut" }}
-                        className="absolute left-1/2 -translate-x-1/2 text-4xl select-none"
+                        className="absolute left-1/2 -translate-x-1/2 text-4xl select-none mx-auto"
                       >
                         {e.emoji}
                       </motion.div>
@@ -333,7 +332,7 @@ export default function Game() {
                 </div>
 
                 {/* Emoji Selection Bar */}
-                <div className="flex items-center gap-1.5 p-1.5 bg-slate-950/60 rounded-2xl border border-white/5 backdrop-blur-md shadow-lg">
+                <div className="flex items-center gap-1.5 p-1.5 bg-card/60 rounded-2xl border border-card-border backdrop-blur-md shadow-lg mx-auto">
                   {REACTION_EMOJIS.map((item) => (
                     <button
                       key={item.label}

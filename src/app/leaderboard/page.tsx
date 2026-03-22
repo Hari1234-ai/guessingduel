@@ -51,7 +51,7 @@ export default function LeaderboardPage() {
   }, [view]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white overflow-hidden relative">
+    <main className="min-h-screen bg-background text-foreground overflow-hidden relative transition-colors duration-300">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
@@ -81,7 +81,7 @@ export default function LeaderboardPage() {
 
         {/* Tab Switcher */}
         <div className="flex justify-center mb-10">
-          <div className="bg-slate-900/50 p-1.5 rounded-2xl border border-slate-800 flex gap-2 backdrop-blur-md">
+          <div className="bg-card p-1.5 rounded-2xl border border-card-border flex gap-2 backdrop-blur-md">
             <button 
               onClick={() => setView('weekly')}
               className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Leaderboard Table */}
-        <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="bg-card border border-card-border rounded-[2.5rem] backdrop-blur-xl shadow-2xl overflow-hidden">
           {loading ? (
             <div className="py-24 flex flex-col items-center gap-4">
               <Loader2 size={32} className="text-blue-500 animate-spin" />
@@ -134,7 +134,7 @@ export default function LeaderboardPage() {
                       {entry.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <h4 className="font-black text-white uppercase tracking-tight flex items-center gap-2 text-xs md:text-sm truncate">
+                      <h4 className="font-black text-foreground uppercase tracking-tight flex items-center gap-2 text-xs md:text-sm truncate">
                         {entry.name}
                         {user?.uid === entry.uid && (
                           <span className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-[7px] text-blue-400 uppercase shrink-0">You</span>

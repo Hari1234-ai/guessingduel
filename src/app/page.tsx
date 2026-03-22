@@ -26,13 +26,13 @@ export default function LandingPage() {
   } as const;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white overflow-hidden relative">
+    <main className="min-h-screen bg-background text-foreground overflow-hidden relative transition-colors duration-300">
       {/* Dynamic Background */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full dark:opacity-[0.03] light:opacity-[0.05] pointer-events-none" 
+             style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         
         {/* Floating Background Assets */}
         <FloatingElement className="top-[15%] left-[10%] text-blue-500" delay={0}>
@@ -67,7 +67,7 @@ export default function LandingPage() {
             Season 1: The Awakening
           </motion.div>
 
-          <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-[0.9]">
+          <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-[0.9] text-foreground">
             Outsmart <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">Your Rivals.</span>
           </motion.h1>
@@ -100,7 +100,7 @@ export default function LandingPage() {
       
       {/* How It Works Section */}
       <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-20">
+        <div className="text-center mb-20 text-foreground">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-4">How it works?</h2>
           <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">Simple, strategic, and built for your success.</p>
         </div>
@@ -184,7 +184,7 @@ export default function LandingPage() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="p-8 rounded-[2rem] bg-slate-900/40 border border-white/5 backdrop-blur-sm hover:border-blue-500/30 transition-all group">
+    <div className="p-8 rounded-[2rem] bg-card border border-card-border backdrop-blur-sm hover:border-blue-500/30 transition-all group">
       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
         {icon}
       </div>
@@ -196,10 +196,10 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
 
 function RuleItem({ number, title, desc }: { number: string, title: string, desc: string }) {
   return (
-    <div className="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/5">
+    <div className="flex gap-4 items-start p-4 rounded-2xl bg-card border border-card-border">
       <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-black shrink-0">{number}</div>
       <div>
-        <h4 className="font-bold text-white mb-1">{title}</h4>
+        <h4 className="font-bold text-foreground mb-1">{title}</h4>
         <p className="text-xs text-slate-500">{desc}</p>
       </div>
     </div>
@@ -209,10 +209,10 @@ function RuleItem({ number, title, desc }: { number: string, title: string, desc
 function StepItem({ icon, title, desc, border, glow }: { icon: React.ReactNode, title: string, desc: string, border: string, glow: string }) {
   return (
     <div className="flex flex-col items-center text-center group">
-      <div className={`w-20 h-20 rounded-full bg-white/5 backdrop-blur-xl border ${border} flex items-center justify-center text-white mb-6 shadow-2xl ${glow} group-hover:scale-110 group-hover:bg-white/10 transition-all relative z-10`}>
+      <div className={`w-20 h-20 rounded-full bg-card backdrop-blur-xl border ${border} flex items-center justify-center text-foreground mb-6 shadow-2xl ${glow} group-hover:scale-110 group-hover:bg-card/80 transition-all relative z-10`}>
         {icon}
       </div>
-      <h3 className="text-lg font-black uppercase tracking-tight mb-2 text-white">{title}</h3>
+      <h3 className="text-lg font-black uppercase tracking-tight mb-2 text-foreground">{title}</h3>
       <p className="text-slate-500 text-xs leading-relaxed max-w-[200px] font-bold">{desc}</p>
     </div>
   );

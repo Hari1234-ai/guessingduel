@@ -109,25 +109,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-6 bg-slate-950 relative overflow-hidden">
+    <div className="flex-1 flex items-center justify-center p-6 bg-background relative overflow-hidden transition-colors duration-300">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-[22rem] bg-slate-900/50 backdrop-blur-xl border border-slate-800 p-6 rounded-[1.5rem] shadow-2xl relative z-10"
+        className="w-full max-w-[22rem] bg-card backdrop-blur-xl border border-card-border p-6 rounded-[1.5rem] shadow-2xl relative z-10"
       >
 
-        <h1 className="text-xl font-bold text-center mb-1 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+        <h1 className="text-xl font-bold text-center mb-1 bg-gradient-to-r from-foreground to-slate-400 bg-clip-text text-transparent">
           {mode === 'login' ? 'Welcome Back' : 'Create Account'}
         </h1>
         <p className="text-slate-400 text-center mb-6 text-xs">
-          {mode === 'login' 
-            ? 'Login to challenge your rivals' 
+          {mode === 'login'
+            ? 'Login to challenge your rivals'
             : 'Join the duel and start winning'}
         </p>
 
@@ -172,13 +172,13 @@ export default function LoginPage() {
 
           <AnimatePresence mode="wait">
             {(error || resetSuccess) && (
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className={`text-sm font-medium text-center py-2 rounded-lg border ${
-                  resetSuccess 
-                    ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' 
+                  resetSuccess
+                    ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
                     : 'text-red-400 bg-red-400/10 border-red-400/20'
                 }`}
               >
@@ -187,9 +187,9 @@ export default function LoginPage() {
             )}
           </AnimatePresence>
 
-          <Button 
-            type="submit" 
-            fullWidth 
+          <Button
+            type="submit"
+            fullWidth
             disabled={loading}
             className="mt-6 h-10 text-sm"
           >
@@ -206,10 +206,10 @@ export default function LoginPage() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-800"></div>
+            <div className="w-full border-t border-border-light"></div>
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
-            <span className="bg-[#0a0f1e] px-4 text-slate-500 font-bold tracking-widest">Or continue with</span>
+            <span className="bg-background px-4 text-muted-foreground font-bold tracking-widest">Or continue with</span>
           </div>
         </div>
 
@@ -219,7 +219,7 @@ export default function LoginPage() {
           fullWidth
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 shadow-lg h-10 text-sm"
+          className="bg-secondary hover:bg-secondary-hover text-foreground border border-border-light shadow-lg h-10 text-sm"
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
             <path
@@ -242,14 +242,14 @@ export default function LoginPage() {
           Sign in with Google
         </Button>
 
-        <div className="mt-8 pt-6 border-t border-slate-800 flex flex-col gap-4">
+        <div className="mt-8 pt-6 border-t border-border-light flex flex-col gap-4">
           <button
             type="button"
             onClick={() => {
               setMode(mode === 'login' ? 'signup' : 'login');
               setError('');
             }}
-            className="text-sm font-medium text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-2"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
           >
             {mode === 'login' ? (
               <>

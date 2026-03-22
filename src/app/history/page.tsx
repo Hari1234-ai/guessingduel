@@ -94,7 +94,7 @@ export default function HistoryPage() {
   }, [user]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
+    <main className="min-h-screen bg-background text-foreground relative overflow-hidden transition-colors duration-300">
       {/* Background Decor */}
       <div className="absolute top-1/4 -right-24 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 -left-24 w-96 h-96 bg-purple-600/5 rounded-full blur-[120px]" />
@@ -139,7 +139,7 @@ export default function HistoryPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
                   key={match.id}
-                  className="bg-slate-900/40 border border-slate-800 p-4 md:p-6 rounded-3xl backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 hover:border-slate-700 transition-all group overflow-hidden"
+                  className="bg-card border border-card-border p-4 md:p-6 rounded-3xl backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 hover:border-slate-700 transition-all group overflow-hidden"
                 >
                   <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto min-w-0">
                     <div className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 ${
@@ -165,7 +165,7 @@ export default function HistoryPage() {
                   <div className="flex items-center gap-4 md:gap-8 w-full md:w-auto justify-around opacity-60 group-hover:opacity-100 transition-opacity pt-2 md:pt-0 border-t md:border-t-0 border-slate-800/50">
                     <div className="text-center">
                       <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Guesses</p>
-                      <p className="text-xs md:text-sm font-black text-white">{match.totalGuesses}</p>
+                      <p className="text-xs md:text-sm font-black text-foreground">{match.totalGuesses}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Your Num</p>

@@ -7,7 +7,7 @@ import Navbar from '@/components/ui/Navbar';
 
 export default function PlansPage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white overflow-hidden relative flex flex-col">
+    <main className="min-h-screen bg-background text-foreground overflow-hidden relative flex flex-col transition-colors duration-300">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
@@ -32,7 +32,7 @@ export default function PlansPage() {
             <span className="text-blue-500 text-shadow-glow">Plans.</span>
           </h1>
 
-          <div className="max-w-xl mx-auto p-12 rounded-[3rem] bg-slate-900/40 border border-slate-800 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+          <div className="max-w-xl mx-auto p-12 rounded-[3rem] bg-card border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600" />
             
             <p className="text-slate-400 text-base md:text-lg font-bold leading-relaxed">

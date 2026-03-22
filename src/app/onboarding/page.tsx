@@ -53,7 +53,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <main className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-300">
       {/* Background Decor */}
       <div className="absolute top-1/4 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px]" />
       <div className="absolute bottom-1/4 -right-24 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px]" />
@@ -76,7 +76,7 @@ export default function OnboardingPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8 bg-slate-900/40 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
+        <form onSubmit={handleSubmit} className="space-y-8 bg-card border border-card-border p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
           <section className="space-y-6">
             <div className="flex justify-center mb-2">
               <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 border-2 border-slate-700 flex items-center justify-center text-3xl font-black text-white shadow-inner shadow-black/20">

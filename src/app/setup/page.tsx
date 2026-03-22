@@ -16,7 +16,7 @@ import { LogOut } from 'lucide-react';
 export default function Setup() {
   return (
     <React.Suspense fallback={
-      <div className="min-h-screen bg-[#050B18] flex items-center justify-center text-blue-500">
+      <div className="min-h-screen bg-background flex items-center justify-center text-blue-500 transition-colors duration-300">
         <Loader2 className="animate-spin" size={48} />
       </div>
     }>
@@ -156,15 +156,15 @@ function SetupContent() {
 
   if (mode === 'selection') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-20 pointer-events-none" />
+      <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
         
         <Navbar />
 
         <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
             <div className="space-y-4 text-center">
-            <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-foreground to-slate-500 bg-clip-text text-transparent">
               GET READY!
             </h1>
             <p className="text-slate-400 text-sm">Choose your side to begin the duel.</p>
@@ -190,8 +190,8 @@ function SetupContent() {
 
   if (mode === 'enter-code') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+    <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
@@ -227,8 +227,8 @@ function SetupContent() {
   // 3. HOST SETUP VIEW
   if (mode === 'host-setup') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+    <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
           <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12 text-center md:text-left">
@@ -236,7 +236,7 @@ function SetupContent() {
               <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">DUEL SETUP</h2>
               <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your duel settings before inviting a rival.</p>
             </div>
-            <form onSubmit={handleCreateRoom} className="space-y-8 bg-slate-900/40 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+            <form onSubmit={handleCreateRoom} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
               <section className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -267,8 +267,8 @@ function SetupContent() {
   // 4. GUEST SETUP VIEW
   if (mode === 'guest-setup') {
     return (
-      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+    <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
           <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12">
@@ -276,7 +276,7 @@ function SetupContent() {
               <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE DUEL</h2>
               <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A duel has been found! Prepare yourself.</p>
             </div>
-            <form onSubmit={handleGuestReady} className="space-y-8 bg-slate-900/40 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+            <form onSubmit={handleGuestReady} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
                <section className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-3xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -285,7 +285,7 @@ function SetupContent() {
                   </div>
                   <span className="font-black text-blue-400 tracking-widest text-[10px] uppercase">Duel Range</span>
                 </div>
-                <div className="text-lg font-black text-white px-4 py-1.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                <div className="text-lg font-black text-foreground px-4 py-1.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
                   {range.min} — {range.max}
                 </div>
               </section>
@@ -314,15 +314,15 @@ function SetupContent() {
     const isBothReady = isPlayer1Ready && isPlayer2Ready;
     
     return (
-      <main className="min-h-screen bg-[#050B18] text-white flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+    <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
         <Navbar />
         
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
           <div className="max-w-lg mx-auto space-y-10 pt-4 md:pt-8">
           <div className="text-center space-y-4">
             {/* Connection Status Indicator */}
-            <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-slate-900/50 rounded-full border border-white/5 text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
+            <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
               connectionStatus === 'connected' ? 'text-green-500/80' : 
               connectionStatus === 'connecting' ? 'text-yellow-500/80' : 
               'text-red-500/80'
@@ -349,13 +349,13 @@ function SetupContent() {
           )}
 
           {playerId === 'player1' && (
-            <div className="bg-slate-900/50 border border-white/5 p-6 md:p-10 rounded-[2.5rem] text-center space-y-8 shadow-2xl relative overflow-hidden group">
+            <div className="bg-card border border-card-border p-6 md:p-10 rounded-[2.5rem] text-center space-y-8 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
               
               <div className="space-y-3">
                 <span className="text-[10px] font-black tracking-[0.3em] text-slate-600 uppercase">Identification Code</span>
                 <div className="flex items-center justify-center gap-2 md:gap-4">
-                  <span className="text-4xl md:text-6xl font-black tracking-[0.2em] text-white font-mono drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                  <span className="text-4xl md:text-6xl font-black tracking-[0.2em] text-foreground font-mono drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                     {roomCode}
                   </span>
                   <button onClick={copyCode} className="p-3 md:p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all active:scale-95">
@@ -413,14 +413,14 @@ function SetupContent() {
           <div className="space-y-4">
              {/* Readiness Status */}
             <div className="grid grid-cols-2 gap-4">
-              <div className={`p-6 rounded-[2rem] border-2 text-center transition-all ${isPlayer1Ready ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-900 border-slate-800'}`}>
+              <div className={`p-6 rounded-[2rem] border-2 text-center transition-all ${isPlayer1Ready ? 'bg-green-500/10 border-green-500/30' : 'bg-card border-card-border'}`}>
                 <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Host</div>
                 <div className="font-black truncate">{gameState.player1.name}</div>
                 <div className={`mt-2 text-[10px] font-black uppercase ${isPlayer1Ready ? 'text-green-400' : 'text-slate-600'}`}>
                   {isPlayer1Ready ? 'READY' : 'PREPARING'}
                 </div>
               </div>
-              <div className={`p-6 rounded-[2rem] border-2 text-center transition-all ${isPlayer2Ready ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-900 border-slate-800'}`}>
+              <div className={`p-6 rounded-[2rem] border-2 text-center transition-all ${isPlayer2Ready ? 'bg-green-500/10 border-green-500/30' : 'bg-card border-card-border'}`}>
                 <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Challenger</div>
                 <div className="font-black truncate">{isOpponentPresent ? gameState.player2.name : '???'}</div>
                 <div className={`mt-2 text-[10px] font-black uppercase ${isPlayer2Ready ? 'text-green-400' : 'text-slate-600'}`}>
@@ -435,7 +435,7 @@ function SetupContent() {
                   <Sparkles className="mr-2" /> START THE DUEL
                 </Button>
               ) : (
-                <div className="bg-slate-900/50 border-2 border-slate-800 p-6 rounded-3xl text-center space-y-3">
+                <div className="bg-card border-2 border-card-border p-6 rounded-3xl text-center space-y-3">
                   <div className="flex items-center justify-center gap-3 text-blue-400 font-bold animate-pulse">
                     <Loader2 className="animate-spin" size={20} />
                     Waiting for Host to start...
@@ -448,7 +448,7 @@ function SetupContent() {
             ) : null}
           </div>
 
-          <button onClick={() => router.push('/')} className="text-slate-600 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-sm font-bold uppercase tracking-widest">
+          <button onClick={() => router.push('/')} className="text-slate-600 hover:text-foreground transition-colors flex items-center justify-center gap-2 mx-auto text-sm font-bold uppercase tracking-widest">
             Cancel and Return
           </button>
         </div>
