@@ -111,23 +111,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Host pulses to help Guests
       if (state.playerId === 'player1' && state.roomCode) {
+        console.log(`[Interval] Publishing host-heartbeat to room-${state.roomCode}`);
         channel.publish('host-heartbeat', {
           name: state.player1.name || 'Player 1',
           uid: state.player1.uid || '',
           secret: state.player1.secretNumber || 0,
           range: state.range || { min: 1, max: 100 },
           isReady: !!state.isPlayer1Ready,
-        }).catch(err => console.error('Host pulse error', err));
+        }).then(() => console.log('Host pulse published OK')).catch(err => console.error('Host pulse error', err));
       }
       
       // Guest pulses to help Hosts
       if (state.playerId === 'player2' && state.roomCode) {
+        console.log(`[Interval] Publishing guest-heartbeat to room-${state.roomCode}`);
         channel.publish('guest-heartbeat', {
           name: state.player2.name || 'Challenger Joining...',
           uid: state.player2.uid || '',
           secret: state.player2.secretNumber || 0,
           isReady: !!state.isPlayer2Ready,
-        }).catch(err => console.error('Guest pulse error', err));
+        }).then(() => console.log('Guest pulse published OK')).catch(err => console.error('Guest pulse error', err));
       }
     }, 1500);
 
@@ -157,6 +159,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       channelRef.current = channel;
 
       // Immediate pulse so guest sees us right away
+      console.log(`[Host] Subscribing to guest-heartbeat on room-${code}`);
       channel.publish('host-heartbeat', {
         name: newState.player1.name,
         uid: newState.player1.uid,
