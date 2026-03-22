@@ -311,12 +311,11 @@ function SetupContent() {
         </div>
 
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-lg space-y-12">
-          <div className="text-center space-y-4">
-            <div className="bg-blue-500/20 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-blue-500/30">
-              <Users className="text-blue-400" size={32} />
-            </div>
-            <h1 className="text-4xl font-black tracking-tighter">DUEL LOBBY</h1>
-            <p className="text-slate-400">Everything is set. {playerId === 'player1' ? 'Invite your opponent.' : 'Wait for the host to start.'}</p>
+          <div className="text-center space-y-3">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic">Lobby</h1>
+            <p className="text-slate-500 text-xs md:text-sm max-w-[280px] mx-auto md:max-w-none">
+              {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
+            </p>
           </div>
 
           {connectionStatus === 'failed' && (
@@ -327,49 +326,55 @@ function SetupContent() {
           )}
 
           {playerId === 'player1' && (
-            <div className="bg-slate-900 border border-white/10 p-8 rounded-[3rem] text-center space-y-6 shadow-2xl relative">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">Room Identification Code</span>
-                <div className="flex items-center justify-center gap-3">
-                  <span className="text-6xl font-black tracking-widest text-white font-mono">{roomCode}</span>
-                  <button onClick={copyCode} className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-colors">
-                    {copied ? <Check size={24} className="text-green-400" /> : <Copy size={24} className="text-slate-400" />}
+            <div className="bg-slate-900/50 border border-white/5 p-6 md:p-10 rounded-[2.5rem] text-center space-y-8 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+              
+              <div className="space-y-3">
+                <span className="text-[10px] font-black tracking-[0.3em] text-slate-600 uppercase">Identification Code</span>
+                <div className="flex items-center justify-center gap-2 md:gap-4">
+                  <span className="text-4xl md:text-6xl font-black tracking-[0.2em] text-white font-mono drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                    {roomCode}
+                  </span>
+                  <button onClick={copyCode} className="p-3 md:p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all active:scale-95">
+                    {copied ? <Check size={20} className="text-green-400" /> : <Copy size={20} className="text-slate-500 group-hover:text-blue-400 transition-colors" />}
                   </button>
                 </div>
               </div>
               
-              <button 
-                onClick={copyInviteLink}
-                className="flex items-center justify-center gap-2 mx-auto px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 rounded-2xl border border-blue-500/20 transition-all group w-full max-w-[280px]"
-              >
-                {linkCopied ? (
-                  <>
-                    <Check size={18} className="text-green-400" />
-                    <span className="font-bold text-sm">COPIED LINK!</span>
-                  </>
-                ) : (
-                  <>
-                    <LinkIcon size={18} className="group-hover:rotate-12 transition-transform" />
-                    <span className="font-bold text-sm uppercase tracking-wide">Copy Invite Link</span>
-                  </>
-                )}
-              </button>
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                <button 
+                  onClick={copyInviteLink}
+                  className="flex items-center justify-center gap-2 mx-auto px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 rounded-2xl border border-blue-500/20 transition-all group w-full"
+                >
+                  {linkCopied ? (
+                    <>
+                      <Check size={16} className="text-green-400" />
+                      <span className="font-bold text-xs uppercase">Link Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <LinkIcon size={16} className="group-hover:rotate-12 transition-transform" />
+                      <span className="font-bold text-xs uppercase tracking-widest">Copy Invite Link</span>
+                    </>
+                  )}
+                </button>
+              </div>
 
               {!isOpponentPresent && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-center gap-2 text-blue-400 font-bold animate-pulse text-sm">
-                    <Loader2 className="animate-spin" size={16} /> Waiting for opponent to join...
+                <div className="space-y-6 pt-6 border-t border-white/5">
+                  <div className="flex items-center justify-center gap-2 text-blue-400/60 font-medium animate-pulse text-[11px] uppercase tracking-widest">
+                    <Loader2 className="animate-spin" size={14} /> Waiting for rival...
                   </div>
                   
-                  <div className="pt-4 border-t border-white/5">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase mb-4">No one around? Duel the machine.</p>
+                  <div className="space-y-3">
+                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Or practice against Intelligence</p>
                     <Button 
                       onClick={() => user?.uid && startWithAI(user.uid)}
                       variant="secondary"
                       size="sm"
-                      className="w-full bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10 text-blue-400 h-12 rounded-2xl"
+                      className="w-full bg-slate-900 border-white/5 hover:border-blue-500/50 hover:bg-blue-500/5 text-slate-400 hover:text-blue-400 h-11 rounded-2xl text-[10px] font-black"
                     >
-                      <Sparkles size={16} className="mr-2" />
+                      <Sparkles size={14} className="mr-2" />
                       DUEL WITH AI
                     </Button>
                   </div>
