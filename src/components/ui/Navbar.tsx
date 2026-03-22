@@ -223,17 +223,23 @@ export default function Navbar() {
                   
                   <div className="h-px bg-slate-800 my-4" />
                   
+                  {/* 
                   <button onClick={resetMyCoins} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-blue-400 hover:bg-blue-600/10 transition-all font-bold text-sm text-left">
                     <RefreshCcw size={18} className="text-blue-400/50" /> Reset Coins (Debug)
                   </button>
+                  */}
                   
+                  {/* 
                   <button onClick={cleanupDuplicateMatches} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-orange-400 hover:bg-orange-600/10 transition-all font-bold text-sm text-left">
                     <Trash2 size={18} className="text-orange-400/50" /> Cleanup Duplicates
                   </button>
+                  */}
 
+                  {/* 
                   <button onClick={resetMyHistory} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-600/10 transition-all font-bold text-sm text-left">
                     <History size={18} className="text-red-400/50" /> Wipe All History
                   </button>
+                  */}
                 </div>
               </div>
 

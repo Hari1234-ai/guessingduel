@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Swords, Play, Shield, Zap, Users, ChevronRight, Github } from 'lucide-react';
+import { Swords, Play, Shield, Zap, Users, ChevronRight } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -180,12 +180,6 @@ export default function LandingPage() {
               <Link href="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy</Link>
               <Link href="/terms" className="text-slate-400 hover:text-white transition-colors">Terms</Link>
               <Link href="/contact" className="text-slate-400 hover:text-white transition-colors">Contact Us</Link>
-            </div>
-            <div className="flex flex-col gap-4 items-center md:items-start">
-              <span className="text-slate-600 text-[10px] mb-2">Connect</span>
-              <a href="#" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-                <Github size={14} /> Github
-              </a>
             </div>
           </div>
         </div>

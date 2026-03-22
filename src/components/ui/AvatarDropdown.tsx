@@ -184,6 +184,7 @@ export default function AvatarDropdown() {
                 </Link>
               ))}
               
+              {/*
               <button 
                 onClick={resetMyCoins}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-all font-bold text-xs group"
@@ -207,6 +208,7 @@ export default function AvatarDropdown() {
                 <History size={14} className="text-red-400/50 group-hover:text-red-400 transition-colors" />
                 Wipe All History (Debug)
               </button>
+              */}
 
               <div className="h-px bg-slate-800 my-2 mx-2" />
               
