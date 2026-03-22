@@ -1,6 +1,6 @@
 export type GameStatus = 'setup' | 'lobby' | 'guest-setup' | 'playing' | 'finished';
 
-export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | null;
+export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | 'Time Out' | null;
 
 export interface Player {
   uid?: string;

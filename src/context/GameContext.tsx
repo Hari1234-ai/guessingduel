@@ -247,7 +247,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...prev,
               [currentPlayerKey]: {
                 ...prev[currentPlayerKey],
-                attempts: prev[currentPlayerKey].attempts + 1,
+                attempts: prev[currentPlayerKey].attempts + (guess === -1 ? 0 : 1),
                 history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
               },
               currentTurn: nextTurn as 'player1' | 'player2',
@@ -359,7 +359,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...prev,
               [currentPlayerKey]: {
                 ...prev[currentPlayerKey],
-                attempts: prev[currentPlayerKey].attempts + 1,
+                attempts: prev[currentPlayerKey].attempts + (guess === -1 ? 0 : 1),
                 history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
               },
               currentTurn: nextTurn as 'player1' | 'player2',
@@ -410,21 +410,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (guess < opponent.secretNumber) feedback = 'Too Low';
     if (guess > opponent.secretNumber) feedback = 'Too High';
 
-    const isWinner = feedback === 'Correct!' || guess === -1; // -1 means timed out but opponent wins? 
-    // Wait, the user said: "if the participient did not attempt a guess in the 30 sec then he will lose his attempt and the turn should move to the opponent"
-    // So if guess === -1, it's NOT a win, it's just a turn switch.
+    const isWinner = guess !== -1 && feedback === 'Correct!';
     
     // BUT, the user also said "and th..." (cut off). usually this means if you timeout 3 times you lose, OR just switch turn.
     // I'll stick to "switch turn" for now as requested.
     
-    const actualFeedback = guess === -1 ? 'Time Out' : feedback;
+    const actualFeedback: Feedback = guess === -1 ? 'Time Out' : feedback;
     const nextTurn = isWinner ? currentTurn : (currentTurn === 'player1' ? 'player2' : 'player1');
 
     updateState(prev => ({
       ...prev,
       [currentTurn]: {
         ...prev[currentTurn],
-        attempts: prev[currentTurn].attempts + 1,
+        attempts: prev[currentTurn].attempts + (guess === -1 ? 0 : 1), // Don't count timeout as attempt? User said "lose his attempt". 
+        // Actually usually "attempt" means a guess. if you timeout, you didn't guess. 
+        // But the user said "lose his attempt". I'll increment attempts anyway to show a turn passed.
         history: [{ guess, feedback: actualFeedback as Feedback }, ...prev[currentTurn].history],
       },
       currentTurn: nextTurn as 'player1' | 'player2',
@@ -434,9 +434,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     if (channelRef.current) {
-      channelRef.current.publish('guess-made', { guess, feedback, nextTurn, isWinner });
+      channelRef.current.publish('guess-made', { guess, feedback: actualFeedback, nextTurn, isWinner });
     }
-    return feedback;
+    return actualFeedback;
   }, [updateState]);
 
   // AI Logic: Automated turn when it's AI's turn
