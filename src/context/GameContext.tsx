@@ -101,8 +101,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const interval = setInterval(() => {
       const state = latestStateRef.current;
       
-      // Host pulses to help Guests
-      if (state.playerId === 'player1' && state.status === 'lobby') {
+      // Host pulses to help Guests - Pulse whenever we are Player 1 and have a room
+      if (state.playerId === 'player1' && state.roomCode) {
         const payload = {
           name: state.player1.name,
           uid: state.player1.uid,
@@ -113,8 +113,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         channel.publish('host-heartbeat', payload);
       }
       
-      // Guest pulses to help Hosts (Even during guest-setup, helps host know they are there)
-      if (state.playerId === 'player2' && (state.status === 'guest-setup' || state.status === 'lobby')) {
+      // Guest pulses to help Hosts - Pulse whenever we are Player 2 and have a room
+      if (state.playerId === 'player2' && state.roomCode) {
         const payload = {
           name: state.player2.name || 'Challenger Joining...',
           uid: state.player2.uid,
@@ -123,7 +123,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
         channel.publish('guest-heartbeat', payload);
       }
-    }, 2500); // Fast 2.5s pulse for near-instant sync
+    }, 1500); // Increased frequency to 1.5s for faster sync
 
     return () => clearInterval(interval);
   }, [gameState.status, gameState.playerId]); // Re-bind if major phase changes
@@ -144,11 +144,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     
     latestStateRef.current = newState;
-    setGameState(newState);
     
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
       channelRef.current = channel;
+
+      // Immediate pulse so guest sees us right away
+      channel.publish('host-heartbeat', {
+        name: newState.player1.name,
+        uid: newState.player1.uid,
+        secret: newState.player1.secretNumber,
+        range: newState.range,
+        isReady: true,
+      });
 
       // Host Listens for Guest Heartbeats
       channel.subscribe('guest-heartbeat', (msg) => {
@@ -244,6 +252,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
     }
+
+    setGameState(newState);
     return code;
   }, [updateState]);
 
@@ -258,7 +268,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Initialize guest with uid early
     newState.player2.uid = uid;
     latestStateRef.current = newState;
-    setGameState(newState);
     
     if (ablyRef.current) {
       const channel = ablyRef.current.channels.get(`room-${code}`);
@@ -359,11 +368,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Send an immediate pulse to alert the host we arrived, don't wait 2.5s
       channel.publish('guest-heartbeat', {
-        name: 'Challenger Joining...',
+        name: newState.player2.name || 'Challenger Joining...',
+        uid: newState.player2.uid,
         secret: 0,
         isReady: false,
       });
     }
+
+    setGameState(newState);
   }, [updateState]);
 
   const completeGuestSetup = useCallback(async (name: string, uid: string, secret: number) => {
