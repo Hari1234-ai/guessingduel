@@ -179,7 +179,7 @@ export default function Game() {
 
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col relative transition-colors duration-300">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
       <Navbar />
 
       <div className="flex-1 p-4 md:p-8 flex flex-col items-center overflow-y-auto">

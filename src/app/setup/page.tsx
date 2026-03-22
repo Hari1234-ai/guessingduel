@@ -157,7 +157,7 @@ function SetupContent() {
   if (mode === 'selection') {
     return (
       <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         
         <Navbar />
 
@@ -191,7 +191,7 @@ function SetupContent() {
   if (mode === 'enter-code') {
     return (
     <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
@@ -228,7 +228,7 @@ function SetupContent() {
   if (mode === 'host-setup') {
     return (
     <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
           <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12 text-center md:text-left">
@@ -268,7 +268,7 @@ function SetupContent() {
   if (mode === 'guest-setup') {
     return (
     <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
           <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12">
@@ -315,7 +315,7 @@ function SetupContent() {
     
     return (
     <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] dark:opacity-10 light:opacity-5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
