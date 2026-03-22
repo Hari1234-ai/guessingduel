@@ -307,19 +307,23 @@ function SetupContent() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         
-        {/* Connection Status Indicator */}
-        <div className="fixed top-24 right-6 flex items-center gap-2 px-3 py-1.5 bg-slate-900/50 rounded-full border border-white/5 text-[10px] font-bold tracking-widest uppercase z-40 backdrop-blur-sm">
-          <div className={`w-1.5 h-1.5 rounded-full ${
-            connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
-            connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
-            'bg-red-500 shadow-[0_0_8px_#ef4444]'
-          }`} />
-          {connectionStatus}
-        </div>
-
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
           <div className="max-w-lg mx-auto space-y-10 pt-4 md:pt-8">
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-4">
+            {/* Connection Status Indicator */}
+            <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-slate-900/50 rounded-full border border-white/5 text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
+              connectionStatus === 'connected' ? 'text-green-500/80' : 
+              connectionStatus === 'connecting' ? 'text-yellow-500/80' : 
+              'text-red-500/80'
+            }`}>
+              <div className={`w-1.5 h-1.5 rounded-full ${
+                connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
+                connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
+                'bg-red-500 shadow-[0_0_8px_#ef4444]'
+              }`} />
+              {connectionStatus}
+            </div>
+
             <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic">Lobby</h1>
             <p className="text-slate-500 text-xs md:text-sm max-w-[280px] mx-auto md:max-w-none">
               {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
