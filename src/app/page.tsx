@@ -183,9 +183,6 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="mt-12 text-center text-[10px] text-slate-700 font-black uppercase tracking-[0.3em]">
-          Inspired by Modern Cyber Aesthetics • 2024
-        </div>
       </footer>
 
       {/* Modals */}
