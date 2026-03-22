@@ -28,7 +28,7 @@ export default function Setup() {
 function SetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame, startWithAI } = useGame();
+  const { gameState, connectionStatus, createRoom, joinRoom, completeGuestSetup, startGame, startWithAI, startNewGame } = useGame();
   const { user, profileData, logout } = useAuth();
   const { roomCode, playerId, status, isOpponentPresent, isPlayer1Ready, isPlayer2Ready, range } = gameState;
 
@@ -43,6 +43,27 @@ function SetupContent() {
     max: 100,
     secret: '',
   });
+
+  const [lobbyTimer, setLobbyTimer] = useState(30);
+
+  // Lobby timeout countdown (Host only)
+  useEffect(() => {
+    if (mode === 'lobby' && playerId === 'player1' && !isOpponentPresent && lobbyTimer > 0) {
+      const timer = setInterval(() => {
+        setLobbyTimer(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [mode, playerId, isOpponentPresent, lobbyTimer]);
+
+  // Handle timeout expiry
+  useEffect(() => {
+    if (mode === 'lobby' && playerId === 'player1' && !isOpponentPresent && lobbyTimer === 0) {
+      startNewGame(); // Resets context
+      setMode('selection');
+      setLobbyTimer(30);
+    }
+  }, [lobbyTimer, mode, playerId, isOpponentPresent, startNewGame]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -73,6 +94,17 @@ function SetupContent() {
       router.push('/game');
     }
   }, [status, router]);
+
+  // Clean up lobby on refresh/unload (Host only)
+  useEffect(() => {
+    const handleUnload = () => {
+      if (mode === 'lobby' && playerId === 'player1') {
+        startNewGame();
+      }
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [mode, playerId, startNewGame]);
 
   const handleCreateRoom = (e: React.FormEvent) => {
     e.preventDefault();
@@ -374,8 +406,15 @@ function SetupContent() {
 
               {!isOpponentPresent && (
                 <div className="space-y-6 pt-6 border-t border-white/5">
-                  <div className="flex items-center justify-center gap-2 text-blue-400/60 font-medium animate-pulse text-[11px] uppercase tracking-widest">
-                    <Loader2 className="animate-spin" size={14} /> Waiting for rival...
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-2 text-blue-400/60 font-medium animate-pulse text-[11px] uppercase tracking-widest">
+                      <Loader2 className="animate-spin" size={14} /> Waiting for rival...
+                    </div>
+                    <div className="mx-auto flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                      <span className={`text-[9px] font-black tracking-widest ${lobbyTimer <= 10 ? 'text-red-500 animate-pulse' : 'text-blue-400/80'}`}>
+                        AUTO-CLOSE IN {lobbyTimer}S
+                      </span>
+                    </div>
                   </div>
                   
                   <div className="space-y-4 pt-4">
