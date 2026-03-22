@@ -423,7 +423,22 @@ export default function Game() {
           </div>
 
           <div className="flex flex-col gap-3 w-full">
-            <Button variant="secondary" size="md" fullWidth onClick={startNewGame} className="h-12 text-sm text-slate-400">
+            <Button 
+              variant="secondary" 
+              size="md" 
+              fullWidth 
+              onClick={() => {
+                const code = roomCode;
+                const isAI = player2.isAI;
+                startNewGame();
+                if (isAI || !code) {
+                  router.push('/setup');
+                } else {
+                  router.push(`/setup?room=${code}`);
+                }
+              }} 
+              className="h-12 text-sm text-slate-400"
+            >
               Main Menu
             </Button>
           </div>
