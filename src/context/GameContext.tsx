@@ -95,38 +95,37 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // THE ULTIMATE "DUAL-HEARTBEAT" SYNC SYSTEM (No Presence API)
   // ---------------------------------------------------------
   useEffect(() => {
-    const channel = channelRef.current;
-    if (!channel) return;
-
+    // Run an independent interval that continuously checks refs
     const interval = setInterval(() => {
+      const channel = channelRef.current;
       const state = latestStateRef.current;
       
-      // Host pulses to help Guests - Pulse whenever we are Player 1 and have a room
+      if (!channel) return;
+      
+      // Host pulses to help Guests
       if (state.playerId === 'player1' && state.roomCode) {
-        const payload = {
-          name: state.player1.name,
-          uid: state.player1.uid,
-          secret: state.player1.secretNumber,
-          range: state.range,
-          isReady: state.isPlayer1Ready,
-        };
-        channel.publish('host-heartbeat', payload);
+        channel.publish('host-heartbeat', {
+          name: state.player1.name || 'Player 1',
+          uid: state.player1.uid || '',
+          secret: state.player1.secretNumber || 0,
+          range: state.range || { min: 1, max: 100 },
+          isReady: !!state.isPlayer1Ready,
+        }).catch(err => console.error('Host pulse error', err));
       }
       
-      // Guest pulses to help Hosts - Pulse whenever we are Player 2 and have a room
+      // Guest pulses to help Hosts
       if (state.playerId === 'player2' && state.roomCode) {
-        const payload = {
+        channel.publish('guest-heartbeat', {
           name: state.player2.name || 'Challenger Joining...',
-          uid: state.player2.uid,
-          secret: state.player2.secretNumber,
-          isReady: state.isPlayer2Ready,
-        };
-        channel.publish('guest-heartbeat', payload);
+          uid: state.player2.uid || '',
+          secret: state.player2.secretNumber || 0,
+          isReady: !!state.isPlayer2Ready,
+        }).catch(err => console.error('Guest pulse error', err));
       }
-    }, 1500); // Increased frequency to 1.5s for faster sync
+    }, 1500);
 
     return () => clearInterval(interval);
-  }, [gameState.status, gameState.playerId]); // Re-bind if major phase changes
+  }, []); // No dependencies needed, safely uses refs
 
 
   const createRoom = useCallback(async (name: string, uid: string, secret: number, min: number, max: number) => {
@@ -161,19 +160,26 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Host Listens for Guest Heartbeats
       channel.subscribe('guest-heartbeat', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
-          const payload = msg.data;
-          updateState(prev => ({
-            ...prev,
-            isOpponentPresent: true,
-            player2: { 
-              ...prev.player2, 
-              name: payload.name.includes('...') && prev.isPlayer2Ready ? prev.player2.name : payload.name, 
-              uid: payload.uid || prev.player2.uid,
-              // Only update secret if it's non-zero AND we are not player2 ourselves
-              secretNumber: (prev.playerId !== 'player2' && (payload.secret !== 0 || !prev.isPlayer2Ready)) ? payload.secret : prev.player2.secretNumber 
-            },
-            isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
-          }));
+          const payload = msg.data || {};
+          console.log('[Host] Received guest-heartbeat:', payload);
+          updateState(prev => {
+            // Protect guest name from being overwritten by 'Challenger Joining...' if they are already ready
+            const newGuestName = (payload.name && payload.name.includes('.')) && prev.isPlayer2Ready 
+              ? prev.player2.name 
+              : (payload.name || prev.player2.name || 'Player 2');
+
+            return {
+              ...prev,
+              isOpponentPresent: true,
+              player2: { 
+                ...prev.player2, 
+                name: newGuestName, 
+                uid: payload.uid || prev.player2.uid,
+                secretNumber: (prev.playerId !== 'player2' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player2.secretNumber 
+              },
+              isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
+            };
+          });
         }
       });
 
@@ -276,16 +282,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Guest Listens for Host Heartbeats
       channel.subscribe('host-heartbeat', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
-          const payload = msg.data;
+          const payload = msg.data || {};
+          console.log('[Guest] Received host-heartbeat:', payload);
           updateState(prev => ({
             ...prev,
             isOpponentPresent: true,
             player1: { 
               ...prev.player1, 
-              name: payload.name, 
+              name: payload.name || prev.player1.name || 'Player 1', 
               uid: payload.uid || prev.player1.uid, 
-              // Only update secret if we are NOT player1 ourselves
-              secretNumber: (prev.playerId !== 'player1' && (payload.secret !== 0 || !prev.isPlayer1Ready)) ? payload.secret : prev.player1.secretNumber 
+              secretNumber: (prev.playerId !== 'player1' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player1.secretNumber 
             },
             range: payload.range || prev.range,
             isPlayer1Ready: payload.isReady || prev.isPlayer1Ready,
