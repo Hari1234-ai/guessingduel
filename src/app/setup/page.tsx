@@ -57,7 +57,7 @@ function SetupContent() {
         joinRoom(room.toUpperCase(), user.uid);
       }
     }
-  }, [searchParams, joinRoom, roomCode]);
+  }, [searchParams, joinRoom, roomCode, user?.uid]);
 
   // Sync mode with game status for guest
   useEffect(() => {
