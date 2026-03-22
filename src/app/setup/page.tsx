@@ -51,13 +51,13 @@ function SetupContent() {
   // Auto-join if room code in URL
   useEffect(() => {
     const room = searchParams.get('room');
-    if (room && room.length === 6 && !roomCode) {
+    if (room && room.length === 6 && !roomCode && connectionStatus === 'connected') {
       console.log('Auto-joining room from URL:', room);
       if (user?.uid) {
         joinRoom(room.toUpperCase(), user.uid);
       }
     }
-  }, [searchParams, joinRoom, roomCode, user?.uid]);
+  }, [searchParams, joinRoom, roomCode, user?.uid, connectionStatus]);
 
   // Sync mode with game status for guest
   useEffect(() => {
