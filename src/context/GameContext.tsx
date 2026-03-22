@@ -186,6 +186,31 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLatestReaction({ emoji: msg.data.emoji, timestamp: Date.now() });
       });
 
+      // Handle re-sync requests: Re-publish current state
+      channel.subscribe('request-sync', (msg) => {
+        if (msg.clientId !== ablyRef.current?.clientId) {
+          const state = latestStateRef.current;
+          channel.publish('sync-response', {
+            player1: state.player1,
+            player2: state.player2,
+            range: state.range
+          });
+        }
+      });
+
+      // Handle re-sync responses: Merge carefully
+      channel.subscribe('sync-response', (msg) => {
+        if (msg.clientId !== ablyRef.current?.clientId) {
+          const payload = msg.data;
+          updateState(prev => ({
+            ...prev,
+            player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
+            player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
+            range: payload.range || prev.range
+          }));
+        }
+      });
+
       channel.subscribe('rematch', () => {
         updateState(prev => ({
           ...initialState,
@@ -272,6 +297,31 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       channel.subscribe('reaction', (msg) => {
         setLatestReaction({ emoji: msg.data.emoji, timestamp: Date.now() });
+      });
+
+      // Handle re-sync requests: Re-publish current state
+      channel.subscribe('request-sync', (msg) => {
+        if (msg.clientId !== ablyRef.current?.clientId) {
+          const state = latestStateRef.current;
+          channel.publish('sync-response', {
+            player1: state.player1,
+            player2: state.player2,
+            range: state.range
+          });
+        }
+      });
+
+      // Handle re-sync responses: Merge carefully
+      channel.subscribe('sync-response', (msg) => {
+        if (msg.clientId !== ablyRef.current?.clientId) {
+          const payload = msg.data;
+          updateState(prev => ({
+            ...prev,
+            player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
+            player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
+            range: payload.range || prev.range
+          }));
+        }
       });
 
       channel.subscribe('rematch', () => {
@@ -499,6 +549,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, [gameState.turnTimeLeft, gameState.status, gameState.currentTurn, gameState.playerId, gameState.winner, makeGuess]);
+
+  // Fail-safe: Pulse re-sync if data is missing during game
+  useEffect(() => {
+    if (gameState.status === 'playing' && channelRef.current) {
+      const isOpponentReady = gameState.player1.secretNumber !== 0 && gameState.player2.secretNumber !== 0;
+      if (!isOpponentReady) {
+        const interval = setInterval(() => {
+          channelRef.current?.publish('request-sync', {});
+        }, 3000);
+        return () => clearInterval(interval);
+      }
+    }
+  }, [gameState.status, gameState.player1.secretNumber, gameState.player2.secretNumber]);
 
   return (
     <GameContext.Provider value={{ 
