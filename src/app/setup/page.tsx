@@ -378,16 +378,18 @@ function SetupContent() {
                     <Loader2 className="animate-spin" size={14} /> Waiting for rival...
                   </div>
                   
-                  <div className="space-y-3">
-                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Or practice against Intelligence</p>
+                  <div className="space-y-4 pt-4">
                     <Button 
                       onClick={() => user?.uid && startWithAI(user.uid)}
-                      variant="secondary"
-                      size="sm"
-                      className="w-full bg-slate-900 border-white/5 hover:border-blue-500/50 hover:bg-blue-500/5 text-slate-400 hover:text-blue-400 h-11 rounded-2xl text-[10px] font-black"
+                      size="lg"
+                      className="w-full h-16 bg-gradient-to-br from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-400 border border-blue-500/20 hover:border-blue-500/40 rounded-3xl transition-all group relative overflow-hidden backdrop-blur-sm"
                     >
-                      <Sparkles size={14} className="mr-2" />
-                      DUEL WITH AI
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                      <Sparkles size={20} className="mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform text-blue-400" />
+                      <div className="flex flex-col items-start">
+                        <span className="font-black tracking-[0.2em] uppercase text-[10px] leading-tight opacity-60">Practice Duel</span>
+                        <span className="font-black tracking-widest uppercase text-sm leading-tight">DUEL WITH AI</span>
+                      </div>
                     </Button>
                   </div>
                 </div>
