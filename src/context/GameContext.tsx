@@ -159,28 +159,26 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Host Listens for Guest Heartbeats
       channel.subscribe('guest-heartbeat', (msg) => {
-        if (msg.clientId !== ablyRef.current?.clientId) {
-          const payload = msg.data || {};
-          console.log('[Host] Received guest-heartbeat:', payload);
-          updateState(prev => {
-            // Protect guest name from being overwritten by 'Challenger Joining...' if they are already ready
-            const newGuestName = (payload.name && payload.name.includes('.')) && prev.isPlayer2Ready 
-              ? prev.player2.name 
-              : (payload.name || prev.player2.name || 'Player 2');
+        const payload = msg.data || {};
+        console.log('[Host] Received guest-heartbeat:', payload);
+        updateState(prev => {
+          // Protect guest name from being overwritten by 'Challenger Joining...' if they are already ready
+          const newGuestName = (payload.name && payload.name.includes('.')) && prev.isPlayer2Ready 
+            ? prev.player2.name 
+            : (payload.name || prev.player2.name || 'Player 2');
 
-            return {
-              ...prev,
-              isOpponentPresent: true,
-              player2: { 
-                ...prev.player2, 
-                name: newGuestName, 
-                uid: payload.uid || prev.player2.uid,
-                secretNumber: (prev.playerId !== 'player2' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player2.secretNumber 
-              },
-              isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
-            };
-          });
-        }
+          return {
+            ...prev,
+            isOpponentPresent: true,
+            player2: { 
+              ...prev.player2, 
+              name: newGuestName, 
+              uid: payload.uid || prev.player2.uid,
+              secretNumber: (prev.playerId !== 'player2' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player2.secretNumber 
+            },
+            isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
+          };
+        });
       });
 
       // Subscribe to actions
@@ -281,22 +279,20 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Guest Listens for Host Heartbeats
       channel.subscribe('host-heartbeat', (msg) => {
-        if (msg.clientId !== ablyRef.current?.clientId) {
-          const payload = msg.data || {};
-          console.log('[Guest] Received host-heartbeat:', payload);
-          updateState(prev => ({
-            ...prev,
-            isOpponentPresent: true,
-            player1: { 
-              ...prev.player1, 
-              name: payload.name || prev.player1.name || 'Player 1', 
-              uid: payload.uid || prev.player1.uid, 
-              secretNumber: (prev.playerId !== 'player1' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player1.secretNumber 
-            },
-            range: payload.range || prev.range,
-            isPlayer1Ready: payload.isReady || prev.isPlayer1Ready,
-          }));
-        }
+        const payload = msg.data || {};
+        console.log('[Guest] Received host-heartbeat:', payload);
+        updateState(prev => ({
+          ...prev,
+          isOpponentPresent: true,
+          player1: { 
+            ...prev.player1, 
+            name: payload.name || prev.player1.name || 'Player 1', 
+            uid: payload.uid || prev.player1.uid, 
+            secretNumber: (prev.playerId !== 'player1' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player1.secretNumber 
+          },
+          range: payload.range || prev.range,
+          isPlayer1Ready: payload.isReady || prev.isPlayer1Ready,
+        }));
       });
 
       channel.subscribe('start-duel', (msg) => {
