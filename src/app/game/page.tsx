@@ -313,7 +313,7 @@ export default function Game() {
                 </Button>
               </form>
 
-              <div className="flex gap-4 mt-8 w-full max-w-xs justify-center relative">
+              <div className="mt-10 w-full relative">
                 {/* Floating Emojis Container */}
                 <div className="absolute -top-40 inset-x-0 pointer-events-none z-50">
                   <AnimatePresence>
@@ -332,7 +332,7 @@ export default function Game() {
                 </div>
 
                 {/* Emoji Selection Bar */}
-                <div className="flex items-center gap-1.5 p-1.5 bg-card/60 rounded-2xl border border-card-border backdrop-blur-md shadow-lg mx-auto">
+                <div className="flex items-center justify-between w-full p-3 bg-card/60 rounded-2xl border border-card-border backdrop-blur-md shadow-lg px-6">
                   {REACTION_EMOJIS.map((item) => (
                     <button
                       key={item.label}
