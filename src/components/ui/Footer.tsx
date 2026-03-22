@@ -36,11 +36,6 @@ export default function Footer() {
             <Link href="/contact" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Contact Us</Link>
             <Link href="/faq" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all opacity-50 cursor-not-allowed">Help Center</Link>
           </div>
-          <div className="flex flex-col gap-3">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Social</h4>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">GitHub</a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">X / Twitter</a>
-          </div>
         </div>
 
         {/* Bottom Bar */}
