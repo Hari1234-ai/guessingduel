@@ -36,15 +36,15 @@ export default function ContactPage() {
               <span className="text-blue-500">Transmission.</span>
             </h1>
             <p className="text-slate-400 text-base leading-relaxed max-w-xl mx-auto text-center">
-              Connect with the creator or share your feedback directly. All signals are routed to the founder's secure line.
+              Connect with the creator or share your feedback directly. All signals are routed to the creator's secure line.
             </p>
           </div>
 
           <div className="flex justify-center w-full">
             <div className="grid sm:grid-cols-2 gap-8 md:gap-12 max-w-fit text-left">
-              <ContactLink icon={<Mail />} title="Official Email" value="hari@edzy.ai" href="mailto:hari@edzy.ai" />
+              <ContactLink icon={<Mail />} title="Official Email" value="mindmatch4@gmail.com" href="mailto:mindmatch4@gmail.com" />
               <ContactLink icon={<Linkedin />} title="LinkedIn" value="Hari Krishna Chenna" href="https://linkedin.com/in/hari-krishna-chenna-54014124b" />
-              <ContactLink icon={<User />} title="Founder Profile" value="View Portfolio" href="https://portfolio-hari-krishna-12.vercel.app/" />
+              <ContactLink icon={<User />} title="Creator Profile" value="View Portfolio" href="https://portfolio-hari-krishna-12.vercel.app/" />
               <ContactLink icon={<Phone />} title="Contact Number" value="+91 6301374802" href="tel:+916301374802" />
             </div>
           </div>
