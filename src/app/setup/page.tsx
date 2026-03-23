@@ -194,16 +194,16 @@ function SetupContent() {
                 <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-foreground to-slate-500 bg-clip-text text-transparent">
                   GET READY!
                 </h1>
-                <p className="text-slate-400 text-sm">Choose your side to begin the duel.</p>
+                <p className="text-slate-400 text-sm">Choose your side to begin the match.</p>
               </div>
               <div className="grid gap-4 pt-6">
                 <Button onClick={() => setMode('host-setup')} size="md" className="h-14 text-lg font-bold group">
                   <Users className="mr-3 group-hover:scale-110 transition-transform" />
-                  HOST A DUEL
+                  HOST A MINDMATCH
                 </Button>
                 <Button onClick={() => setMode('enter-code')} variant="secondary" size="md" className="h-14 text-lg font-bold group">
                   <Hash className="mr-3 group-hover:scale-110 transition-transform" />
-                  JOIN A DUEL
+                  JOIN A MINDMATCH
                 </Button>
               </div>
               <button onClick={() => router.push('/')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
@@ -223,7 +223,7 @@ function SetupContent() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16 pb-20">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
               <div className="text-center space-y-2">
-                <h2 className="text-xl font-black uppercase italic tracking-tight">ENTER DUEL CODE</h2>
+                <h2 className="text-xl font-black uppercase italic tracking-tight">ENTER MINDMATCH CODE</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest leading-relaxed">Ask your friend for their unique 6-character code.</p>
               </div>
               <div className="space-y-4">
@@ -238,7 +238,7 @@ function SetupContent() {
                   labelClassName="text-[10px]"
                 />
                 <Button fullWidth size="md" onClick={handleJoinJoin} className="h-14 font-black">
-                  Find Duel
+                  Find MindMatch
                   <ArrowRight className="ml-2" size={18} />
                 </Button>
               </div>
@@ -259,8 +259,8 @@ function SetupContent() {
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
             <div className="max-w-xl mx-auto space-y-8 pt-16 md:pt-24 text-center md:text-left">
               <div className="space-y-2 text-center md:text-left">
-                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">DUEL SETUP</h2>
-                <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your duel settings before inviting a rival.</p>
+                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">MINDMATCH SETUP</h2>
+                <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your match settings before inviting a rival.</p>
               </div>
               <form onSubmit={handleCreateRoom} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
@@ -277,7 +277,7 @@ function SetupContent() {
                   <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
                 </section>
                 <Button type="submit" size="lg" fullWidth className="h-16 text-base font-black uppercase tracking-widest">
-                  Create Duel
+                  Create MindMatch
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
               </form>
@@ -298,8 +298,8 @@ function SetupContent() {
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
             <div className="max-w-xl mx-auto space-y-8 pt-16 md:pt-24">
               <div className="space-y-2 text-center md:text-left">
-                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE DUEL</h2>
-                <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A duel has been found! Prepare yourself.</p>
+                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE MINDMATCH</h2>
+                <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A match has been found! Prepare yourself.</p>
               </div>
               <form onSubmit={handleGuestReady} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
@@ -308,7 +308,7 @@ function SetupContent() {
                     <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
                       <Users className="text-blue-400" size={16} />
                     </div>
-                    <span className="font-black text-blue-400 tracking-widest text-[10px] uppercase">Duel Range</span>
+                    <span className="font-black text-blue-400 tracking-widest text-[10px] uppercase">MindMatch Range</span>
                   </div>
                   <div className="text-lg font-black text-foreground px-4 py-1.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
                     {range.min} — {range.max}
@@ -360,7 +360,7 @@ function SetupContent() {
               {/* Instructional Header (Moved back to top) */}
               <div className="text-center">
                 <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic max-w-[280px] mx-auto md:max-w-none">
-                  {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
+                  {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
                 </h1>
               </div>
 
@@ -408,7 +408,7 @@ function SetupContent() {
                     <p className={`text-base font-black italic tracking-tight transition-colors ${
                       isOpponentPresent ? 'text-white' : 'text-slate-800'
                     }`}>
-                      {isOpponentPresent ? 'DUELIST READY' : 'WAITING...'}
+                      {isOpponentPresent ? 'MINDMATCHIST READY' : 'WAITING...'}
                     </p>
                   </div>
                 </div>
@@ -454,7 +454,7 @@ function SetupContent() {
                               className="h-[58px] px-6 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group whitespace-nowrap"
                             >
                               <Sparkles size={16} className="group-hover:scale-110 transition-transform" />
-                              Duel with AI
+                              MindMatch with AI
                             </button>
                           )}
                         </div>
@@ -481,7 +481,7 @@ function SetupContent() {
                         onClick={startGame}
                         className="h-16 px-12 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(255,87,188,0.3)]"
                       >
-                        START DUEL
+                        START MINDMATCH
                         <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </div>

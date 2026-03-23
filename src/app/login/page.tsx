@@ -132,7 +132,7 @@ export default function LoginPage() {
           <p className="text-slate-400 text-center mb-6 text-xs">
             {mode === 'login'
               ? 'Login to challenge your rivals'
-              : 'Join the duel and start winning'}
+              : 'Join the match and start winning'}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">

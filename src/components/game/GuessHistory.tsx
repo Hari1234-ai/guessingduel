@@ -37,7 +37,7 @@ const GuessHistory: React.FC = () => {
       <div className="p-4 border-b border-slate-800/50 flex items-center justify-between">
         <div className="flex items-center gap-2 text-slate-400">
           <History size={18} />
-          <h3 className="font-bold text-sm uppercase tracking-wider">Duel Logs</h3>
+          <h3 className="font-bold text-sm uppercase tracking-wider">MindMatch Logs</h3>
         </div>
       </div>
 

@@ -146,7 +146,7 @@ export default function SettingsPage() {
             {/* Danger Zone */}
             <div className="mt-8 p-8 border border-red-900/20 bg-red-950/5 rounded-[2.5rem]">
               <h3 className="text-red-500 font-black uppercase tracking-tighter mb-2">Danger Zone</h3>
-              <p className="text-slate-500 text-xs mb-6">Permanently delete your account and all Duel data.</p>
+              <p className="text-slate-500 text-xs mb-6">Permanently delete your account and all MindMatch data.</p>
               <Button variant="secondary" className="border-red-900/20 text-red-500 hover:bg-red-500/10 h-10 text-xs">
                 <Trash2 size={14} className="mr-2" /> Delete Account
               </Button>

@@ -85,7 +85,7 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { label: 'Play Duel', href: '/setup', icon: <Swords size={18} /> },
+    { label: 'Play MindMatch', href: '/setup', icon: <Swords size={18} /> },
     { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
@@ -103,7 +103,7 @@ export default function Navbar() {
             <Swords size={20} className="text-white" />
           </div>
           <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
-            Duel
+            MindMatch
           </span>
         </Link>
 
@@ -194,7 +194,7 @@ export default function Navbar() {
                       {firstLetter}
                     </div>
                     <div>
-                      <h4 className="text-sm font-black text-white uppercase">{profileData?.name || 'Duelist'}</h4>
+                      <h4 className="text-sm font-black text-white uppercase">{profileData?.name || 'MindMatchist'}</h4>
                       <div className="flex items-center gap-1.5 text-blue-400">
                         <Coins size={12} className="text-blue-400" />
                         <span className="text-xs font-black">{profileData?.coins || 0} Coins</span>
@@ -208,7 +208,7 @@ export default function Navbar() {
                     </div>
                     <div>
                       <h4 className="text-sm font-black text-white uppercase">Guest</h4>
-                      <p className="text-[10px] text-slate-500 font-bold tracking-widest leading-none mt-1">Ready to Duel?</p>
+                      <p className="text-[10px] text-slate-500 font-bold tracking-widest leading-none mt-1">Ready to MindMatch?</p>
                     </div>
                   </div>
                 )}

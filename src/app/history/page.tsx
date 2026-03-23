@@ -112,7 +112,7 @@ export default function HistoryPage() {
               Combat Records
             </motion.div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none mb-6 italic">
-              Duel <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
+              MindMatch <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
             </h1>
             <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
               Your legacy recorded in the halls of fate.
@@ -130,13 +130,13 @@ export default function HistoryPage() {
                {user ? <Swords size={32} /> : <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20"><Zap className="text-blue-400" size={32} /></div>}
             </div>
             <h3 className="text-xl font-bold mb-2">
-              {user ? "No duels recorded yet." : "Duel History Locked."}
+              {user ? "No matchs recorded yet." : "MindMatch History Locked."}
             </h3>
             <p className="text-slate-500 text-sm mb-8 max-w-xs mx-auto">
-              {user ? "Start your first duel to begin building your competitive legacy." : "Sign in to view your complete combat record and historical signals."}
+              {user ? "Start your first match to begin building your competitive legacy." : "Sign in to view your complete combat record and historical signals."}
             </p>
             <Button onClick={() => router.push(user ? '/setup' : '/login')} size="md" className="px-8 font-black h-12">
-              {user ? "Start New Duel" : "Sign in to Arena"}
+              {user ? "Start New MindMatch" : "Sign in to Arena"}
             </Button>
           </div>
         ) : (

@@ -72,7 +72,7 @@ export default function OnboardingPage() {
             <span className="text-blue-500">Challenger.</span>
           </h1>
           <p className="text-slate-400 text-sm max-w-[280px] mx-auto">
-            Choose your duelist name to enter the arena and start your legacy.
+            Choose your matchist name to enter the arena and start your legacy.
           </p>
         </div>
 

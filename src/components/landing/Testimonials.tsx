@@ -7,15 +7,15 @@ import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { Quote } from 'lucide-react';
 
 const PREDEFINED_TESTIMONIALS = [
-  "The duel matching is incredibly fast! Love testing my strategy.",
+  "The match matching is incredibly fast! Love testing my strategy.",
   "Started playing yesterday and I'm already hooked. The UI is so smooth.",
   "Decent game for a quick break. The strategy keeps it interesting.",
   "Solid experience overall. Fun to see where I rank on the leaderboard.",
-  "I like the variety. Some duels are tricky, but that's the point.",
+  "I like the variety. Some matchs are tricky, but that's the point.",
   "Good way to pass time. Pretty straightforward and fun mechanics.",
   "The strategy involved is deeper than it looks at first glance.",
   "Always a challenge. GuessBot is actually quite tough to beat!",
-  "Finally a game that respects my time. Short, intense duels.",
+  "Finally a game that respects my time. Short, intense matchs.",
   "Love the social aspect with reactions. Makes every win sweeter."
 ];
 
@@ -40,12 +40,12 @@ export default function Testimonials() {
         const snapshot = await getDocs(q);
         const players = snapshot.docs
           .map(doc => ({
-            name: doc.data().name || 'Anonymous Duelist',
+            name: doc.data().name || 'Anonymous MindMatchist',
           }))
           .filter(p => {
             const lowName = p.name.toLowerCase();
-            return !lowName.includes('duel tester') && 
-                   !lowName.includes('duelisttester') && 
+            return !lowName.includes('match tester') && 
+                   !lowName.includes('matchisttester') && 
                    !lowName.includes('tester');
           });
 
@@ -72,7 +72,7 @@ export default function Testimonials() {
   return (
     <section className="relative z-10 py-24 overflow-hidden bg-slate-950/20">
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
-        <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-4">Duelist Chronicles</h2>
+        <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-4">MindMatchist Chronicles</h2>
         <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">Real voices from the arena spectrum.</p>
       </div>
 
@@ -118,7 +118,7 @@ function MarqueeRow({ items, direction }: { items: TestimonialData[], direction:
               </div>
               <div className="flex-1">
                 <h4 className="text-xs font-black uppercase text-white tracking-tight">{item.name}</h4>
-                <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Ranked Duelist</p>
+                <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Ranked MindMatchist</p>
               </div>
               <Quote size={16} className="text-blue-500/20" />
             </div>

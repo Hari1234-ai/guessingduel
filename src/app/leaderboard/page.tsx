@@ -75,7 +75,7 @@ export default function LeaderboardPage() {
             Hall of <span className="text-blue-500">Legends.</span>
           </h1>
           <p className="text-slate-400 text-lg max-w-xl mx-auto">
-            Weekly rewards reset every Monday. Duel your way to the top of the signal chain.
+            Weekly rewards reset every Monday. MindMatch your way to the top of the signal chain.
           </p>
         </div>
 
@@ -128,7 +128,7 @@ export default function LeaderboardPage() {
                      <span className="text-slate-600 font-black">{idx + 1}</span>}
                   </div>
 
-                  {/* Duelist */}
+                  {/* MindMatchist */}
                   <div className="flex items-center gap-2 md:gap-4 flex-grow px-2 md:px-4 min-w-0">
                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/50 shadow-lg text-white font-black shadow-blue-900/20 shrink-0">
                       {entry.name.charAt(0).toUpperCase()}
@@ -140,7 +140,7 @@ export default function LeaderboardPage() {
                           <span className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-[7px] text-blue-400 uppercase shrink-0">You</span>
                         )}
                       </h4>
-                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">Active Duelist</p>
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">Active MindMatchist</p>
                     </div>
                   </div>
 

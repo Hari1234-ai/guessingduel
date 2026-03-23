@@ -47,13 +47,13 @@ export default function PlansPage() {
           </div>
 
           <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] pt-8">
-            Elevating your dueling experience
+            Elevating your matching experience
           </p>
         </motion.div>
       </section>
 
       <footer className="relative z-10 p-12 border-t border-white/5 text-center">
-        <p className="text-[10px] text-slate-700 font-black uppercase tracking-[0.4em]">Duel Arena • Experimental Systems</p>
+        <p className="text-[10px] text-slate-700 font-black uppercase tracking-[0.4em]">MindMatch Arena • Experimental Systems</p>
       </footer>
     </main>
   );

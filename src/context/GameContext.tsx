@@ -184,7 +184,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       // Subscribe to actions
-      channel.subscribe('start-duel', (msg) => {
+      channel.subscribe('start-match', (msg) => {
         const payload = msg.data;
         updateState(prev => ({ 
           ...prev, 
@@ -297,7 +297,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }));
       });
 
-      channel.subscribe('start-duel', (msg) => {
+      channel.subscribe('start-match', (msg) => {
         const payload = msg.data;
         updateState(prev => ({ 
           ...prev, 
@@ -491,7 +491,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const startGame = useCallback(() => {
     const state = latestStateRef.current;
     if (state.playerId === 'player1' && channelRef.current) {
-      channelRef.current.publish('start-duel', {
+      channelRef.current.publish('start-match', {
         player1: state.player1,
         player2: state.player2,
         range: state.range

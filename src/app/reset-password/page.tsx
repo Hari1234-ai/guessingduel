@@ -176,7 +176,7 @@ export default function ResetPasswordPage() {
         </Suspense>
 
         <p className="mt-8 text-center text-xs text-slate-500">
-          Secure connection established via Duel Guess Identity.
+          Secure connection established via MindMatch Guess Identity.
         </p>
       </motion.div>
     </div>

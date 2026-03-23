@@ -39,12 +39,12 @@ export default function TermsOfService() {
         <div className="bg-slate-900/30 border border-slate-800 p-8 rounded-3xl backdrop-blur-sm space-y-8 leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-white mb-3">1. Acceptance of Terms</h2>
-            <p>By accessing or using Duel, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the application.</p>
+            <p>By accessing or using MindMatch, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the application.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-white mb-3">2. Description of Service</h2>
-            <p>Duel is a multiplayer web application that allows users to challenge each other in a number guessing game. The service is provided &quot;as is&quot; and we reserve the right to modify or terminate the service at any time.</p>
+            <p>MindMatch is a multiplayer web application that allows users to challenge each other in a number guessing game. The service is provided &quot;as is&quot; and we reserve the right to modify or terminate the service at any time.</p>
           </section>
 
           <section>
@@ -54,12 +54,12 @@ export default function TermsOfService() {
 
           <section>
             <h2 className="text-xl font-bold text-white mb-3">4. Intellectual Property</h2>
-            <p>All content included in the application, such as text, graphics, logos, and code, is the property of Duel or its content suppliers and protected by copyright laws.</p>
+            <p>All content included in the application, such as text, graphics, logos, and code, is the property of MindMatch or its content suppliers and protected by copyright laws.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-white mb-3">5. Limitation of Liability</h2>
-            <p>Duel and its developers shall not be liable for any indirect, incidental, or consequential damages arising out of your use of the service.</p>
+            <p>MindMatch and its developers shall not be liable for any indirect, incidental, or consequential damages arising out of your use of the service.</p>
           </section>
 
           <section>

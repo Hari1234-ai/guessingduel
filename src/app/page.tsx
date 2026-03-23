@@ -74,8 +74,8 @@ export default function LandingPage() {
           </motion.h1>
 
           <motion.p variants={itemVariants} className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-            Duel is the ultimate real-time testing of strategy and luck. 
-            Challenge friends to a high-stakes duel where every guess count.
+            MindMatch is the ultimate real-time testing of strategy and luck. 
+            Challenge friends to a high-stakes MindMatch where every guess counts.
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -134,7 +134,7 @@ export default function LandingPage() {
             />
             <StepItem 
               icon={<Swords size={28} className="text-purple-400" />} 
-              title="Win the Duel" 
+              title="Win the Match" 
               desc="Be the first to guess the exact number and win!" 
               border="border-purple-500/30"
               glow="shadow-purple-500/10"
@@ -156,7 +156,7 @@ export default function LandingPage() {
               Sharpen your <br />skills vs AI.
             </h2>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
-              Not ready to face real players? Challenge our intelligent AI opponent to practice your strategies, understand the game mechanics, and prepare for high-stakes duels!
+              Not ready to face real players? Challenge our intelligent AI opponent to practice your strategies, understand the game mechanics, and prepare for high-stakes matchs!
             </p>
             <Button 
               size="lg" 
@@ -172,7 +172,7 @@ export default function LandingPage() {
             <div className="relative bg-card border border-card-border p-8 rounded-3xl backdrop-blur-sm shadow-2xl flex flex-col items-center justify-center min-h-[300px]">
               <Bot size={80} className="text-purple-400 mb-6 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
               <h3 className="text-xl font-black uppercase tracking-widest text-white mb-2">GuessBot</h3>
-              <p className="text-slate-500 text-sm font-bold">Always ready for a duel.</p>
+              <p className="text-slate-500 text-sm font-bold">Always ready for a match.</p>
             </div>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function LandingPage() {
               Express Yourself. <br />Taunt with Style.
             </h2>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
-              Communication is key in every duel. Use our real-time emoji reactions to celebrate a great guess, taunt your rival, or show your frustration. Strategy isn&apos;t just about numbers; it&apos;s about psychology.
+              Communication is key in every match. Use our real-time emoji reactions to celebrate a great guess, taunt your rival, or show your frustration. Strategy isn&apos;t just about numbers; it&apos;s about psychology.
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
               {['🔥', '😂', '🤯', '🥶', '🤫', '🤡'].map((emoji, i) => (
@@ -252,11 +252,11 @@ export default function LandingPage() {
             </div>
             <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-4 relative z-10">Earn Coins</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-8 relative z-10">
-              Every victory in Duel earns you valuable coins. Stack your riches, show off your wealth, and unlock exclusive features as you dominate your opponents.
+              Every victory in MindMatch earns you valuable coins. Stack your riches, show off your wealth, and unlock exclusive features as you dominate your opponents.
             </p>
             <div className="space-y-3 w-full relative z-10">
               <div className="flex items-center gap-3 text-sm font-bold text-slate-300">
-                <Star size={16} className="text-yellow-500" /> Win Duels vs Real Players
+                <Star size={16} className="text-yellow-500" /> Win MindMatchs vs Real Players
               </div>
               <div className="flex items-center gap-3 text-sm font-bold text-slate-300">
                 <Star size={16} className="text-yellow-500" /> Defeat the AI
@@ -275,7 +275,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-4 relative z-10">Global Leaderboard</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-8 relative z-10">
-              Compete against the best guessers in the world! Check your rank, see who&apos;s on top, and fight for your spot in the Hall of Fame. Are you the ultimate duelist?
+              Compete against the best guessers in the world! Check your rank, see who&apos;s on top, and fight for your spot in the Hall of Fame. Are you the ultimate matchist?
             </p>
             <Button 
               variant="secondary"
@@ -297,12 +297,12 @@ export default function LandingPage() {
       <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="Game Rules">
         <div className="space-y-6 text-slate-300 p-2">
           <p className="text-sm leading-relaxed">
-            Duel is a strategic race. Both players choose a secret number and try to guess their opponent&apos;s number first.
+            MindMatch is a strategic race. Both players choose a secret number and try to guess their opponent&apos;s number first.
           </p>
           <div className="grid gap-4">
             <RuleItem number="1" title="Set your Secret" desc="Choose a number within the range (e.g., 1-100)." />
             <RuleItem number="2" title="Take Turns" desc="Guess a number. We'll tell you if it's too high or too low." />
-            <RuleItem number="3" title="Win the Duel" desc="The first to guess the exact number wins!" />
+            <RuleItem number="3" title="Win the Match" desc="The first to guess the exact number wins!" />
           </div>
           <Button fullWidth onClick={() => setIsHowToPlayOpen(false)} className="mt-6">Let&apos;s Play</Button>
         </div>

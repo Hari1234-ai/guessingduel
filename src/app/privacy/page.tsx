@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
         <div className="bg-slate-900/30 border border-slate-800 p-8 rounded-3xl backdrop-blur-sm space-y-8 leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-white mb-3">1. Introduction</h2>
-            <p>Welcome to Duel. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you use our application.</p>
+            <p>Welcome to MindMatch. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you use our application.</p>
           </section>
 
           <section>
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-xl font-bold text-white mb-3">3. How We Use Data</h2>
             <p>Your data is used solely for the following purposes:</p>
             <ul className="list-disc pl-5 mt-2 space-y-2">
-              <li>Providing and maintaining the Duel game service.</li>
+              <li>Providing and maintaining the MindMatch game service.</li>
               <li>Managing your account and providing customer support.</li>
               <li>Powering the real-time multiplayer functionality via Ably.</li>
             </ul>

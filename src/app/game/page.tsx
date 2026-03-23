@@ -158,12 +158,12 @@ export default function Game() {
     const isWinner = winner === playerId;
     const p1Secret = playerId ? gameState[playerId as 'player1' | 'player2']?.secretNumber : 'N/A';
     const p2Secret = opponentId ? gameState[opponentId as 'player1' | 'player2']?.secretNumber : 'N/A';
-    const shareText = `🎮 Just finished a Duel on Duel!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close duel.'}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
+    const shareText = `🎮 Just finished a MindMatch on MindMatch!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close match.'}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Duel Result',
+          title: 'MindMatch Result',
           text: shareText,
           url: window.location.origin,
         });
@@ -288,7 +288,7 @@ export default function Game() {
             <div className="relative z-10">
               <div className="mb-8 items-start text-left">
                 <h2 className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-1">
-                  {isMyTurn ? 'Your Action' : 'Duel Status'}
+                  {isMyTurn ? 'Your Action' : 'MindMatch Status'}
                 </h2>
                 <h3 className="text-foreground font-black uppercase tracking-tight text-lg italic">
                   {isMyTurn ? 'Enter Your Guess' : (player2.isAI ? 'AI is analyzing...' : 'Opponent is thinking...')}
@@ -411,7 +411,7 @@ export default function Game() {
       </div>
 
       {/* Win Modal */}
-      <Modal isOpen={status === 'finished'} onClose={() => {}} title="Duel Result" showCloseButton={false}>
+      <Modal isOpen={status === 'finished'} onClose={() => {}} title="MindMatch Result" showCloseButton={false}>
         <div className="flex flex-col items-center text-center p-4">
           <motion.div
             initial={{ scale: 0 }}
@@ -500,9 +500,9 @@ export default function Game() {
       {/* Give Up Confirmation Modal */}
       <Modal isOpen={isGiveUpModalOpen} onClose={() => setIsGiveUpModalOpen(false)} title="Forfeit Match?">
         <div className="p-4 text-center">
-          <p className="text-slate-400 mb-6 text-sm">Are you sure you want to forfeit this duel? Your rival will win immediately.</p>
+          <p className="text-slate-400 mb-6 text-sm">Are you sure you want to forfeit this match? Your rival will win immediately.</p>
           <div className="flex gap-3">
-            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)} className="h-10 text-xs">Stay in Duel</Button>
+            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)} className="h-10 text-xs">Stay in MindMatch</Button>
             <Button fullWidth onClick={() => { setIsGiveUpModalOpen(false); startNewGame(); }} className="bg-red-600 hover:bg-red-700 h-10 text-xs">Forfeit Match</Button>
           </div>
         </div>

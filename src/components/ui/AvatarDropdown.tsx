@@ -117,7 +117,7 @@ export default function AvatarDropdown() {
   const menuItems = [
     { label: 'Leaderboard', icon: <Trophy size={14} />, href: '/leaderboard' },
     { label: 'Account Settings', icon: <Settings size={14} />, href: '/settings' },
-    { label: 'Duel History', icon: <History size={14} />, href: '/history' },
+    { label: 'MindMatch History', icon: <History size={14} />, href: '/history' },
   ];
 
   const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
@@ -143,7 +143,7 @@ export default function AvatarDropdown() {
           {firstLetter}
         </div>
         <div className="flex flex-col items-start mr-1">
-          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] leading-none mb-1">Duelist</span>
+          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] leading-none mb-1">MindMatchist</span>
           <span className="text-xs font-black text-white truncate max-w-[80px]">{profileData?.name || 'Player'}</span>
         </div>
         <ChevronDown size={14} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />

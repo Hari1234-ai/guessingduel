@@ -9,8 +9,8 @@ import { Analytics } from "@vercel/analytics/next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Duel Guess",
-  description: "A turn-based 2-player guessing game.",
+  title: "MindMatch | Outsmart Your Rivals",
+  description: "The ultimate real-time testing of strategy and luck. Challenge friends to a high-stakes MindMatch match where every guess counts.",
   verification: {
     google: "6W_4J_J-gwwAVodQi3si23pVzZTq9iWsUMh1tW_L7E4",
   },
