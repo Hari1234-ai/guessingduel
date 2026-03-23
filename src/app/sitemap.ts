@@ -30,12 +30,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.7,
     },
+    /*
     {
       url: `${baseUrl}buy`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    */
     {
       url: `${baseUrl}dashboard`,
       lastModified: new Date(),

@@ -109,7 +109,7 @@ export default function Navbar() {
       href: '/setup', 
       icon: <Brain size={18} /> 
     },
-    { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
+    // { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
     { label: 'Contact', href: '/contact', icon: <MessageSquare size={18} /> },
