@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Swords, Play, Shield, Zap, Users, ChevronRight } from 'lucide-react';
+import { Swords, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -162,6 +162,93 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* VS AI Section */}
+      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto border-t border-slate-800">
+        <div className="flex flex-col md:flex-row items-center gap-12">
+          <div className="flex-1 space-y-6 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-[0.2em]">
+              <Bot size={12} className="fill-current" />
+              Practice Mode
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-tight text-foreground text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+              Sharpen your <br />skills vs AI.
+            </h2>
+            <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
+              Not ready to face real players? Challenge our intelligent AI opponent to practice your strategies, understand the game mechanics, and prepare for high-stakes duels!
+            </p>
+            <Button 
+              size="lg" 
+              onClick={() => router.push('/setup')}
+              className="h-12 px-8 text-sm font-black group bg-purple-600 hover:bg-purple-700 w-full sm:w-auto"
+            >
+              Play VS AI
+              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+          <div className="flex-1 relative w-full max-w-sm mx-auto">
+            <div className="absolute inset-0 bg-purple-500/20 blur-[100px] rounded-full" />
+            <div className="relative bg-card border border-card-border p-8 rounded-3xl backdrop-blur-sm shadow-2xl flex flex-col items-center justify-center min-h-[300px]">
+              <Bot size={80} className="text-purple-400 mb-6 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
+              <h3 className="text-xl font-black uppercase tracking-widest text-white mb-2">GuessBot 3000</h3>
+              <p className="text-slate-500 text-sm font-bold">Always ready for a duel.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Rewards & Leaderboard Section */}
+      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto border-t border-slate-800">
+        <div className="text-center mb-16 text-foreground">
+          <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-4">Climb the Ranks</h2>
+          <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">Prove your worth. Earn rewards. Become a legend.</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Rewards Card */}
+          <div className="bg-card border border-card-border p-10 rounded-[2.5rem] backdrop-blur-sm shadow-2xl flex flex-col items-start relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 blur-[80px] rounded-full group-hover:bg-yellow-500/20 transition-all duration-500" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center mb-6 shadow-lg shadow-yellow-900/20 relative z-10">
+              <Coins size={32} className="text-yellow-950" />
+            </div>
+            <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-4 relative z-10">Earn Coins</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-8 relative z-10">
+              Every victory in Guessing Duel earns you valuable coins. Stack your riches, show off your wealth, and unlock exclusive features as you dominate your opponents.
+            </p>
+            <div className="space-y-3 w-full relative z-10">
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300">
+                <Star size={16} className="text-yellow-500" /> Win Duels vs Real Players
+              </div>
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300">
+                <Star size={16} className="text-yellow-500" /> Defeat the AI
+              </div>
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300">
+                <Star size={16} className="text-yellow-500" /> Claim Weekly Rewards
+              </div>
+            </div>
+          </div>
+
+          {/* Leaderboard Card */}
+          <div className="bg-card border border-card-border p-10 rounded-[2.5rem] backdrop-blur-sm shadow-2xl flex flex-col items-start relative overflow-hidden group">
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full group-hover:bg-blue-500/20 transition-all duration-500" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-900/20 relative z-10">
+              <Trophy size={32} className="text-blue-950" />
+            </div>
+            <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-4 relative z-10">Global Leaderboard</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-8 relative z-10">
+              Compete against the best guessers in the world! Check your rank, see who&apos;s on top, and fight for your spot in the Hall of Fame. Are you the ultimate duelist?
+            </p>
+            <Button 
+              variant="secondary"
+              size="lg" 
+              onClick={() => router.push('/leaderboard')}
+              className="mt-auto h-12 px-8 text-sm font-black group relative z-10 bg-slate-800 hover:bg-slate-700 w-full sm:w-auto"
+            >
+              View Leaderboard
+              <Trophy size={16} className="ml-2 text-blue-400 group-hover:scale-110 transition-transform" />
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* Modals */}
       <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="Game Rules">

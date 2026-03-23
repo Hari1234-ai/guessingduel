@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, RotateCcw, LogOut, Trophy, Sparkles, Loader2, Hash } from 'lucide-react';
+import { Send, RotateCcw, LogOut, Trophy, Sparkles, Loader2, Hash, Share2 } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -146,6 +146,33 @@ export default function Game() {
     }
   }, [status, winner, user, roomCode, player1, player2, playerId, refreshProfile]);
   
+  const handleShare = async () => {
+    const opponentId = playerId === 'player1' ? 'player2' : 'player1';
+    const isWinner = winner === playerId;
+    const p1Secret = playerId ? gameState[playerId as 'player1' | 'player2']?.secretNumber : 'N/A';
+    const p2Secret = opponentId ? gameState[opponentId as 'player1' | 'player2']?.secretNumber : 'N/A';
+    const shareText = `🎮 Just finished a Duel on Guessing Duel!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close duel.'}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Guessing Duel Result',
+          text: shareText,
+          url: window.location.origin,
+        });
+      } catch (err) {
+        console.log('Share cancelled or failed');
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        alert('Result copied to clipboard! 📋');
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    }
+  };
+
   // Opponent Guess Toast Logic
   useEffect(() => {
     const opponent = playerId === 'player1' ? player2 : player1;
@@ -422,6 +449,14 @@ export default function Game() {
           </div>
 
           <div className="flex flex-col gap-3 w-full">
+            <Button 
+              onClick={handleShare}
+              className="h-12 text-sm font-black bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+              fullWidth
+            >
+              <Share2 size={16} />
+              Share Result
+            </Button>
             <Button 
               variant="secondary" 
               size="md" 
