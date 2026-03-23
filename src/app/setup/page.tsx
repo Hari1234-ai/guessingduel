@@ -195,7 +195,23 @@ function SetupContent() {
   const copyInviteLink = () => {
     if (roomCode) {
       const url = `${window.location.origin}/setup?room=${roomCode}`;
-      navigator.clipboard.writeText(url);
+      const hostName = profileData?.name || 'A player';
+      const matchType = gameState.mode === 'numeric' ? 'Numbers Game' : 'Words Game';
+      
+      let details = '';
+      if (gameState.mode === 'numeric') {
+        const min = gameState.range?.min ?? 1;
+        const max = gameState.range?.max ?? 100;
+        const diff = gameState.difficulty === 'hard' ? 'Hard (Shifting Numbers)' : 'Easy (Static Number)';
+        details = `🔢 Mode: ${matchType}\n📏 Range: ${min} - ${max}\n⚡️ Difficulty: ${diff}`;
+      } else {
+        const length = gameState.wordLength ?? 5;
+        details = `🔤 Mode: ${matchType}\n📏 Word Length: ${length} letters`;
+      }
+
+      const message = `⚔️ ${hostName} has challenged you to a MindMatch Duel!\n\n${details}\n\nJoin the arena here:\n${url}`;
+
+      navigator.clipboard.writeText(message);
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
     }

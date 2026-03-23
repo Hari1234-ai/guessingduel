@@ -58,10 +58,6 @@ export default function ContactPage() {
           </div>
         </motion.div>
       </section>
-
-      <footer className="mt-12 p-12 text-center">
-        <p className="text-[10px] text-slate-700 font-black uppercase tracking-[0.4em]">Signal Received • 2024</p>
-      </footer>
     </main>
   );
 }
