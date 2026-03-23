@@ -497,7 +497,6 @@ function SetupContent() {
         </main>
       );
     }
-}
 
     return null;
   };
