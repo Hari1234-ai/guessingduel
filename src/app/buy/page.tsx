@@ -16,7 +16,7 @@ export default function PlansPage() {
 
       <Navbar />
 
-      <section className="relative z-10 flex-grow flex flex-col items-center justify-center pt-20 pb-24 px-6 text-center max-w-5xl mx-auto">
+      <section className="relative z-10 flex-grow flex flex-col items-center justify-center pt-32 pb-24 px-6 text-center max-w-5xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 

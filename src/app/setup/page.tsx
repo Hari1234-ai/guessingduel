@@ -161,7 +161,7 @@ function SetupContent() {
         
         <Navbar />
 
-        <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
+        <div className="flex-1 flex flex-col items-center justify-center p-6 pt-24 pb-20">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
             <div className="space-y-4 text-center">
             <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-foreground to-slate-500 bg-clip-text text-transparent">
@@ -193,7 +193,7 @@ function SetupContent() {
     <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
+        <div className="flex-1 flex flex-col items-center justify-center p-6 pt-24 pb-20">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
             <div className="text-center space-y-2">
               <h2 className="text-xl font-black uppercase italic tracking-tight">ENTER DUEL CODE</h2>
@@ -231,7 +231,7 @@ function SetupContent() {
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
-          <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12 text-center md:text-left">
+          <div className="max-w-xl mx-auto space-y-8 pt-24 md:pt-32 text-center md:text-left">
             <div className="space-y-2 text-center md:text-left">
               <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">DUEL SETUP</h2>
               <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your duel settings before inviting a rival.</p>
@@ -271,7 +271,7 @@ function SetupContent() {
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
         <Navbar />
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
-          <div className="max-w-xl mx-auto space-y-8 pt-8 md:pt-12">
+          <div className="max-w-xl mx-auto space-y-8 pt-24 md:pt-32">
             <div className="space-y-2 text-center md:text-left">
               <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE DUEL</h2>
               <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A duel has been found! Prepare yourself.</p>
@@ -319,7 +319,7 @@ function SetupContent() {
         <Navbar />
         
         <div className="flex-1 p-6 pb-20 overflow-y-auto">
-          <div className="max-w-lg mx-auto space-y-10 pt-4 md:pt-8">
+          <div className="max-w-lg mx-auto space-y-10 pt-24 md:pt-32">
           <div className="text-center space-y-4">
             {/* Connection Status Indicator */}
             <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${

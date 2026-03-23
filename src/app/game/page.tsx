@@ -209,7 +209,7 @@ export default function Game() {
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
       <Navbar />
 
-      <div className="flex-1 p-4 md:p-8 flex flex-col items-center overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 pt-16 md:pt-24 flex flex-col items-center overflow-y-auto">
         {/* Target Range Line */}
         <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-card border border-card-border rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 backdrop-blur-sm">
           Target Range: <span className="text-foreground">{gameState.range.min} — {gameState.range.max}</span>
