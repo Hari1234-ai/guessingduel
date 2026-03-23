@@ -364,82 +364,31 @@ function SetupContent() {
                 </h1>
               </div>
 
-              {/* Profiles Section */}
-              <div className="flex flex-col md:flex-row items-center justify-center gap-10 py-4">
-                {/* Profile Card */}
-                <div className="flex flex-col items-center gap-4">
-                  <div className="relative">
-                    <div className="w-24 h-24 rounded-[2.2rem] bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/30 shadow-2xl text-white font-black text-4xl">
-                      {(profileData?.name || 'G')?.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 border-4 border-background rounded-full" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-black uppercase tracking-widest text-blue-500 mb-1">Host</p>
-                    <p className="text-base font-black text-white italic tracking-tight">{profileData?.name || 'You'}</p>
-                  </div>
-                </div>
-
-                {/* Verses Separator */}
-                <div className="relative flex items-center justify-center">
-                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                  <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center z-10">
-                    <span className="text-sm font-black italic text-slate-500">VS</span>
-                  </div>
-                  <div className="h-[2px] w-28 bg-gradient-to-r from-transparent via-slate-700 to-transparent absolute" />
-                </div>
-
-                {/* Opponent Card */}
-                <div className="flex flex-col items-center gap-4 relative">
-                  <div className="relative">
-                    <div className={`w-24 h-24 rounded-[2.2rem] flex items-center justify-center border transition-all duration-500 ${
-                      isOpponentPresent 
-                        ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-600 shadow-2xl text-white' 
-                        : 'bg-slate-900/50 border-slate-800 border-dashed text-slate-800'
-                    }`}>
-                      {isOpponentPresent ? <Users size={36} /> : <Loader2 size={36} className="animate-spin opacity-20" />}
-                    </div>
-                    {isOpponentPresent && (
-                      <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 border-4 border-background rounded-full" />
-                    )}
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-black uppercase tracking-widest text-slate-600 mb-1">Rival</p>
-                    <p className={`text-base font-black italic tracking-tight transition-colors ${
-                      isOpponentPresent ? 'text-white' : 'text-slate-800'
-                    }`}>
-                      {isOpponentPresent ? 'MindMatchIST READY' : 'WAITING...'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-
-              {/* Action Card Section */}
-              <div className="space-y-6">
+              {/* Action Card Section (Moved to top for mobile visibility) */}
+              <div className="space-y-4">
                 {playerId === 'player1' && (
-                  <div className="py-6 px-8 bg-card/40 border border-card-border rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
+                  <div className="py-4 px-6 md:py-6 md:px-8 bg-card/40 border border-card-border rounded-[1.5rem] md:rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
-                    <div className="flex flex-col items-center gap-4 relative z-10">
+                    <div className="flex flex-col items-center gap-3 relative z-10">
                       <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Invite Your Rival</p>
                       <div className="flex flex-wrap items-center justify-center gap-3">
-                        <div className="px-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
+                        <div className="px-6 py-2 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
                           {roomCode}
                         </div>
                         <div className="flex items-center gap-2">
                           <button 
                             onClick={copyCode}
-                            className="p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
+                            className="p-3 md:p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
                             title="Copy Code"
                           >
-                            {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} className="group-hover:rotate-12 transition-transform" />}
+                            {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="group-hover:rotate-12 transition-transform" />}
                           </button>
                           <button 
                             onClick={copyInviteLink}
-                            className="p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
+                            className="p-3 md:p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
                             title="Copy Invite Link"
                           >
-                            {linkCopied ? <Check size={20} className="text-green-500" /> : <LinkIcon size={20} />}
+                            {linkCopied ? <Check size={18} className="text-green-500" /> : <LinkIcon size={18} />}
                           </button>
                           {!isOpponentPresent && (
                             <button 
@@ -451,9 +400,9 @@ function SetupContent() {
                                   startWithAI(currentUid);
                                 }
                               }}
-                              className="h-[58px] px-6 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group whitespace-nowrap"
+                              className="h-[52px] px-5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group whitespace-nowrap"
                             >
-                              <Sparkles size={16} className="group-hover:scale-110 transition-transform" />
+                              <Sparkles size={14} className="group-hover:scale-110 transition-transform" />
                               MindMatch with AI
                             </button>
                           )}
@@ -462,6 +411,56 @@ function SetupContent() {
                     </div>
                   </div>
                 )}
+
+                {/* Profiles Section (Now below actions) */}
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 py-2 md:py-4">
+                  {/* Profile Card */}
+                  <div className="flex flex-col items-center gap-2 md:gap-4">
+                    <div className="relative scale-90 md:scale-100">
+                      <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.8rem] md:rounded-[2.2rem] bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/30 shadow-2xl text-white font-black text-3xl md:text-4xl">
+                        {(profileData?.name || 'G')?.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-6 h-6 md:w-7 md:h-7 bg-green-500 border-4 border-background rounded-full" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-blue-500 mb-0.5 md:mb-1">Host</p>
+                      <p className="text-sm md:text-base font-black text-white italic tracking-tight">{profileData?.name || 'You'}</p>
+                    </div>
+                  </div>
+
+                  {/* Verses Separator */}
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
+                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center z-10">
+                      <span className="text-xs md:text-sm font-black italic text-slate-500">VS</span>
+                    </div>
+                    <div className="h-[2px] w-20 md:w-28 bg-gradient-to-r from-transparent via-slate-700 to-transparent absolute" />
+                  </div>
+
+                  {/* Opponent Card */}
+                  <div className="flex flex-col items-center gap-2 md:gap-4 relative">
+                    <div className="relative scale-90 md:scale-100">
+                      <div className={`w-20 h-20 md:w-24 md:h-24 rounded-[1.8rem] md:rounded-[2.2rem] flex items-center justify-center border transition-all duration-500 ${
+                        isOpponentPresent 
+                          ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-600 shadow-2xl text-white' 
+                          : 'bg-slate-900/50 border-slate-800 border-dashed text-slate-800'
+                      }`}>
+                        {isOpponentPresent ? <Users size={30} /> : <Loader2 size={30} className="animate-spin opacity-20" />}
+                      </div>
+                      {isOpponentPresent && (
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 md:w-7 md:h-7 bg-green-500 border-4 border-background rounded-full" />
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-600 mb-0.5 md:mb-1">Rival</p>
+                      <p className={`text-sm md:text-base font-black italic tracking-tight transition-colors ${
+                        isOpponentPresent ? 'text-white' : 'text-slate-800'
+                      }`}>
+                        {isOpponentPresent ? 'MindMatchIST READY' : 'WAITING...'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
                 {connectionStatus === 'failed' && (
                   <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-red-500 text-xs text-center font-bold">
