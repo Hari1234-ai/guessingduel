@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Brain } from 'lucide-react';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Brain, HelpCircle } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import { GameMode, GameDifficulty } from '@/types/game';
 import Button from '@/components/ui/Button';
@@ -53,6 +53,7 @@ function SetupContent() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
   const [isValidating, setIsValidating] = useState(false);
+  const [isDiffInfoOpen, setIsDiffInfoOpen] = useState(false);
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -353,7 +354,16 @@ function SetupContent() {
                   <section className="space-y-4">
                     <div className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
                       <div className="flex flex-col items-start gap-1">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Difficulty</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Difficulty</span>
+                          <button 
+                            type="button"
+                            onClick={() => setIsDiffInfoOpen(true)}
+                            className="text-blue-400/50 hover:text-blue-400 transition-colors"
+                          >
+                            <HelpCircle size={14} />
+                          </button>
+                        </div>
                         <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Hard = Wrong guess adds +3 to rival</span>
                       </div>
                       <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -702,6 +712,36 @@ function SetupContent() {
             >
               Maybe Later
             </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isDiffInfoOpen} onClose={() => setIsDiffInfoOpen(false)} title="Numbers Difficulty">
+        <div className="space-y-6 py-4">
+          <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-2xl space-y-2">
+            <h4 className="text-xs font-black uppercase tracking-widest text-blue-400 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              Easy mode
+            </h4>
+            <p className="text-sm text-slate-400 leading-relaxed font-medium">
+              The classic MindMatch experience. Secret numbers stay static throughout the entire dual. Perfect for beginners or tactical precision.
+            </p>
+          </div>
+
+          <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-2xl space-y-2">
+            <h4 className="text-xs font-black uppercase tracking-widest text-red-500 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              Hard mode
+            </h4>
+            <p className="text-sm text-slate-400 leading-relaxed font-medium">
+              A dynamic "Moving Target" challenge. Every time a participant makes a <span className="text-red-400 font-bold">wrong guess</span>, their opponent's secret number increases by <span className="text-red-400 font-bold">+3</span>.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Button fullWidth size="md" onClick={() => setIsDiffInfoOpen(false)} className="bg-slate-800 hover:bg-slate-700 text-white font-black">
+              Got it!
+            </Button>
           </div>
         </div>
       </Modal>
