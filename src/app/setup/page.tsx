@@ -119,6 +119,11 @@ function SetupContent() {
     const currentName = profileData?.name || 'Guest';
     const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
     
+    if ((status === 'lobby' || status === 'playing' || status === 'guest-setup') && roomCode) {
+      router.push('/game');
+      return;
+    }
+
     if (await validate()) {
       createRoom(
         currentName, 
@@ -140,6 +145,11 @@ function SetupContent() {
       return;
     }
     const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
+    
+    if ((status === 'lobby' || status === 'playing' || status === 'guest-setup') && roomCode) {
+      router.push('/game');
+      return;
+    }
     
     if (joinCode.length === 6) {
       joinRoom(joinCode.toUpperCase(), currentUid);

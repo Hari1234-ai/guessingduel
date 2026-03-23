@@ -15,8 +15,8 @@ const ActiveMatchBanner: React.FC = () => {
   const [showFinishedNotification, setShowFinishedNotification] = useState(false);
 
   // Determine if we should show the banner
-  // Show if: playing/lobby/guest-setup, not on game page, not an AI match 
-  const isMatchActive = (status === 'playing' || status === 'lobby' || status === 'guest-setup') && roomCode && !player2.isAI;
+  // Show if: playing/lobby/guest-setup, not on game page, not an AI match, and OPPONENT HAS JOINED
+  const isMatchActive = (status === 'playing' || status === 'lobby' || status === 'guest-setup') && roomCode && !player2.isAI && gameState.isOpponentPresent;
   const isAwayFromMatch = !pathname.startsWith('/game');
   const shouldShowBanner = isMatchActive && isAwayFromMatch;
 
