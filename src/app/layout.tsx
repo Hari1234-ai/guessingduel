@@ -4,6 +4,7 @@ import "./globals.css";
 import { GameProvider } from "@/context/GameContext";
 import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/ui/Footer";
+import ActiveMatchBanner from "@/components/game/ActiveMatchBanner";
 import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,6 +28,7 @@ export default function RootLayout({
         <AuthProvider>
           <GameProvider>
             {children}
+            <ActiveMatchBanner />
             <Footer />
             <Analytics />
           </GameProvider>
