@@ -199,11 +199,11 @@ function SetupContent() {
               <div className="grid gap-4 pt-6">
                 <Button onClick={() => setMode('host-setup')} size="md" className="h-14 text-lg font-bold group">
                   <Users className="mr-3 group-hover:scale-110 transition-transform" />
-                  HOST A MINDMATCH
+                  HOST A MindMatch
                 </Button>
                 <Button onClick={() => setMode('enter-code')} variant="secondary" size="md" className="h-14 text-lg font-bold group">
                   <Hash className="mr-3 group-hover:scale-110 transition-transform" />
-                  JOIN A MINDMATCH
+                  JOIN A MindMatch
                 </Button>
               </div>
               <button onClick={() => router.push('/')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto">
@@ -223,7 +223,7 @@ function SetupContent() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16 pb-20">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
               <div className="text-center space-y-2">
-                <h2 className="text-xl font-black uppercase italic tracking-tight">ENTER MINDMATCH CODE</h2>
+                <h2 className="text-xl font-black italic tracking-tight uppercase">ENTER <span className="normal-case">MindMatch</span> CODE</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest leading-relaxed">Ask your friend for their unique 6-character code.</p>
               </div>
               <div className="space-y-4">
@@ -259,7 +259,7 @@ function SetupContent() {
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
             <div className="max-w-xl mx-auto space-y-8 pt-16 md:pt-24 text-center md:text-left">
               <div className="space-y-2 text-center md:text-left">
-                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">MINDMATCH SETUP</h2>
+                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">MindMatch SETUP</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your match settings before inviting a rival.</p>
               </div>
               <form onSubmit={handleCreateRoom} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
@@ -298,7 +298,7 @@ function SetupContent() {
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
             <div className="max-w-xl mx-auto space-y-8 pt-16 md:pt-24">
               <div className="space-y-2 text-center md:text-left">
-                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE MINDMATCH</h2>
+                <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE MindMatch</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A match has been found! Prepare yourself.</p>
               </div>
               <form onSubmit={handleGuestReady} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
@@ -359,7 +359,7 @@ function SetupContent() {
 
               {/* Instructional Header (Moved back to top) */}
               <div className="text-center">
-                <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic max-w-[280px] mx-auto md:max-w-none">
+                <h1 className="text-xl md:text-2xl font-black tracking-tighter italic max-w-[280px] mx-auto md:max-w-none uppercase">
                   {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
                 </h1>
               </div>
@@ -408,7 +408,7 @@ function SetupContent() {
                     <p className={`text-base font-black italic tracking-tight transition-colors ${
                       isOpponentPresent ? 'text-white' : 'text-slate-800'
                     }`}>
-                      {isOpponentPresent ? 'MINDMATCHIST READY' : 'WAITING...'}
+                      {isOpponentPresent ? 'MindMatchIST READY' : 'WAITING...'}
                     </p>
                   </div>
                 </div>
@@ -481,7 +481,7 @@ function SetupContent() {
                         onClick={startGame}
                         className="h-16 px-12 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(255,87,188,0.3)]"
                       >
-                        START MINDMATCH
+                        START MindMatch
                         <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </div>

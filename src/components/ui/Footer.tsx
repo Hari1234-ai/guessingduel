@@ -10,11 +10,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col items-start md:items-center">
         {/* Logo/Icon Area */}
         <div className="flex items-center gap-3 mb-8 group cursor-default">
-          <div className="w-10 h-10 bg-blue-600 border border-blue-500/50 rounded-xl flex items-center justify-center transition-all duration-500 shadow-lg shadow-blue-900/20 group-hover:scale-110">
-            <Brain size={20} className="text-white" />
-          </div>
-          <span className="text-lg font-black tracking-tighter uppercase italic text-white transition-colors">
-            MindMatch
+          {/* The original icon div is removed as the new brand name span now includes its own icon */}
+          <span className="text-xl font-black tracking-tighter italic text-white flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+              <Brain size={18} className="text-white fill-current" />
+            </div>
+            Mind<span className="text-blue-500">Match</span>
           </span>
         </div>
 
