@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Brain } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
-import { GameMode } from '@/types/game';
+import { GameMode, GameDifficulty } from '@/types/game';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
@@ -45,6 +45,7 @@ function SetupContent() {
     max: 100,
     secret: '',
     mode: 'numeric' as GameMode,
+    difficulty: 'easy' as GameDifficulty,
     wordLength: 5,
   });
 
@@ -112,6 +113,7 @@ function SetupContent() {
         currentUid, 
         form.mode === 'numeric' ? parseInt(form.secret) : form.secret, 
         form.mode, 
+        form.difficulty,
         form.mode === 'word' ? form.wordLength : undefined,
         form.min, 
         form.max
@@ -349,6 +351,28 @@ function SetupContent() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
                 {form.mode === 'numeric' ? (
                   <section className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                      <div className="flex flex-col items-start gap-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Difficulty</span>
+                        <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Hard = Wrong guess adds +3 to rival</span>
+                      </div>
+                      <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+                        {(['easy', 'hard'] as const).map((diff) => (
+                          <button
+                            key={diff}
+                            type="button"
+                            onClick={() => setForm({ ...form, difficulty: diff })}
+                            className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                              form.difficulty === diff 
+                                ? 'bg-blue-600 text-white shadow-lg' 
+                                : 'text-slate-500 hover:text-slate-300'
+                            }`}
+                          >
+                            {diff}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                       <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-12 text-base font-bold" labelClassName="text-[10px]" />
                       <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-12 text-base font-bold" labelClassName="text-[10px]" />

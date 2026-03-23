@@ -1,6 +1,7 @@
 export type GameStatus = 'setup' | 'lobby' | 'guest-setup' | 'playing' | 'finished';
 
 export type GameMode = 'numeric' | 'word';
+export type GameDifficulty = 'easy' | 'hard';
 
 export type WordLetterStatus = 'correct' | 'present' | 'absent';
 
@@ -34,6 +35,7 @@ export interface GameState {
   player1: Player;
   player2: Player;
   mode: GameMode;
+  difficulty: GameDifficulty;
   wordLength?: number;
   range: GameRange;
   currentTurn: 'player1' | 'player2';

@@ -153,6 +153,7 @@ export default function Game() {
               roomCode,
               winner,
               mode: gameState.mode,
+              difficulty: gameState.difficulty,
               wordLength: gameState.wordLength,
               participants: [player1.uid, player2.uid],
               players: [

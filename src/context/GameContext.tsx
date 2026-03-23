@@ -2,13 +2,13 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import * as Ably from 'ably';
-import { GameState, Player, Feedback, GameMode, WordLetterStatus, WordFeedback } from '@/types/game';
+import { GameState, Player, Feedback, GameMode, GameDifficulty, WordLetterStatus, WordFeedback } from '@/types/game';
 import { getRandomAIWord } from "@/utils/wordList";
 
 interface GameContextType {
   gameState: GameState;
   connectionStatus: 'connecting' | 'connected' | 'failed' | 'disconnected';
-  createRoom: (name: string, uid: string, secret: number | string, mode: GameMode, wordLength?: number, min?: number, max?: number) => Promise<string>;
+  createRoom: (name: string, uid: string, secret: number | string, mode: GameMode, difficulty: GameDifficulty, wordLength?: number, min?: number, max?: number) => Promise<string>;
   joinRoom: (code: string, uid: string) => Promise<void>;
   completeGuestSetup: (name: string, uid: string, secret: number | string) => Promise<void>;
   makeGuess: (guess: number | string) => Feedback;
@@ -33,6 +33,7 @@ const initialState: GameState = {
   player1: initialPlayer('Player 1'),
   player2: initialPlayer('Player 2'),
   mode: 'numeric',
+  difficulty: 'easy',
   range: { min: 1, max: 100 },
   currentTurn: 'player1',
   status: 'setup',
@@ -160,7 +161,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
 
-  const createRoom = useCallback(async (name: string, uid: string, secret: number | string, mode: GameMode, wordLength?: number, min: number = 1, max: number = 100) => {
+  const createRoom = useCallback(async (name: string, uid: string, secret: number | string, mode: GameMode, difficulty: GameDifficulty, wordLength?: number, min: number = 1, max: number = 100) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     
     const newState: GameState = { 
@@ -169,6 +170,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       playerId: 'player1', 
       status: 'lobby',
       mode,
+      difficulty,
       wordLength,
       player1: {
         ...initialPlayer(name, uid),
@@ -193,6 +195,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         uid: newState.player1.uid,
         secret: newState.player1.secretNumber,
         range: newState.range,
+        mode: newState.mode,
+        difficulty: newState.difficulty,
         isReady: true,
       });
 
@@ -225,6 +229,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateState(prev => ({ 
           ...prev, 
           status: 'playing',
+          mode: payload.mode || prev.mode,
+          difficulty: payload.difficulty || prev.difficulty,
           // Merge state cautiously: Never overwrite our own player object
           player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
           player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
@@ -241,6 +247,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (msg.clientId !== ablyRef.current?.clientId) {
           const state = latestStateRef.current;
           channel.publish('sync-response', {
+            mode: state.mode,
+            difficulty: state.difficulty,
             player1: state.player1,
             player2: state.player2,
             range: state.range
@@ -254,6 +262,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const payload = msg.data;
           updateState(prev => ({
             ...prev,
+            mode: payload.mode || prev.mode,
+            difficulty: payload.difficulty || prev.difficulty,
             player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
             player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
             range: payload.range || prev.range
@@ -323,6 +333,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           ...prev,
           isOpponentPresent: true,
           mode: payload.mode || prev.mode,
+          difficulty: payload.difficulty || prev.difficulty,
           wordLength: payload.wordLength || prev.wordLength,
           player1: { 
             ...prev.player1, 
@@ -341,6 +352,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateState(prev => ({ 
           ...prev, 
           status: 'playing',
+          mode: payload.mode || prev.mode,
+          difficulty: payload.difficulty || prev.difficulty,
           player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
           player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
           range: payload.range || prev.range
@@ -356,6 +369,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (msg.clientId !== ablyRef.current?.clientId) {
           const state = latestStateRef.current;
           channel.publish('sync-response', {
+            mode: state.mode,
+            difficulty: state.difficulty,
             player1: state.player1,
             player2: state.player2,
             range: state.range
@@ -369,6 +384,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const payload = msg.data;
           updateState(prev => ({
             ...prev,
+            mode: payload.mode || prev.mode,
+            difficulty: payload.difficulty || prev.difficulty,
             player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
             player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
             range: payload.range || prev.range
@@ -479,18 +496,27 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const actualFeedback: Feedback = guess === -1 ? 'Time Out' : feedback;
     const nextTurn = isWinner ? currentTurn : (currentTurn === 'player1' ? 'player2' : 'player1');
 
-    updateState(prev => ({
-      ...prev,
-      [currentTurn]: {
-        ...prev[currentTurn],
-        attempts: prev[currentTurn].attempts + (guess === -1 ? 0 : 1),
-        history: [{ guess, feedback: actualFeedback as Feedback, timestamp: Date.now() }, ...prev[currentTurn].history],
-      },
-      currentTurn: nextTurn as 'player1' | 'player2',
-      status: isWinner ? 'finished' : 'playing',
-      winner: isWinner ? currentTurn : null,
-      turnTimeLeft: 30, // Reset timer
-    }));
+    updateState(prev => {
+      const opponentKey = currentTurn === 'player1' ? 'player2' : 'player1';
+      const shouldIncrement = prev.mode === 'numeric' && prev.difficulty === 'hard' && !isWinner && guess !== -1;
+      
+      return {
+        ...prev,
+        [currentTurn]: {
+          ...prev[currentTurn],
+          attempts: prev[currentTurn].attempts + (guess === -1 ? 0 : 1),
+          history: [{ guess, feedback: actualFeedback as Feedback, timestamp: Date.now() }, ...prev[currentTurn].history],
+        },
+        [opponentKey]: {
+          ...prev[opponentKey],
+          secretNumber: shouldIncrement ? prev[opponentKey].secretNumber + 3 : prev[opponentKey].secretNumber
+        },
+        currentTurn: nextTurn as 'player1' | 'player2',
+        status: isWinner ? 'finished' : 'playing',
+        winner: isWinner ? currentTurn : null,
+        turnTimeLeft: 30, // Reset timer
+      };
+    });
 
     if (channelRef.current) {
       channelRef.current.publish('guess-made', { guess, feedback: actualFeedback, nextTurn, isWinner });
@@ -515,10 +541,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 if (h.feedback === 'Too Low') {
                   currentMin = Math.max(currentMin, h.guess + 1);
                 } else if (h.feedback === 'Too High') {
+                  // In Hard Mode, the secret might have increased, 
+                  // so a previous "Too High" guess might now be "Too Low".
+                  // However, if we stay conservative, we'll eventually find it.
                   currentMax = Math.min(currentMax, h.guess - 1);
                 }
               }
             });
+            
+            // Safety: Ensure min doesn't exceed max due to moving target
+            if (currentMin > currentMax) {
+               currentMax = range.max;
+            }
             
             const guess = Math.floor((currentMin + currentMax) / 2);
             makeGuess(guess);
@@ -564,7 +598,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       channelRef.current.publish('start-match', {
         player1: state.player1,
         player2: state.player2,
-        range: state.range
+        range: state.range,
+        mode: state.mode,
+        difficulty: state.difficulty,
+        wordLength: state.wordLength
       });
       updateState(prev => ({ ...prev, status: 'playing' }));
     }

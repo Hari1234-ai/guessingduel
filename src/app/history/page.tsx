@@ -21,6 +21,7 @@ interface Match {
   opponentSecretWord?: string;
   totalGuesses: number;
   mode: 'numeric' | 'word';
+  difficulty?: 'easy' | 'hard';
 }
 
 export default function HistoryPage() {
@@ -85,7 +86,8 @@ export default function HistoryPage() {
             opponentSecretNum: opponent?.secretNumber,
             opponentSecretWord: opponent?.secretWord,
             totalGuesses: myData?.guesses?.length || 0,
-            mode
+            mode,
+            difficulty: data.difficulty || 'easy'
           });
         });
 
@@ -172,6 +174,13 @@ export default function HistoryPage() {
                         <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
                           {match.mode}
                         </span>
+                        {match.mode === 'numeric' && (
+                          <span className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full border ${
+                            match.difficulty === 'hard' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                          }`}>
+                            {match.difficulty || 'easy'}
+                          </span>
+                        )}
                         <span className="text-slate-500 text-[8px] font-bold uppercase tracking-widest flex items-center gap-1">
                           <Calendar size={8} /> {match.date}
                         </span>
