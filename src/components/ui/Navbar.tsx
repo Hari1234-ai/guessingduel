@@ -102,7 +102,7 @@ export default function Navbar() {
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
             <Brain size={20} className="text-white" />
           </div>
-          <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
+          <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase">
             MindMatch
           </span>
         </Link>
