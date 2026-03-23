@@ -155,7 +155,7 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-3">
-              {!(pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact') && (
+              {!(pathname === '/' || pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact') && (
                 <Button 
                   size="md" 
                   onClick={() => router.push(!user && guestPlayCount >= 1 ? '/login' : '/setup')}
