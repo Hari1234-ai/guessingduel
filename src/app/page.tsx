@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import Modal from '@/components/ui/Modal';
 import Navbar from '@/components/ui/Navbar';
+import Testimonials from '@/components/landing/Testimonials';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -287,6 +288,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <Testimonials />
 
       {/* Modals */}
       <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="Game Rules">
