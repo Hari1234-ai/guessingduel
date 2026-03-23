@@ -31,6 +31,14 @@ export default function ContactPage() {
           className="text-center space-y-12 w-full"
         >
           <div className="flex flex-col items-center">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6"
+            >
+              <MessageSquare size={12} className="fill-current" />
+              Direct Line
+            </motion.div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-[0.85] mb-8 text-center">
               Send a <br />
               <span className="text-blue-500">Transmission.</span>
