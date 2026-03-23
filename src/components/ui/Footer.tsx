@@ -10,10 +10,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col items-start md:items-center">
         {/* Logo/Icon Area */}
         <div className="flex items-center gap-3 mb-8 group cursor-default">
-          <div className="w-10 h-10 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-center grayscale group-hover:grayscale-0 group-hover:bg-blue-600 group-hover:border-blue-500 transition-all duration-500 shadow-lg shadow-black/50">
-            <Swords size={20} className="text-slate-500 group-hover:text-white transition-colors" />
+          <div className="w-10 h-10 bg-blue-600 border border-blue-500/50 rounded-xl flex items-center justify-center transition-all duration-500 shadow-lg shadow-blue-900/20 group-hover:scale-110">
+            <Swords size={20} className="text-white" />
           </div>
-          <span className="text-lg font-black tracking-tighter uppercase italic text-slate-400 group-hover:text-white transition-colors">
+          <span className="text-lg font-black tracking-tighter uppercase italic text-white transition-colors">
             Duel
           </span>
         </div>
