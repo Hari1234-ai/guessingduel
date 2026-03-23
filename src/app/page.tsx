@@ -141,26 +141,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="relative z-10 py-12 px-6 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-6">
-          <FeatureCard 
-            icon={<Zap className="text-yellow-400" size={24} />}
-            title="Real-time Action"
-            description="Powered by Ably for lightning-fast, lag-free multiplayer duels."
-          />
-          <FeatureCard 
-            icon={<Shield className="text-blue-400" size={24} />}
-            title="Secure Play"
-            description="Firebase-backed authentication keeps your stats and profile safe."
-          />
-          <FeatureCard 
-            icon={<Users className="text-purple-400" size={24} />}
-            title="Team Battles"
-            description="Host private rooms or join existing duels with a simple invite code."
-          />
-        </div>
-      </section>
 
       {/* VS AI Section */}
       <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto border-t border-slate-800">
@@ -268,17 +248,6 @@ export default function LandingPage() {
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="p-8 rounded-[2rem] bg-card border border-card-border backdrop-blur-sm hover:border-blue-500/30 transition-all group">
-      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-        {icon}
-      </div>
-      <h3 className="text-lg font-black mb-3 uppercase tracking-tight">{title}</h3>
-      <p className="text-slate-500 text-xs leading-relaxed">{description}</p>
-    </div>
-  );
-}
 
 function RuleItem({ number, title, desc }: { number: string, title: string, desc: string }) {
   return (
