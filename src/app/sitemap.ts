@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://guessingmatch.vercel.app';
+  const baseUrl = 'https://mindm.vercel.app';
   
   return [
     {

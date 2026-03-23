@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/admin/'],
     },
-    sitemap: 'https://guessingmatch.vercel.app/sitemap.xml',
+    sitemap: 'https://mindm.vercel.app/sitemap.xml',
   };
 }
