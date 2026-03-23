@@ -11,7 +11,7 @@ export default function Footer() {
         {/* Logo/Icon Area */}
         <div className="flex items-center gap-3 mb-8 group cursor-default">
           {/* The original icon div is removed as the new brand name span now includes its own icon */}
-          <span className="text-xl font-black tracking-tighter italic text-white flex items-center gap-2">
+          <span className="text-xl font-black tracking-tighter text-white flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
               <Brain size={18} className="text-white fill-current" />
             </div>

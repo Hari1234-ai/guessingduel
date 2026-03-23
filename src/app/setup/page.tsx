@@ -223,7 +223,7 @@ function SetupContent() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16 pb-20">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10">
               <div className="text-center space-y-2">
-                <h2 className="text-xl font-black italic tracking-tight uppercase">ENTER <span className="normal-case">MindMatch</span> CODE</h2>
+                <h2 className="text-xl font-black tracking-tight uppercase">ENTER <span className="normal-case">MindMatch</span> CODE</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest leading-relaxed">Ask your friend for their unique 6-character code.</p>
               </div>
               <div className="space-y-4">
@@ -359,7 +359,7 @@ function SetupContent() {
 
               {/* Instructional Header (Moved back to top) */}
               <div className="text-center">
-                <h1 className="text-xl md:text-2xl font-black tracking-tighter italic max-w-[280px] mx-auto md:max-w-none uppercase">
+                <h1 className="text-xl md:text-2xl font-black tracking-tighter max-w-[280px] mx-auto md:max-w-none uppercase">
                   {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
                 </h1>
               </div>

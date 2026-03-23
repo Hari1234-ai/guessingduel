@@ -68,7 +68,7 @@ export default function LandingPage() {
             Season 1: The Awakening
           </motion.div>
 
-          <motion.h1 variants={itemVariants} className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase italic leading-[0.85] text-foreground">
+          <motion.h1 variants={itemVariants} className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.85] text-foreground">
             Outsmart <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">Your Rivals.</span>
           </motion.h1>
