@@ -613,16 +613,16 @@ export default function Game() {
           </p>
 
           <div className="bg-slate-950/50 rounded-2xl border border-slate-800 p-6 w-full mb-8 grid grid-cols-2 gap-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500/50" />
-            <div className="absolute top-0 right-0 w-1 h-full bg-purple-500/50" />
+            <div className={`absolute top-0 left-0 w-1 h-full ${playerId === 'player1' ? 'bg-blue-500/50' : 'bg-purple-500/50'}`} />
+            <div className={`absolute top-0 right-0 w-1 h-full ${playerId === 'player1' ? 'bg-purple-500/50' : 'bg-blue-500/50'}`} />
             
-            <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{player1.name}&apos;s Secret</p>
-              <p className="text-2xl font-black text-white">{gameState.mode === 'numeric' ? player1.secretNumber : player1.secretWord}</p>
+            <div className="text-center border-r border-white/5">
+              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{(playerId === 'player1' ? player1 : player2).name}&apos;s Secret</p>
+              <p className="text-2xl font-black text-white">{gameState.mode === 'numeric' ? (playerId === 'player1' ? player1.secretNumber : player2.secretNumber) : (playerId === 'player1' ? player1.secretWord : player2.secretWord)}</p>
             </div>
             <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{player2.name}&apos;s Secret</p>
-              <p className="text-2xl font-black text-white">{gameState.mode === 'numeric' ? player2.secretNumber : player2.secretWord}</p>
+              <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{(playerId === 'player1' ? player2 : player1).name}&apos;s Secret</p>
+              <p className="text-2xl font-black text-white">{gameState.mode === 'numeric' ? (playerId === 'player1' ? player2.secretNumber : player1.secretNumber) : (playerId === 'player1' ? player2.secretWord : player1.secretWord)}</p>
             </div>
           </div>
 
