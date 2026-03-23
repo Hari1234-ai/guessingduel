@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import * as Ably from 'ably';
 import { GameState, Player, Feedback, GameMode, WordLetterStatus, WordFeedback } from '@/types/game';
+import { getRandomAIWord } from "@/utils/wordList";
 
 interface GameContextType {
   gameState: GameState;
@@ -19,10 +20,11 @@ interface GameContextType {
   sendReaction: (emoji: string) => void;
 }
 
-const initialPlayer = (name: string = '', uid: string = '', secretNumber: number = 0): Player => ({
+const initialPlayer = (name: string = '', uid: string = '', secretNumber: number = 0, secretWord?: string): Player => ({
   name,
   uid,
   secretNumber,
+  secretWord,
   attempts: 0,
   history: [],
 });
@@ -529,8 +531,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const startWithAI = useCallback((uid: string) => {
     const { range } = latestStateRef.current;
     
-    // Generate AI's secret number
-    const aiSecret = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    // Generate AI's secret (number or word)
+    const mode = latestStateRef.current.mode;
+    const wordLength = latestStateRef.current.wordLength || 5;
+    const aiSecretNum = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    const aiSecretWord = mode === 'word' ? getRandomAIWord(wordLength) : undefined;
     
     updateState(prev => ({
       ...prev,
@@ -538,7 +543,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       roomCode: `AI-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
       player1: { ...prev.player1, uid },
       player2: {
-        ...initialPlayer('AI Strategist', 'ai-bot', aiSecret),
+        ...initialPlayer('AI Strategist', 'ai-bot', aiSecretNum, aiSecretWord),
         isAI: true,
       },
       isPlayer2Ready: true,
@@ -564,15 +569,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const isHost = playerId === 'player1';
     const isAI = player2.isAI;
     
+    const mode = latestStateRef.current.mode;
+    const wordLength = latestStateRef.current.wordLength || 5;
+    const aiSecretNum = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    const aiSecretWord = mode === 'word' ? getRandomAIWord(wordLength) : undefined;
+
     updateState(prev => ({
       ...initialState,
       roomCode: prev.roomCode,
       playerId: prev.playerId,
       range: prev.range,
+      mode: prev.mode,
+      wordLength: prev.wordLength,
       status: isAI ? 'playing' : (isHost ? 'lobby' : 'guest-setup'), 
       player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
       player2: isAI ? { 
-        ...initialPlayer('AI Strategist', 'ai-bot', Math.floor(Math.random() * (range.max - range.min + 1)) + range.min), 
+        ...initialPlayer('AI Strategist', 'ai-bot', aiSecretNum, aiSecretWord), 
         isAI: true, 
       } : { ...initialPlayer(prev.player2.name, prev.player2.uid), attempts: 0, history: [] },
       isPlayer1Ready: isAI || prev.isPlayer1Ready,
