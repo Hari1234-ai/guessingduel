@@ -352,7 +352,7 @@ function SetupContent() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
                 {form.mode === 'numeric' ? (
                   <section className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-3xl sm:rounded-2xl text-center sm:text-left">
                       <div className="flex flex-col items-start gap-1">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Difficulty</span>
