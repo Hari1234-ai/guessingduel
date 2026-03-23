@@ -36,13 +36,15 @@ export default function Testimonials() {
     async function fetchData() {
       if (!db) return;
       try {
-        const q = query(collection(db, 'users'), orderBy('coins', 'desc'), limit(20));
+        const q = query(collection(db, 'users'), orderBy('coins', 'desc'), limit(30));
         const snapshot = await getDocs(q);
-        const players = snapshot.docs.map(doc => ({
-          name: doc.data().name || 'Anonymous Duelist',
-        }));
+        const players = snapshot.docs
+          .map(doc => ({
+            name: doc.data().name || 'Anonymous Duelist',
+          }))
+          .filter(p => !p.name.toLowerCase().includes('duel tester'));
 
-        const combined = players.map((p, i) => ({
+        const combined = players.slice(0, 20).map((p, i) => ({
           name: p.name,
           text: PREDEFINED_TESTIMONIALS[i % PREDEFINED_TESTIMONIALS.length],
           initial: p.name.charAt(0).toUpperCase()
