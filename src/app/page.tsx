@@ -169,7 +169,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-purple-500/20 blur-[100px] rounded-full" />
             <div className="relative bg-card border border-card-border p-8 rounded-3xl backdrop-blur-sm shadow-2xl flex flex-col items-center justify-center min-h-[300px]">
               <Bot size={80} className="text-purple-400 mb-6 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
-              <h3 className="text-xl font-black uppercase tracking-widest text-white mb-2">GuessBot 3000</h3>
+              <h3 className="text-xl font-black uppercase tracking-widest text-white mb-2">GuessBot</h3>
               <p className="text-slate-500 text-sm font-bold">Always ready for a duel.</p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function LandingPage() {
               variant="secondary"
               size="lg" 
               onClick={() => router.push('/leaderboard')}
-              className="mt-auto h-12 px-8 text-sm font-black group relative z-10 bg-slate-800 hover:bg-slate-700 w-full sm:w-auto"
+              className="mt-auto h-12 px-8 text-[10px] xs:text-xs sm:text-sm font-black group relative z-10 bg-slate-800 hover:bg-slate-700 w-full sm:w-auto"
             >
               View Leaderboard
               <Trophy size={16} className="ml-2 text-blue-400 group-hover:scale-110 transition-transform" />
