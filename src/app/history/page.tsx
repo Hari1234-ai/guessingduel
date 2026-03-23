@@ -15,9 +15,12 @@ interface Match {
   opponentName: string;
   result: 'win' | 'loss';
   date: string;
-  secretNumber: number;
-  opponentSecret: number;
+  secretNumber?: number;
+  secretWord?: string;
+  opponentSecretNum?: number;
+  opponentSecretWord?: string;
   totalGuesses: number;
+  mode: 'numeric' | 'word';
 }
 
 export default function HistoryPage() {
@@ -49,6 +52,7 @@ export default function HistoryPage() {
           const players = data.players || [];
           const myData = players.find((p: any) => p.uid === user.uid);
           const opponent = players.find((p: any) => p.uid !== user.uid);
+          const mode = data.mode || 'numeric';
           
           // Determine winner (handles both UID and 'player1'/'player2' labels)
           let isWinner = false;
@@ -76,9 +80,12 @@ export default function HistoryPage() {
             opponentName: opponent?.name || 'Unknown Rival',
             result: isWinner ? 'win' : 'loss',
             date: dateStr,
-            secretNumber: myData?.secretNumber || 0,
-            opponentSecret: opponent?.secretNumber || 0,
-            totalGuesses: myData?.guesses?.length || 0
+            secretNumber: myData?.secretNumber,
+            secretWord: myData?.secretWord,
+            opponentSecretNum: opponent?.secretNumber,
+            opponentSecretWord: opponent?.secretWord,
+            totalGuesses: myData?.guesses?.length || 0,
+            mode
           });
         });
 
@@ -162,6 +169,9 @@ export default function HistoryPage() {
                         }`}>
                           {match.result.toUpperCase()}
                         </span>
+                        <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                          {match.mode}
+                        </span>
                         <span className="text-slate-500 text-[8px] font-bold uppercase tracking-widest flex items-center gap-1">
                           <Calendar size={8} /> {match.date}
                         </span>
@@ -175,13 +185,17 @@ export default function HistoryPage() {
                       <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Guesses</p>
                       <p className="text-xs md:text-sm font-black text-foreground">{match.totalGuesses}</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Your Num</p>
-                      <p className="text-xs md:text-sm font-black text-blue-400">{match.secretNumber}</p>
+                    <div className="text-center min-w-[60px]">
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">{match.mode === 'numeric' ? 'Your Num' : 'Your Word'}</p>
+                      <p className="text-xs md:text-sm font-black text-blue-400 uppercase tracking-tight">
+                        {match.mode === 'numeric' ? match.secretNumber : match.secretWord}
+                      </p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Rival Num</p>
-                      <p className="text-xs md:text-sm font-black text-purple-400">{match.opponentSecret}</p>
+                    <div className="text-center min-w-[60px]">
+                      <p className="text-[8px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">{match.mode === 'numeric' ? 'Rival Num' : 'Rival Word'}</p>
+                      <p className="text-xs md:text-sm font-black text-purple-400 uppercase tracking-tight">
+                        {match.mode === 'numeric' ? match.opponentSecretNum : match.opponentSecretWord}
+                      </p>
                     </div>
                   </div>
                 </motion.div>

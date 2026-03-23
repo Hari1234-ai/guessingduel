@@ -152,10 +152,24 @@ export default function Game() {
             await addDoc(collection(db, 'matches'), {
               roomCode,
               winner,
+              mode: gameState.mode,
+              wordLength: gameState.wordLength,
               participants: [player1.uid, player2.uid],
               players: [
-                { uid: player1.uid || '', name: player1.name, secretNumber: player1.secretNumber, guesses: player1.history },
-                { uid: player2.uid || '', name: player2.name, secretNumber: player2.secretNumber, guesses: player2.history }
+                { 
+                  uid: player1.uid || '', 
+                  name: player1.name, 
+                  secretNumber: player1.secretNumber, 
+                  secretWord: player1.secretWord,
+                  guesses: player1.history 
+                },
+                { 
+                  uid: player2.uid || '', 
+                  name: player2.name, 
+                  secretNumber: player2.secretNumber, 
+                  secretWord: player2.secretWord,
+                  guesses: player2.history 
+                }
               ],
               createdAt: serverTimestamp()
             });
