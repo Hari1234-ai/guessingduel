@@ -42,7 +42,12 @@ export default function Testimonials() {
           .map(doc => ({
             name: doc.data().name || 'Anonymous Duelist',
           }))
-          .filter(p => !p.name.toLowerCase().includes('duel tester'));
+          .filter(p => {
+            const lowName = p.name.toLowerCase();
+            return !lowName.includes('duel tester') && 
+                   !lowName.includes('duelisttester') && 
+                   !lowName.includes('tester');
+          });
 
         const combined = players.slice(0, 20).map((p, i) => ({
           name: p.name,
