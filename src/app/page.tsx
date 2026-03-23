@@ -54,7 +54,7 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-32 pb-12 md:pt-48 md:pb-24 px-6 text-center">
+      <section className="relative z-10 pt-24 pb-12 md:pt-36 md:pb-24 px-6 text-center">
         <motion.div
           variants={containerVariants}
           initial="hidden"

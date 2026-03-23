@@ -24,7 +24,7 @@ export default function ContactPage() {
 
       <Navbar />
 
-      <section className="relative z-10 pt-32 pb-24 px-6 max-w-4xl mx-auto flex justify-center">
+      <section className="relative z-10 pt-24 pb-24 px-6 max-w-4xl mx-auto flex justify-center">
         <motion.div 
           initial={{ opacity: 0, y: 30 }} 
           animate={{ opacity: 1, y: 0 }}

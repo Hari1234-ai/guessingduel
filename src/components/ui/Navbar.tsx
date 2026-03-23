@@ -96,7 +96,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="relative z-50 flex items-center justify-between px-6 pt-10 pb-4 max-w-7xl mx-auto w-full">
+      <nav className="relative z-50 flex items-center justify-between px-6 pt-6 pb-4 max-w-7xl mx-auto w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
