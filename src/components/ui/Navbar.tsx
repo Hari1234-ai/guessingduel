@@ -94,9 +94,9 @@ export default function Navbar() {
 
   const navLinks = [
     { 
-      label: isPlayLimitReached ? 'Login' : 'Play MindMatch', 
-      href: isPlayLimitReached ? '/login' : '/setup', 
-      icon: isPlayLimitReached ? <LogIn size={18} /> : <Brain size={18} /> 
+      label: 'Play MindMatch', 
+      href: '/setup', 
+      icon: <Brain size={18} /> 
     },
     { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
@@ -155,7 +155,7 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-3">
-              {!(pathname === '/' || pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact' || pathname === '/login') && (
+              {!(pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact' || pathname === '/login') && (
                 <Button 
                   size="md" 
                   onClick={() => router.push(!user && guestPlayCount >= 1 ? '/login' : '/setup')}

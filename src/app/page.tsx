@@ -98,8 +98,8 @@ export default function LandingPage() {
               onClick={() => router.push(!user && guestPlayCount >= 1 ? '/login' : '/setup')}
               className="h-12 px-8 text-sm font-black group w-full sm:w-auto"
             >
-              {!user && guestPlayCount >= 1 ? 'Login' : 'Play now'}
-              {!user && guestPlayCount >= 1 ? <LogIn className="ml-2 group-hover:translate-x-1 transition-transform" /> : <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
+              Play now
+              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
         </motion.div>
