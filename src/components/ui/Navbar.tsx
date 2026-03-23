@@ -144,7 +144,7 @@ export default function Navbar() {
           ) : (
             <Button 
               size="md" 
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/setup')}
               className="h-10 px-6 font-bold"
             >
               Play Now

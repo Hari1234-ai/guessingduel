@@ -103,46 +103,53 @@ export default function Game() {
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
   useEffect(() => {
-    if (status === 'finished' && winner && user && db && roomCode && processedMatchRef.current !== roomCode) {
+    if (status === 'finished' && winner && roomCode && processedMatchRef.current !== roomCode) {
       processedMatchRef.current = roomCode; // Lock immediately
-      const saveMatch = async () => {
-        try {
-          await addDoc(collection(db, 'matches'), {
-            roomCode,
-            winner,
-            participants: [player1.uid, player2.uid],
-            players: [
-              { uid: player1.uid || '', name: player1.name, secretNumber: player1.secretNumber, guesses: player1.history },
-              { uid: player2.uid || '', name: player2.name, secretNumber: player2.secretNumber, guesses: player2.history }
-            ],
-            createdAt: serverTimestamp()
-          });
 
-          // Reward coins to winner
-          if (winner === playerId) {
-            const currentWeek = getISOWeek();
-            const userRef = doc(db, 'users', user.uid);
-            const userSnap = await getDoc(userRef);
-            
-            if (userSnap.exists()) {
-              const userData = userSnap.data();
-              const needsWeeklyReset = userData.lastResetWeek !== currentWeek;
+      if (user && db) {
+        const saveMatch = async () => {
+          try {
+            await addDoc(collection(db, 'matches'), {
+              roomCode,
+              winner,
+              participants: [player1.uid, player2.uid],
+              players: [
+                { uid: player1.uid || '', name: player1.name, secretNumber: player1.secretNumber, guesses: player1.history },
+                { uid: player2.uid || '', name: player2.name, secretNumber: player2.secretNumber, guesses: player2.history }
+              ],
+              createdAt: serverTimestamp()
+            });
+  
+            // Reward coins to winner
+            if (winner === playerId) {
+              const currentWeek = getISOWeek();
+              const userRef = doc(db, 'users', user.uid);
+              const userSnap = await getDoc(userRef);
               
-              await updateDoc(userRef, {
-                coins: increment(100),
-                weeklyCoins: needsWeeklyReset ? 100 : increment(100),
-                lastResetWeek: currentWeek,
-                updatedAt: serverTimestamp()
-              });
-              
-              await refreshProfile();
+              if (userSnap.exists()) {
+                const userData = userSnap.data();
+                const needsWeeklyReset = userData.lastResetWeek !== currentWeek;
+                
+                await updateDoc(userRef, {
+                  coins: increment(100),
+                  weeklyCoins: needsWeeklyReset ? 100 : increment(100),
+                  lastResetWeek: currentWeek,
+                  updatedAt: serverTimestamp()
+                });
+                
+                await refreshProfile();
+              }
             }
+          } catch (error) {
+            console.error("Error saving match result & rewards:", error);
           }
-        } catch (error) {
-          console.error("Error saving match result & rewards:", error);
-        }
-      };
-      saveMatch();
+        };
+        saveMatch();
+      } else {
+        // Guest mode: Increment play count in localStorage
+        const currentCount = parseInt(localStorage.getItem('guestPlayCount') || '0');
+        localStorage.setItem('guestPlayCount', (currentCount + 1).toString());
+      }
     }
   }, [status, winner, user, roomCode, player1, player2, playerId, refreshProfile]);
   
