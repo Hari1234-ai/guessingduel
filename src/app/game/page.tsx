@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, RotateCcw, LogOut, Trophy, Sparkles, Loader2, Hash, Share2 } from 'lucide-react';
+import { Send, RotateCcw, LogOut, Trophy, Sparkles, Loader2, Hash, Share2, Brain } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -514,8 +514,54 @@ export default function Game() {
         </div>
 
         {/* Right Column: History */}
-        <div className="lg:col-span-5 w-full h-full">
+        <div className="lg:col-span-5 w-full h-full space-y-4">
           <GuessHistory />
+          
+          {gameState.mode === 'word' && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-slate-900/50 backdrop-blur-xl border border-white/5 p-6 rounded-[2rem] shadow-2xl"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Brain size={18} className="text-purple-400" />
+                <h3 className="text-sm font-black text-white uppercase tracking-widest text-left">Legend & Hints</h3>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/50 flex items-center justify-center text-green-500 font-black text-xs">A</div>
+                  <div className="flex-1">
+                    <p className="text-[11px] font-black text-white text-left uppercase tracking-tight">Correct Position</p>
+                    <p className="text-[10px] text-slate-500 text-left">The letter is in the secret word & in the right spot.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center text-yellow-500 font-black text-xs">B</div>
+                  <div className="flex-1">
+                    <p className="text-[11px] font-black text-white text-left uppercase tracking-tight">Wrong Position</p>
+                    <p className="text-[10px] text-slate-500 text-left">The letter is in the secret word but in a different spot.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-400 font-black text-xs">C</div>
+                  <div className="flex-1">
+                    <p className="text-[11px] font-black text-white text-left uppercase tracking-tight">Not Present</p>
+                    <p className="text-[10px] text-slate-500 text-left">The letter is not in the secret word at all.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/5">
+                <p className="text-[10px] text-slate-400 font-medium leading-relaxed italic text-left">
+                  <Sparkles size={10} className="inline mr-1 text-yellow-500" />
+                  Find all letters to trigger the <span className="text-purple-400 font-bold">Rearrange Phase</span> and win the MindMatch!
+                </p>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
 
