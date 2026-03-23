@@ -69,9 +69,20 @@ function SetupContent() {
       console.log('Auto-joining room from URL:', room);
       if (user?.uid) {
         joinRoom(room.toUpperCase(), user.uid);
+      } else {
+        // Guest Logic
+        if (guestPlayCount < 1) {
+          const guestUid = `guest-${Math.random().toString(36).substring(2, 8)}`;
+          joinRoom(room.toUpperCase(), guestUid);
+        } else {
+          // Gate the second-time guest
+          setIsLoginModalOpen(true);
+          setMode('enter-code');
+          setJoinCode(room.toUpperCase());
+        }
       }
     }
-  }, [searchParams, joinRoom, roomCode, user?.uid, connectionStatus]);
+  }, [searchParams, joinRoom, roomCode, user?.uid, connectionStatus, guestPlayCount]);
 
   // Sync mode with game status for guest
   useEffect(() => {
@@ -153,6 +164,13 @@ function SetupContent() {
         gameState.mode === 'numeric' ? parseInt(form.secret) : form.secret
       );
       setMode('lobby');
+
+      // Increment guest play count if unauthenticated
+      if (!user) {
+        const newCount = guestPlayCount + 1;
+        setGuestPlayCount(newCount);
+        localStorage.setItem('guestPlayCount', newCount.toString());
+      }
     }
   };
 
