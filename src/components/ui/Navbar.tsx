@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Swords, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins } from 'lucide-react';
+import { Swords, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -142,13 +142,23 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <Button 
-              size="md" 
-              onClick={() => router.push('/setup')}
-              className="h-10 px-6 font-bold"
-            >
-              Play Now
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button 
+                size="md" 
+                onClick={() => router.push('/setup')}
+                className="h-10 px-6 font-bold hidden md:inline-flex"
+              >
+                Play Now
+              </Button>
+              {/* Mobile Menu Toggle for Guests */}
+              <button 
+                onClick={() => setIsDrawerOpen(true)}
+                className="md:hidden p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                aria-label="Open Menu"
+              >
+                <Menu size={24} />
+              </button>
+            </div>
           )}
         </div>
       </nav>
@@ -176,23 +186,34 @@ export default function Navbar() {
             >
               {/* Drawer Header */}
               <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-900/20">
-                    {firstLetter}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-black text-white uppercase">{profileData?.name || 'Duelist'}</h4>
-                    <div className="flex items-center gap-1.5 text-blue-400">
-                      <Coins size={12} className="text-blue-400" />
-                      <span className="text-xs font-black">{profileData?.coins || 0} Coins</span>
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-900/20">
+                      {firstLetter}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-black text-white uppercase">{profileData?.name || 'Duelist'}</h4>
+                      <div className="flex items-center gap-1.5 text-blue-400">
+                        <Coins size={12} className="text-blue-400" />
+                        <span className="text-xs font-black">{profileData?.coins || 0} Coins</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-900/20">
+                      <Swords size={24} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-black text-white uppercase">Guest</h4>
+                      <p className="text-[10px] text-slate-500 font-bold tracking-widest leading-none mt-1">Ready to Duel?</p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
-                  {/* Mobile Theme Toggle - Removed */}
                   <button 
                     onClick={() => setIsDrawerOpen(false)}
-                    className="p-2 rounded-xl bg-slate-800 dark:bg-slate-800 light:bg-slate-100 text-slate-400 dark:text-slate-400 light:text-slate-600 hover:text-white dark:hover:text-white light:hover:text-slate-900 transition-colors"
+                    className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
                   >
                     <X size={20} />
                   </button>
@@ -221,43 +242,36 @@ export default function Navbar() {
                 </div>
 
                 {/* Account Actions */}
-                <div className="space-y-2">
-                  <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-4">Account Utility</p>
-                  <Link href="/settings" onClick={() => setIsDrawerOpen(false)} className="flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-400 hover:bg-slate-800 transition-all font-bold text-sm">
-                    <Settings size={18} className="text-slate-600" /> Account Settings
-                  </Link>
-                  
-                  <div className="h-px bg-slate-800 my-4" />
-                  
-                  {/* 
-                  <button onClick={resetMyCoins} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-blue-400 hover:bg-blue-600/10 transition-all font-bold text-sm text-left">
-                    <RefreshCcw size={18} className="text-blue-400/50" /> Reset Coins (Debug)
-                  </button>
-                  */}
-                  
-                  {/* 
-                  <button onClick={cleanupDuplicateMatches} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-orange-400 hover:bg-orange-600/10 transition-all font-bold text-sm text-left">
-                    <Trash2 size={18} className="text-orange-400/50" /> Cleanup Duplicates
-                  </button>
-                  */}
-
-                  {/* 
-                  <button onClick={resetMyHistory} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-600/10 transition-all font-bold text-sm text-left">
-                    <History size={18} className="text-red-400/50" /> Wipe All History
-                  </button>
-                  */}
-                </div>
+                {user && (
+                  <div className="space-y-2">
+                    <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-4">Account Utility</p>
+                    <Link href="/settings" onClick={() => setIsDrawerOpen(false)} className="flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-400 hover:bg-slate-800 transition-all font-bold text-sm">
+                      <Settings size={18} className="text-slate-600" /> Account Settings
+                    </Link>
+                  </div>
+                )}
               </div>
 
-              {/* Sign Out */}
+              {/* Bottom Actions */}
               <div className="p-6 border-t border-slate-800">
-                <button 
-                  onClick={() => { logout(); setIsDrawerOpen(false); }}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase tracking-tighter hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/10"
-                >
-                  <LogOut size={18} />
-                  Sign Out
-                </button>
+                {user ? (
+                  <button 
+                    onClick={() => { logout(); setIsDrawerOpen(false); }}
+                    className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase tracking-tighter hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/10"
+                  >
+                    <LogOut size={18} />
+                    Sign Out
+                  </button>
+                ) : (
+                  <Button 
+                    fullWidth 
+                    onClick={() => { router.push('/login'); setIsDrawerOpen(false); }}
+                    className="h-14 rounded-2xl font-black uppercase tracking-tighter"
+                  >
+                    <LogIn size={18} className="mr-2" />
+                    Sign In to Arena
+                  </Button>
+                )}
               </div>
             </motion.div>
           </>

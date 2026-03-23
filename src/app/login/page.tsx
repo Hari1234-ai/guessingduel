@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Mail, Lock, ShieldCheck, ArrowRight, UserPlus, LogIn } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, ArrowRight, UserPlus, LogIn, Swords } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LoginPage() {
@@ -110,6 +110,17 @@ export default function LoginPage() {
 
   return (
     <div className="flex-1 flex items-center justify-center p-6 bg-background relative overflow-hidden transition-colors duration-300">
+      {/* Brand Logo */}
+      <div className="absolute top-6 left-6 md:top-10 md:left-10 z-20">
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
+            <Swords size={20} className="text-white" />
+          </div>
+          <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase text-white">
+            Duel
+          </span>
+        </Link>
+      </div>
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
