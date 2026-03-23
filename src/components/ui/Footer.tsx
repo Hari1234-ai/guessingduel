@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Swords } from 'lucide-react';
+import { Brain } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,7 +11,7 @@ export default function Footer() {
         {/* Logo/Icon Area */}
         <div className="flex items-center gap-3 mb-8 group cursor-default">
           <div className="w-10 h-10 bg-blue-600 border border-blue-500/50 rounded-xl flex items-center justify-center transition-all duration-500 shadow-lg shadow-blue-900/20 group-hover:scale-110">
-            <Swords size={20} className="text-white" />
+            <Brain size={20} className="text-white" />
           </div>
           <span className="text-lg font-black tracking-tighter uppercase italic text-white transition-colors">
             MindMatch

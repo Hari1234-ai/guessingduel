@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Swords } from 'lucide-react';
+import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Brain } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';

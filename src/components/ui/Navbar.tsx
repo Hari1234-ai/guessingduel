@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Swords, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
+import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -85,7 +85,7 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { label: 'Play MindMatch', href: '/setup', icon: <Swords size={18} /> },
+    { label: 'Play MindMatch', href: '/setup', icon: <Brain size={18} /> },
     { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
@@ -100,7 +100,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
-            <Swords size={20} className="text-white" />
+            <Brain size={20} className="text-white" />
           </div>
           <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
             MindMatch
@@ -204,7 +204,7 @@ export default function Navbar() {
                 ) : (
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-900/20">
-                      <Swords size={24} />
+                      <Brain size={24} />
                     </div>
                     <div>
                       <h4 className="text-sm font-black text-white uppercase">Guest</h4>

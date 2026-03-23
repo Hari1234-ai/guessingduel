@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Mail, MessageSquare, Linkedin, User, Phone, Send, Swords } from 'lucide-react';
+import { Mail, MessageSquare, Linkedin, User, Phone, Send, Brain } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';

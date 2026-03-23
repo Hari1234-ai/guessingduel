@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Swords, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile } from 'lucide-react';
+import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -37,7 +37,7 @@ export default function LandingPage() {
         
         {/* Floating Background Assets */}
         <FloatingElement className="top-[15%] left-[10%] text-blue-500" delay={0}>
-          <Swords size={40} />
+          <Brain size={40} />
         </FloatingElement>
         <FloatingElement className="top-[25%] right-[15%] text-purple-500" delay={2} duration={12}>
           <Shield size={32} />
@@ -133,7 +133,7 @@ export default function LandingPage() {
               glow="shadow-purple-500/10"
             />
             <StepItem 
-              icon={<Swords size={28} className="text-purple-400" />} 
+              icon={<Brain size={28} className="text-purple-400" />} 
               title="Win the Match" 
               desc="Be the first to guess the exact number and win!" 
               border="border-purple-500/30"

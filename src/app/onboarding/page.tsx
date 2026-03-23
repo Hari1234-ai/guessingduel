@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { User, ArrowRight, Loader2, Sparkles, Swords } from 'lucide-react';
+import { User, ArrowRight, Loader2, Sparkles, Brain } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
@@ -65,7 +65,7 @@ export default function OnboardingPage() {
       >
         <div className="text-center mb-10">
           <div className="w-16 h-16 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-900/40">
-            <Swords className="text-white" size={32} />
+            <Brain className="text-white" size={32} />
           </div>
           <h1 className="text-4xl font-black tracking-tighter uppercase leading-none mb-4">
             Welcome, <br />

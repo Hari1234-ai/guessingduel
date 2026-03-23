@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { History, ArrowLeft, Trophy, Search, Filter, Swords, Calendar, Zap } from 'lucide-react';
+import { History, ArrowLeft, Trophy, Search, Filter, Brain, Calendar, Zap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
@@ -127,7 +127,7 @@ export default function HistoryPage() {
         ) : matches.length === 0 ? (
           <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] p-16 text-center shadow-2xl backdrop-blur-xl">
             <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-600">
-               {user ? <Swords size={32} /> : <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20"><Zap className="text-blue-400" size={32} /></div>}
+               {user ? <Brain size={32} /> : <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20"><Zap className="text-blue-400" size={32} /></div>}
             </div>
             <h3 className="text-xl font-bold mb-2">
               {user ? "No matchs recorded yet." : "MindMatch History Locked."}
@@ -153,7 +153,7 @@ export default function HistoryPage() {
                     <div className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 ${
                       match.result === 'win' ? 'bg-green-500/10 border-green-500/30 text-green-500' : 'bg-red-500/10 border-red-500/30 text-red-500'
                     }`}>
-                      {match.result === 'win' ? <Trophy size={20} className="md:w-7 md:h-7" /> : <Swords size={20} className="md:w-7 md:h-7" />}
+                      {match.result === 'win' ? <Trophy size={20} className="md:w-7 md:h-7" /> : <Brain size={20} className="md:w-7 md:h-7" />}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">

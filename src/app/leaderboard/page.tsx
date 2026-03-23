@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Medal, Crown, ArrowLeft, Loader2, Zap, Swords } from 'lucide-react';
+import { Trophy, Medal, Crown, ArrowLeft, Loader2, Zap, Brain } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import Button from '@/components/ui/Button';

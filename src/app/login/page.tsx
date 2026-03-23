@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Mail, Lock, ShieldCheck, ArrowRight, UserPlus, LogIn, Swords } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, ArrowRight, UserPlus, LogIn, Brain } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/ui/Navbar';
 
