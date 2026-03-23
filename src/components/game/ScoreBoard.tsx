@@ -25,9 +25,26 @@ const ScoreBoard: React.FC = () => {
             <h3 className="font-bold text-white text-center truncate w-full mb-1">
               {player1.name} {playerId === 'player1' && '(You)'}
             </h3>
-            <div className="flex items-center gap-1.5 text-slate-400 text-sm">
-              <Activity size={14} />
-              <span>{player1.attempts} attempts</span>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-1.5 text-slate-400 text-xs">
+                <Activity size={12} />
+                <span>{player1.attempts} attempts</span>
+              </div>
+              {playerId === 'player1' && (
+                <div className="mt-1 flex flex-col items-center">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 leading-none mb-1">Your Secret</span>
+                  <div className="flex items-center gap-1.5 bg-blue-500/10 px-2 py-0.5 rounded-lg border border-blue-500/20">
+                    <span className="text-xs font-black text-blue-400 uppercase tracking-tight leading-none">
+                      {gameState.mode === 'numeric' ? player1.secretNumber : player1.secretWord}
+                    </span>
+                    {gameState.mode === 'numeric' && gameState.difficulty === 'hard' && (
+                      <span className="text-[8px] font-black text-red-400 animate-pulse leading-none">
+                        +{(player1.secretNumber - (player1.initialSecretNumber || player1.secretNumber))}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
@@ -58,9 +75,26 @@ const ScoreBoard: React.FC = () => {
             <h3 className="font-bold text-white text-center truncate w-full mb-1">
               {player2.name} {playerId === 'player2' && '(You)'}
             </h3>
-            <div className="flex items-center gap-1.5 text-slate-400 text-sm">
-              <Activity size={14} />
-              <span>{player2.attempts} attempts</span>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-1.5 text-slate-400 text-xs">
+                <Activity size={12} />
+                <span>{player2.attempts} attempts</span>
+              </div>
+              {playerId === 'player2' && (
+                <div className="mt-1 flex flex-col items-center">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 leading-none mb-1">Your Secret</span>
+                  <div className="flex items-center gap-1.5 bg-purple-500/10 px-2 py-0.5 rounded-lg border border-purple-500/20">
+                    <span className="text-xs font-black text-purple-400 uppercase tracking-tight leading-none">
+                      {gameState.mode === 'numeric' ? player2.secretNumber : player2.secretWord}
+                    </span>
+                    {gameState.mode === 'numeric' && gameState.difficulty === 'hard' && (
+                      <span className="text-[8px] font-black text-red-400 animate-pulse leading-none">
+                        +{(player2.secretNumber - (player2.initialSecretNumber || player2.secretNumber))}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
