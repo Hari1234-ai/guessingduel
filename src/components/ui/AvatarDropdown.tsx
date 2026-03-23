@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap, RefreshCcw, Trash2 } from 'lucide-react';
+import { User, LogOut, Settings, History, ChevronDown, UserCircle, Trophy, Zap, RefreshCcw, Trash2, Coins } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
@@ -127,7 +127,7 @@ export default function AvatarDropdown() {
       {/* Coin Balance Pill */}
       <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-slate-900/50 border border-slate-800 backdrop-blur-sm shadow-lg shadow-blue-900/5">
         <div className="w-5 h-5 rounded-lg bg-blue-600/20 flex items-center justify-center">
-          <Zap size={10} className="text-blue-400 fill-blue-400/20" />
+          <Coins size={10} className="text-blue-400" />
         </div>
         <span className="text-sm font-black text-white tracking-tighter">
           {profileData?.coins || 0}
