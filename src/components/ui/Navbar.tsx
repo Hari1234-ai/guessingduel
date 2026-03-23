@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -14,9 +14,20 @@ import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, del
 export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
+  const [hidden, setHidden] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user, profileData, logout } = useAuth();
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -108,7 +119,16 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="relative z-50 flex items-center justify-between px-6 pt-6 pb-4 max-w-7xl mx-auto w-full">
+      <motion.header
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="fixed top-0 inset-x-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5"
+      >
+        <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40 group-hover:scale-110 transition-transform">
@@ -175,7 +195,8 @@ export default function Navbar() {
             </div>
           )}
         </div>
-      </nav>
+        </nav>
+      </motion.header>
 
       {/* Mobile Nav Drawer */}
       <AnimatePresence>
