@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/ui/Footer";
 import ActiveMatchBanner from "@/components/game/ActiveMatchBanner";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,24 @@ export default function RootLayout({
             <ActiveMatchBanner />
             <Footer />
             <Analytics />
+            
+            {/* Google Analytics */}
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-B7SMPRXZVY"
+              strategy="afterInteractive"
+            />
+            <Script 
+              id="google-analytics" 
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', 'G-B7SMPRXZVY');
+                `
+              }}
+            />
           </GameProvider>
         </AuthProvider>
       </body>
