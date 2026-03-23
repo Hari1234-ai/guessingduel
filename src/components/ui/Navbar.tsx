@@ -143,13 +143,15 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-3">
-              <Button 
-                size="md" 
-                onClick={() => router.push('/setup')}
-                className="h-10 px-6 font-bold hidden md:inline-flex"
-              >
-                Play Now
-              </Button>
+              {!(pathname === '/setup' || pathname === '/game') && (
+                <Button 
+                  size="md" 
+                  onClick={() => router.push('/setup')}
+                  className="h-10 px-6 font-bold hidden md:inline-flex"
+                >
+                  Play Now
+                </Button>
+              )}
               {/* Mobile Menu Toggle for Guests */}
               <button 
                 onClick={() => setIsDrawerOpen(true)}
