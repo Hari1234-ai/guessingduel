@@ -148,9 +148,6 @@ export default function Feedback() {
                   <p className="mt-2 text-center text-red-500 text-[10px] font-bold uppercase tracking-widest">{message}</p>
                 )}
                 
-                <p className="mt-4 text-center text-slate-500 text-[9px] font-bold uppercase tracking-widest opacity-50">
-                  Secured by Formspree Relay System
-                </p>
               </div>
             </form>
           </div>
