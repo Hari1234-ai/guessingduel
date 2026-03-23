@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Swords, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star } from 'lucide-react';
+import { Swords, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -171,6 +171,64 @@ export default function LandingPage() {
               <Bot size={80} className="text-purple-400 mb-6 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
               <h3 className="text-xl font-black uppercase tracking-widest text-white mb-2">GuessBot</h3>
               <p className="text-slate-500 text-sm font-bold">Always ready for a duel.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reactions Section */}
+      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto overflow-hidden">
+        <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+          <div className="flex-1 space-y-6 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-black uppercase tracking-[0.2em]">
+              <Smile size={12} className="fill-current" />
+              Social Interaction
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-tight text-foreground text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
+              Express Yourself. <br />Taunt with Style.
+            </h2>
+            <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
+              Communication is key in every duel. Use our real-time emoji reactions to celebrate a great guess, taunt your rival, or show your frustration. Strategy isn&apos;t just about numbers; it&apos;s about psychology.
+            </p>
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+              {['🔥', '😂', '🤯', '🥶', '🤫', '🤡'].map((emoji, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="w-12 h-12 rounded-2xl bg-card border border-card-border flex items-center justify-center text-2xl shadow-lg hover:border-orange-500/50 transition-colors"
+                >
+                  {emoji}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 relative w-full max-w-md mx-auto">
+            <div className="absolute inset-0 bg-orange-500/20 blur-[120px] rounded-full" />
+            <div className="relative bg-card border border-card-border p-10 rounded-[3rem] backdrop-blur-sm shadow-2xl overflow-hidden aspect-square flex items-center justify-center">
+              <div className="grid grid-cols-3 gap-6 relative z-10 scale-125">
+                 {['🤫', '🔥', '🤡', '🤯', '🥶', '😂'].map((emoji, i) => (
+                    <motion.div
+                      key={i}
+                      animate={{ 
+                        y: [0, -10, 0],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ 
+                        duration: 3 + Math.random() * 2,
+                        repeat: Infinity,
+                        delay: i * 0.5
+                      }}
+                      className="text-4xl filter drop-shadow-[0_0_10px_rgba(251,146,60,0.3)]"
+                    >
+                      {emoji}
+                    </motion.div>
+                 ))}
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+                <Smile size={300} className="text-orange-500" />
+              </div>
             </div>
           </div>
         </div>
