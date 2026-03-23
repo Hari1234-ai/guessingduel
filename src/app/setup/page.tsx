@@ -335,13 +335,12 @@ function SetupContent() {
     }    if (mode === 'lobby') {
       const isBothReady = isPlayer1Ready && isPlayer2Ready;
       return (
-        <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
-          <Navbar />
-          
+          <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+            
             <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
-              <div className="flex-1 overflow-y-auto">
-                <div className="max-w-lg mx-auto p-6 pt-2 md:pt-4 pb-32 space-y-4">
+              <div className="flex-1 overflow-y-auto pt-4">
+                <div className="max-w-lg mx-auto p-6 pt-0 pb-32 space-y-4">
                   {/* Connection Status Badge */}
                   <div className="text-center">
                     <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
@@ -359,8 +358,8 @@ function SetupContent() {
                   </div>
 
                   {/* Instructional Header */}
-                  <div className="text-center">
-                    <h1 className="text-xl md:text-2xl font-black tracking-tighter max-w-[280px] mx-auto md:max-w-none uppercase">
+                  <div className="text-center opacity-40">
+                    <h1 className="text-[10px] md:text-xs font-black tracking-widest max-w-[280px] mx-auto md:max-w-none uppercase">
                       {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
                     </h1>
                   </div>
