@@ -15,7 +15,7 @@ interface GameContextType {
   resetGame: () => void;
   startNewGame: () => void;
   startGame: () => void;
-  startWithAI: (uid: string) => void;
+  startWithAI: (uid: string, mode: GameMode, difficulty: GameDifficulty, secret: number | string, min?: number, max?: number, wordLength?: number) => void;
   latestReaction: { emoji: string; timestamp: number } | null;
   sendReaction: (emoji: string) => void;
 }
@@ -568,20 +568,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [gameState.status, gameState.currentTurn, gameState.player2.isAI, gameState.mode, gameState.wordLength, gameState.range.min, gameState.range.max, makeGuess]);
 
-  const startWithAI = useCallback((uid: string) => {
-    const { range } = latestStateRef.current;
-    
+  const startWithAI = useCallback((uid: string, mode: GameMode, difficulty: GameDifficulty, secret: number | string, min: number = 1, max: number = 100, wordLength: number = 5) => {
     // Generate AI's secret (number or word)
-    const mode = latestStateRef.current.mode;
-    const wordLength = latestStateRef.current.wordLength || 5;
-    const aiSecretNum = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    const aiSecretNum = Math.floor(Math.random() * (max - min + 1)) + min;
     const aiSecretWord = mode === 'word' ? getRandomAIWord(wordLength) : undefined;
     
     updateState(prev => ({
       ...prev,
       status: 'playing',
+      mode,
+      difficulty,
+      wordLength,
+      range: { min, max },
       roomCode: `AI-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
-      player1: { ...prev.player1, uid },
+      player1: { 
+        ...prev.player1, 
+        uid,
+        secretNumber: typeof secret === 'number' ? secret : 0,
+        secretWord: typeof secret === 'string' ? secret : undefined,
+      },
       player2: {
         ...initialPlayer('AI Strategist', 'ai-bot', aiSecretNum, aiSecretWord),
         isAI: true,

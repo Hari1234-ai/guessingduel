@@ -572,7 +572,8 @@ function SetupContent() {
                                   setIsLoginModalOpen(true);
                                 } else {
                                   const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
-                                  startWithAI(currentUid);
+                                  const secretVal = form.mode === 'numeric' ? parseInt(form.secret) : form.secret;
+                                  startWithAI(currentUid, form.mode, form.difficulty, secretVal, form.min, form.max, form.wordLength);
                                 }
                               }}
                               className="w-full h-[52px] bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group"

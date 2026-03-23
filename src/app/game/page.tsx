@@ -153,8 +153,9 @@ export default function Game() {
               roomCode,
               winner,
               mode: gameState.mode,
-              difficulty: gameState.difficulty,
+              difficulty: gameState.difficulty || 'easy',
               wordLength: gameState.wordLength,
+              createdAt: serverTimestamp(),
               participants: [player1.uid, player2.uid],
               players: [
                 { 
@@ -171,8 +172,7 @@ export default function Game() {
                   secretWord: player2.secretWord,
                   guesses: player2.history 
                 }
-              ],
-              createdAt: serverTimestamp()
+              ]
             });
   
             // Reward coins to winner
