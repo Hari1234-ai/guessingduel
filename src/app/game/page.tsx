@@ -16,6 +16,7 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, updateDoc, doc, increment, getDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import { getISOWeek } from '@/lib/utils';
+import { WordFeedback, GameMode } from '@/types/game';
 
 export default function Game() {
   const router = useRouter();
@@ -24,13 +25,21 @@ export default function Game() {
   const { player1, player2, currentTurn, status, winner, roomCode, playerId } = gameState;
 
   const [guess, setGuess] = useState('');
-  const [lastFeedback, setLastFeedback] = useState<{ text: string, type: 'high' | 'low' | 'correct' | null }>({ text: '', type: null });
+  const [lastFeedback, setLastFeedback] = useState<{ 
+    text: string | WordFeedback, 
+    type: 'high' | 'low' | 'correct' | 'word' | null,
+    guess?: string 
+  }>({ text: '', type: null });
   const [isRestartModalOpen, setIsRestartModalOpen] = useState(false);
   const [isGiveUpModalOpen, setIsGiveUpModalOpen] = useState(false);
-  const [opponentToast, setOpponentToast] = useState<{ show: boolean, guess: number, feedback: string, name: string }>({ 
+  const [opponentToast, setOpponentToast] = useState<{ show: boolean, guess: number | string, feedback: string | WordFeedback, name: string }>({ 
     show: false, guess: 0, feedback: '', name: '' 
   });
   const [floatingEmojis, setFloatingEmojis] = useState<{ id: number, emoji: string, x: number }[]>([]);
+  const [isRearrangePhase, setIsRearrangePhase] = useState(false);
+  const [scrambledLetters, setScrambledLetters] = useState<{ char: string, id: number }[]>([]);
+  const [rearrangeGuess, setRearrangeGuess] = useState<string[]>([]);
+  
   const emojiIdRef = useRef(0);
   const processedMatchRef = useRef<string | null>(null);
   const lastOpponentAttempts = useRef(0);
@@ -67,25 +76,56 @@ export default function Game() {
   }, [status, roomCode, router]);
 
   const isMyTurn = currentTurn === playerId;
-  const isOpponentReady = player1.secretNumber !== 0 && player2.secretNumber !== 0;
+  const isOpponentReady = gameState.mode === 'numeric' 
+    ? (player1.secretNumber !== 0 && player2.secretNumber !== 0)
+    : (!!player1.secretWord && !!player2.secretWord);
 
   const handleGuess = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isMyTurn || !isOpponentReady) return;
 
-    const num = parseInt(guess);
-    if (isNaN(num)) return;
+    if (gameState.mode === 'numeric') {
+      const num = parseInt(guess);
+      if (isNaN(num)) return;
+      
+      const feedback = makeGuess(num);
+      const feedbackType = feedback === 'Too High' ? 'high' : feedback === 'Too Low' ? 'low' : 'correct';
+      setLastFeedback({ text: feedback as string, type: feedbackType });
+    } else {
+      if (guess.length !== gameState.wordLength) return;
+      const feedback = makeGuess(guess.toUpperCase());
+      const wordFeedback = feedback as WordFeedback;
+      
+      // Determine if all letters are found (correct or present)
+      const allFound = wordFeedback.status.every(s => s === 'correct' || s === 'present');
+      const isPerfect = wordFeedback.isCorrect;
+      
+      if (allFound && !isPerfect) {
+        // Trigger rearrange phase
+        setIsRearrangePhase(true);
+        const chars = guess.toUpperCase().split('').map((c, i) => ({ char: c, id: i }));
+        // Simple shuffle
+        setScrambledLetters([...chars].sort(() => Math.random() - 0.5));
+        setRearrangeGuess([]);
+      }
+      
+      setLastFeedback({ text: wordFeedback, type: isPerfect ? 'correct' : 'word', guess: guess.toUpperCase() });
+    }
 
-    const feedback = makeGuess(num);
-    const feedbackType = feedback === 'Too High' ? 'high' : feedback === 'Too Low' ? 'low' : 'correct';
-    
-    setLastFeedback({ text: feedback || '', type: feedbackType });
     setGuess('');
 
-    if (feedback !== 'Correct!') {
+    if (lastFeedback.type !== 'correct') {
       setTimeout(() => {
         setLastFeedback((prev) => prev.type === 'correct' ? prev : { text: '', type: null });
       }, 3000);
+    }
+  };
+
+  const handleRearrangeSubmit = () => {
+    const finalWord = rearrangeGuess.join('');
+    if (finalWord.length === gameState.wordLength) {
+      makeGuess(finalWord);
+      setIsRearrangePhase(false);
     }
   };
 
@@ -156,9 +196,9 @@ export default function Game() {
   const handleShare = async () => {
     const opponentId = playerId === 'player1' ? 'player2' : 'player1';
     const isWinner = winner === playerId;
-    const p1Secret = playerId ? gameState[playerId as 'player1' | 'player2']?.secretNumber : 'N/A';
-    const p2Secret = opponentId ? gameState[opponentId as 'player1' | 'player2']?.secretNumber : 'N/A';
-    const shareText = `🎮 Just finished a MindMatch on MindMatch!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close match.'}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
+    const p1Secret = playerId ? (gameState.mode === 'numeric' ? gameState[playerId as 'player1' | 'player2']?.secretNumber : gameState[playerId as 'player1' | 'player2']?.secretWord) : 'N/A';
+    const p2Secret = opponentId ? (gameState.mode === 'numeric' ? gameState[opponentId as 'player1' | 'player2']?.secretNumber : gameState[opponentId as 'player1' | 'player2']?.secretWord) : 'N/A';
+    const shareText = `🎮 Just finished a MindMatch on MindMatch!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close match.'}\nMode: ${gameState.mode}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
     
     if (navigator.share) {
       try {
@@ -188,7 +228,7 @@ export default function Game() {
       setOpponentToast({
         show: true,
         guess: lastGuess.guess,
-        feedback: lastGuess.feedback || '',
+        feedback: lastGuess.feedback as string | WordFeedback,
         name: opponent.name
       });
       
@@ -217,9 +257,13 @@ export default function Game() {
       
       <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden pt-6">
         <div className="flex-1 p-4 md:p-8 flex flex-col items-center overflow-y-auto">
-        {/* Target Range Line */}
+        {/* Target Range/Mode Line */}
         <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-card border border-card-border rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 backdrop-blur-sm">
-          Target Range: <span className="text-foreground">{gameState.range.min} — {gameState.range.max}</span>
+          {gameState.mode === 'numeric' ? (
+            <>Target Range: <span className="text-foreground">{gameState.range.min} — {gameState.range.max}</span></>
+          ) : (
+            <>Mode: <span className="text-foreground">Word MindMatch ({gameState.wordLength} Letters)</span></>
+          )}
         </div>
 
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -297,55 +341,120 @@ export default function Game() {
               
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={lastFeedback.text || (isMyTurn ? 'waiting' : 'thinking')}
+                  key={typeof lastFeedback.text === 'string' ? lastFeedback.text : 'word-feedback'}
                   initial={{ opacity: 0, scale: 0.8, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 1.1 }}
-                  className={`text-3xl font-black mb-8 min-h-[50px] flex items-center justify-center ${
-                    lastFeedback.type === 'high' ? 'text-red-500' :
-                    lastFeedback.type === 'low' ? 'text-blue-500' :
-                    lastFeedback.type === 'correct' ? 'text-green-500' : 'text-slate-800'
-                  }`}
+                  className="mb-8 min-h-[60px] flex items-center justify-center"
                 >
-                  {lastFeedback.text || (isMyTurn ? "?" : <Loader2 className="animate-spin text-slate-800" size={30} />)}
+                  {typeof lastFeedback.text === 'string' ? (
+                    <span className={`text-3xl font-black ${
+                      lastFeedback.type === 'high' ? 'text-red-500' :
+                      lastFeedback.type === 'low' ? 'text-blue-500' :
+                      lastFeedback.type === 'correct' ? 'text-green-500' : 'text-slate-800'
+                    }`}>
+                      {lastFeedback.text || (isMyTurn ? "?" : <Loader2 className="animate-spin text-slate-800" size={30} />)}
+                    </span>
+                  ) : (
+                    <div className="flex gap-2">
+                      {(lastFeedback.text as WordFeedback).status.map((s, i) => (
+                        <motion.div 
+                          key={i}
+                          initial={{ rotateX: 90 }}
+                          animate={{ rotateX: 0 }}
+                          transition={{ delay: i * 0.1 }}
+                          className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 font-black text-xl transition-colors ${
+                            s === 'correct' ? 'bg-green-500 border-green-600 text-white' :
+                            s === 'present' ? 'bg-yellow-500 border-yellow-600 text-white' :
+                            'bg-slate-700 border-slate-600 text-slate-300'
+                          }`}
+                        >
+                          {lastFeedback.guess ? lastFeedback.guess[i] : <Sparkles size={16} />}
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               </AnimatePresence>
 
-              <form onSubmit={handleGuess} className="w-full max-w-[200px] space-y-4 mx-auto">
-                <div className="relative">
-                  <Input
-                    label=""
-                    type="number"
-                    value={guess}
-                    onChange={(e) => setGuess(e.target.value)}
-                    placeholder="00"
-                    className={`text-center text-4xl font-black h-20 rounded-2xl border-none shadow-inner transition-all ${
-                      isMyTurn ? 'bg-card/80 ring-1 ring-card-border' : 'bg-card/30 text-slate-700'
-                    }`}
-                    disabled={!isMyTurn || status === 'finished' || !isOpponentReady}
-                  />
-                  {isMyTurn && (
-                    <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
-                      className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(25,133,161,0.3)]"
-                    />
-                  )}
+              {isRearrangePhase ? (
+                <div className="space-y-6">
+                  <div className="flex justify-center gap-2 p-4 bg-slate-900/50 rounded-2xl border border-card-border overflow-x-auto min-h-[72px]">
+                    {rearrangeGuess.map((char, i) => (
+                      <button 
+                        key={i}
+                        onClick={() => {
+                          const newGuess = [...rearrangeGuess];
+                          newGuess.splice(i, 1);
+                          setRearrangeGuess(newGuess);
+                        }}
+                        className="w-10 h-10 bg-blue-500 text-white rounded-lg flex items-center justify-center font-black text-xl hover:bg-blue-600 transition-colors"
+                      >
+                        {char}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {scrambledLetters.filter(l => !rearrangeGuess.includes(l.char) || scrambledLetters.filter(x => x.char === l.char).length > rearrangeGuess.filter(x => x === l.char).length).map((l, i) => (
+                      <button 
+                        key={l.id}
+                        onClick={() => {
+                          if (rearrangeGuess.length < gameState.wordLength!) {
+                            setRearrangeGuess([...rearrangeGuess, l.char]);
+                          }
+                        }}
+                        className="w-10 h-10 bg-slate-800 text-white rounded-lg flex items-center justify-center font-black text-lg hover:bg-slate-700 transition-colors"
+                      >
+                        {l.char}
+                      </button>
+                    ))}
+                  </div>
+                  <Button 
+                    onClick={handleRearrangeSubmit}
+                    disabled={rearrangeGuess.length !== gameState.wordLength}
+                    fullWidth
+                    className="h-12 font-black uppercase tracking-widest bg-green-600 hover:bg-green-700"
+                  >
+                    Rearrange & Duel
+                  </Button>
                 </div>
-                
-                <Button 
-                  type="submit" 
-                  size="md" 
-                  fullWidth 
-                  disabled={!guess || !isMyTurn || status === 'finished' || !isOpponentReady}
-                  className={`h-12 text-xs font-black uppercase tracking-[0.2em] ${
-                    playerId === 'player1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-600 hover:bg-purple-700'
-                  }`}
-                >
-                  Confirm Guess
-                  <Send size={14} className="ml-2" />
-                </Button>
-              </form>
+              ) : (
+                <form onSubmit={handleGuess} className="w-full max-w-[200px] space-y-4 mx-auto">
+                  <div className="relative">
+                    <Input
+                      label=""
+                      type="text"
+                      value={guess}
+                      onChange={(e) => setGuess(gameState.mode === 'numeric' ? e.target.value : e.target.value.toUpperCase().slice(0, gameState.wordLength))}
+                      placeholder={gameState.mode === 'numeric' ? "00" : "".padStart(gameState.wordLength!, '_')}
+                      className={`text-center text-4xl font-black h-20 rounded-2xl border-none shadow-inner transition-all ${
+                        isMyTurn ? 'bg-card/80 ring-1 ring-card-border' : 'bg-card/30 text-slate-700'
+                      } ${gameState.mode === 'word' ? 'tracking-[0.5em] uppercase' : ''}`}
+                      disabled={!isMyTurn || status === 'finished' || !isOpponentReady}
+                    />
+                    {isMyTurn && (
+                      <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(25,133,161,0.3)]"
+                      />
+                    )}
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    size="md" 
+                    fullWidth 
+                    disabled={(!guess && !isRearrangePhase) || !isMyTurn || status === 'finished' || !isOpponentReady}
+                    className={`h-12 text-xs font-black uppercase tracking-[0.2em] ${
+                      playerId === 'player1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-600 hover:bg-purple-700'
+                    }`}
+                  >
+                    Confirm Guess
+                    <Send size={14} className="ml-2" />
+                  </Button>
+                </form>
+              )}
 
               <div className="mt-10 w-full relative">
                 {/* Floating Emojis Container */}
@@ -447,11 +556,11 @@ export default function Game() {
             
             <div className="text-center">
               <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{player1.name}&apos;s Secret</p>
-              <p className="text-2xl font-black text-white">{player1.secretNumber}</p>
+              <p className="text-2xl font-black text-white">{gameState.mode === 'numeric' ? player1.secretNumber : player1.secretWord}</p>
             </div>
             <div className="text-center">
               <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">{player2.name}&apos;s Secret</p>
-              <p className="text-2xl font-black text-white">{player2.secretNumber}</p>
+              <p className="text-2xl font-black text-white">{gameState.mode === 'numeric' ? player2.secretNumber : player2.secretWord}</p>
             </div>
           </div>
 
@@ -529,7 +638,9 @@ export default function Game() {
                 </div>
                 <div>
                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{opponentToast.name} Guessed</p>
-                  <p className="text-white font-black text-sm uppercase italic">{opponentToast.feedback}</p>
+                  <p className="text-white font-black text-sm uppercase italic">
+                    {typeof opponentToast.feedback === 'string' ? opponentToast.feedback : (opponentToast.feedback.isCorrect ? 'Correct!' : 'Attempted')}
+                  </p>
                 </div>
               </div>
               <div className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${
@@ -537,7 +648,10 @@ export default function Game() {
                   opponentToast.feedback === 'Too Low' ? 'text-blue-400' :
                   'text-green-400'
               }`}>
-                {opponentToast.feedback === 'Too High' ? 'High' : opponentToast.feedback === 'Too Low' ? 'Low' : 'Correct'}
+                  {opponentToast.feedback === 'Too High' ? 'High' : 
+                  opponentToast.feedback === 'Too Low' ? 'Low' : 
+                  (typeof opponentToast.feedback === 'string' ? 'Correct' : (opponentToast.feedback.isCorrect ? 'Correct' : 'Word'))
+              }
               </div>
             </div>
           </motion.div>

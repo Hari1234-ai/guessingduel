@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { History, MoveDown, MoveUp, CheckCircle2 } from 'lucide-react';
+import { History, MoveDown, MoveUp, CheckCircle2, Sparkles } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
 import { Feedback } from '@/types/game';
 
@@ -15,21 +15,31 @@ const GuessHistory: React.FC = () => {
   const playerName = gameState[activeTab].name;
 
   const getFeedbackIcon = (feedback: Feedback) => {
-    switch (feedback) {
-      case 'Too High': return <MoveDown className="text-red-400" size={16} />;
-      case 'Too Low': return <MoveUp className="text-blue-400" size={16} />;
-      case 'Correct!': return <CheckCircle2 className="text-green-400" size={16} />;
-      default: return null;
+    if (!feedback) return null;
+    if (typeof feedback === 'string') {
+      switch (feedback) {
+        case 'Too High': return <MoveDown className="text-red-400" size={16} />;
+        case 'Too Low': return <MoveUp className="text-blue-400" size={16} />;
+        case 'Correct!': return <CheckCircle2 className="text-green-400" size={16} />;
+        default: return null;
+      }
     }
+    return <Sparkles className="text-purple-400" size={16} />;
   };
 
   const getFeedbackStyles = (feedback: Feedback) => {
-    switch (feedback) {
-      case 'Too High': return 'bg-red-500/10 text-red-500 border-red-500/20';
-      case 'Too Low': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'Correct!': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      default: return 'bg-slate-800 text-slate-400 border-slate-700';
+    if (!feedback) return 'bg-slate-800 text-slate-400 border-slate-700';
+    if (typeof feedback === 'string') {
+      switch (feedback) {
+        case 'Too High': return 'bg-red-500/10 text-red-500 border-red-500/20';
+        case 'Too Low': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+        case 'Correct!': return 'bg-green-500/10 text-green-500 border-green-500/20';
+        default: return 'bg-slate-800 text-slate-400 border-slate-700';
+      }
     }
+    return feedback.isCorrect 
+      ? 'bg-green-500/10 text-green-500 border-green-500/20' 
+      : 'bg-purple-500/10 text-purple-400 border-purple-500/20';
   };
 
   return (
@@ -78,8 +88,23 @@ const GuessHistory: React.FC = () => {
                   className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${getFeedbackStyles(entry.feedback)}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xl font-black">{entry.guess}</span>
-                    <span className="text-xs uppercase font-bold opacity-80">{entry.feedback}</span>
+                    <span className="text-xl font-black font-mono tracking-widest">{entry.guess}</span>
+                    {(!entry.feedback || typeof entry.feedback === 'string') ? (
+                      <span className="text-xs uppercase font-bold opacity-80">{entry.feedback || ''}</span>
+                    ) : (
+                      <div className="flex gap-1">
+                        {entry.feedback.status.map((s, i) => (
+                          <div 
+                            key={i} 
+                            className={`w-4 h-4 rounded-sm border ${
+                              s === 'correct' ? 'bg-green-500 border-green-600' : 
+                              s === 'present' ? 'bg-yellow-500 border-yellow-600' : 
+                              'bg-slate-700 border-slate-600'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="p-1.5 rounded-lg bg-black/20">
                     {getFeedbackIcon(entry.feedback)}

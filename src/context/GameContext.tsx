@@ -2,15 +2,15 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import * as Ably from 'ably';
-import { GameState, Player, Feedback } from '@/types/game';
+import { GameState, Player, Feedback, GameMode, WordLetterStatus, WordFeedback } from '@/types/game';
 
 interface GameContextType {
   gameState: GameState;
   connectionStatus: 'connecting' | 'connected' | 'failed' | 'disconnected';
-  createRoom: (name: string, uid: string, secret: number, min: number, max: number) => Promise<string>;
+  createRoom: (name: string, uid: string, secret: number | string, mode: GameMode, wordLength?: number, min?: number, max?: number) => Promise<string>;
   joinRoom: (code: string, uid: string) => Promise<void>;
-  completeGuestSetup: (name: string, uid: string, secret: number) => Promise<void>;
-  makeGuess: (guess: number) => Feedback;
+  completeGuestSetup: (name: string, uid: string, secret: number | string) => Promise<void>;
+  makeGuess: (guess: number | string) => Feedback;
   resetGame: () => void;
   startNewGame: () => void;
   startGame: () => void;
@@ -30,6 +30,7 @@ const initialPlayer = (name: string = '', uid: string = '', secretNumber: number
 const initialState: GameState = {
   player1: initialPlayer('Player 1'),
   player2: initialPlayer('Player 2'),
+  mode: 'numeric',
   range: { min: 1, max: 100 },
   currentTurn: 'player1',
   status: 'setup',
@@ -129,8 +130,35 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearInterval(interval);
   }, []); // No dependencies needed, safely uses refs
 
+  const getWordFeedback = (guess: string, secret: string): WordFeedback => {
+    const status: WordLetterStatus[] = Array(secret.length).fill('absent');
+    const secretChars = secret.toUpperCase().split('');
+    const guessChars = guess.toUpperCase().split('');
+    
+    // First pass: Correct positions
+    for (let i = 0; i < guessChars.length; i++) {
+      if (guessChars[i] === secretChars[i]) {
+        status[i] = 'correct';
+        secretChars[i] = '#'; // Mark as used
+      }
+    }
+    
+    // Second pass: Present but wrong position
+    for (let i = 0; i < guessChars.length; i++) {
+      if (status[i] !== 'correct') {
+        const charIndex = secretChars.indexOf(guessChars[i]);
+        if (charIndex !== -1) {
+          status[i] = 'present';
+          secretChars[charIndex] = '#'; // Mark as used
+        }
+      }
+    }
+    
+    return { status, isCorrect: status.every(s => s === 'correct') };
+  };
 
-  const createRoom = useCallback(async (name: string, uid: string, secret: number, min: number, max: number) => {
+
+  const createRoom = useCallback(async (name: string, uid: string, secret: number | string, mode: GameMode, wordLength?: number, min: number = 1, max: number = 100) => {
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     
     const newState: GameState = { 
@@ -138,7 +166,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       roomCode: code, 
       playerId: 'player1', 
       status: 'lobby',
-      player1: initialPlayer(name, uid, secret),
+      mode,
+      wordLength,
+      player1: {
+        ...initialPlayer(name, uid),
+        secretNumber: typeof secret === 'number' ? secret : 0,
+        secretWord: typeof secret === 'string' ? secret : undefined,
+      },
       range: { min, max },
       isPlayer1Ready: true,
       isOpponentPresent: false,
@@ -286,11 +320,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateState(prev => ({
           ...prev,
           isOpponentPresent: true,
+          mode: payload.mode || prev.mode,
+          wordLength: payload.wordLength || prev.wordLength,
           player1: { 
             ...prev.player1, 
             name: payload.name || prev.player1.name || 'Player 1', 
             uid: payload.uid || prev.player1.uid, 
-            secretNumber: (prev.playerId !== 'player1' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player1.secretNumber 
+            secretNumber: (prev.playerId !== 'player1' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player1.secretNumber,
+            secretWord: (prev.playerId !== 'player1' && payload.secretWord) ? payload.secretWord : prev.player1.secretWord
           },
           range: payload.range || prev.range,
           isPlayer1Ready: payload.isReady || prev.isPlayer1Ready,
@@ -382,10 +419,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setGameState(newState);
   }, [updateState]);
 
-  const completeGuestSetup = useCallback(async (name: string, uid: string, secret: number) => {
+  const completeGuestSetup = useCallback(async (name: string, uid: string, secret: number | string) => {
     updateState(prev => ({
       ...prev,
-      player2: initialPlayer(name, uid, secret),
+      player2: {
+        ...initialPlayer(name, uid),
+        secretNumber: typeof secret === 'number' ? secret : 0,
+        secretWord: typeof secret === 'string' ? secret : undefined,
+      },
       isPlayer2Ready: true,
       status: 'lobby',
     }));
@@ -395,26 +436,44 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       channelRef.current.publish('guest-heartbeat', { 
         name, 
         uid,
-        secret, 
+        secret: typeof secret === 'number' ? secret : 0,
+        secretWord: typeof secret === 'string' ? secret : undefined,
         isReady: true 
       });
     }
   }, [updateState]);
 
-  const makeGuess = useCallback((guess: number): Feedback => {
-    const { player1, player2, currentTurn, status } = latestStateRef.current;
-    if (status !== 'playing') return null;
+  const makeGuess = useCallback((guess: number | string): Feedback => {
+    const state = latestStateRef.current;
+    if (state.status !== 'playing') return null;
 
+    const { player1, player2, currentTurn } = state;
     const opponent = currentTurn === 'player1' ? player2 : player1;
-    let feedback: Feedback = 'Correct!';
-    if (guess < opponent.secretNumber) feedback = 'Too Low';
-    if (guess > opponent.secretNumber) feedback = 'Too High';
+    
+    let feedback: Feedback = null;
+    let isWinner = false;
 
-    const isWinner = guess !== -1 && feedback === 'Correct!';
-    
-    // BUT, the user also said "and th..." (cut off). usually this means if you timeout 3 times you lose, OR just switch turn.
-    // I'll stick to "switch turn" for now as requested.
-    
+    if (state.mode === 'numeric') {
+      const g = typeof guess === 'number' ? guess : parseInt(guess as string);
+      const secret = opponent.secretNumber;
+      
+      if (g > secret) feedback = 'Too High';
+      else if (g < secret) feedback = 'Too Low';
+      else {
+        feedback = 'Correct!';
+        isWinner = true;
+      }
+    } else {
+      const g = typeof guess === 'string' ? guess.toUpperCase() : guess.toString().toUpperCase();
+      const secret = opponent.secretWord;
+      
+      if (!secret) return null;
+      
+      const wordFeedback = getWordFeedback(g, secret);
+      feedback = wordFeedback;
+      isWinner = wordFeedback.isCorrect;
+    }
+
     const actualFeedback: Feedback = guess === -1 ? 'Time Out' : feedback;
     const nextTurn = isWinner ? currentTurn : (currentTurn === 'player1' ? 'player2' : 'player1');
 
@@ -422,10 +481,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...prev,
       [currentTurn]: {
         ...prev[currentTurn],
-        attempts: prev[currentTurn].attempts + (guess === -1 ? 0 : 1), // Don't count timeout as attempt? User said "lose his attempt". 
-        // Actually usually "attempt" means a guess. if you timeout, you didn't guess. 
-        // But the user said "lose his attempt". I'll increment attempts anyway to show a turn passed.
-        history: [{ guess, feedback: actualFeedback as Feedback }, ...prev[currentTurn].history],
+        attempts: prev[currentTurn].attempts + (guess === -1 ? 0 : 1),
+        history: [{ guess, feedback: actualFeedback as Feedback, timestamp: Date.now() }, ...prev[currentTurn].history],
       },
       currentTurn: nextTurn as 'player1' | 'player2',
       status: isWinner ? 'finished' : 'playing',
@@ -437,7 +494,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       channelRef.current.publish('guess-made', { guess, feedback: actualFeedback, nextTurn, isWinner });
     }
     return actualFeedback;
-  }, [updateState]);
+  }, [updateState, getWordFeedback]);
 
   // AI Logic: Automated turn when it's AI's turn
   useEffect(() => {
@@ -452,10 +509,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           // Analyze history to narrow down his own bounds
           player2.history.forEach(h => {
-            if (h.feedback === 'Too Low') {
-              currentMin = Math.max(currentMin, h.guess + 1);
-            } else if (h.feedback === 'Too High') {
-              currentMax = Math.min(currentMax, h.guess - 1);
+            if (typeof h.guess === 'number' && typeof h.feedback === 'string') {
+              if (h.feedback === 'Too Low') {
+                currentMin = Math.max(currentMin, h.guess + 1);
+              } else if (h.feedback === 'Too High') {
+                currentMax = Math.min(currentMax, h.guess - 1);
+              }
             }
           });
           
@@ -569,7 +628,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Fail-safe: Pulse re-sync if data is missing during game
   useEffect(() => {
     if (gameState.status === 'playing' && channelRef.current) {
-      const isOpponentReady = gameState.player1.secretNumber !== 0 && gameState.player2.secretNumber !== 0;
+      const isOpponentReady = gameState.mode === 'numeric' 
+        ? (gameState.player1.secretNumber !== 0 && gameState.player2.secretNumber !== 0)
+        : (gameState.player1.secretWord && gameState.player2.secretWord);
+        
       if (!isOpponentReady) {
         const interval = setInterval(() => {
           channelRef.current?.publish('request-sync', {});
@@ -577,7 +639,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => clearInterval(interval);
       }
     }
-  }, [gameState.status, gameState.player1.secretNumber, gameState.player2.secretNumber]);
+  }, [gameState.status, gameState.player1, gameState.player2, gameState.mode]);
 
   return (
     <GameContext.Provider value={{ 

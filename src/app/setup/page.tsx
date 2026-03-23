@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Users, Hash, ShieldCheck, ArrowRight, ChevronLeft, Copy, Check, Loader2, Sparkles, Link as LinkIcon, Brain } from 'lucide-react';
 import { useGame } from '@/context/GameContext';
+import { GameMode } from '@/types/game';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
@@ -43,11 +44,14 @@ function SetupContent() {
     min: 1,
     max: 100,
     secret: '',
+    mode: 'numeric' as GameMode,
+    wordLength: 5,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
+  const [isValidating, setIsValidating] = useState(false);
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -93,7 +97,7 @@ function SetupContent() {
     return () => window.removeEventListener('beforeunload', handleUnload);
   }, [mode, playerId, startNewGame]);
 
-  const handleCreateRoom = (e: React.FormEvent) => {
+  const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user && guestPlayCount >= 1) {
       setIsLoginModalOpen(true);
@@ -102,8 +106,16 @@ function SetupContent() {
     const currentName = profileData?.name || 'Guest';
     const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
     
-    if (validate()) {
-      createRoom(currentName, currentUid, parseInt(form.secret), form.min, form.max);
+    if (await validate()) {
+      createRoom(
+        currentName, 
+        currentUid, 
+        form.mode === 'numeric' ? parseInt(form.secret) : form.secret, 
+        form.mode, 
+        form.mode === 'word' ? form.wordLength : undefined,
+        form.min, 
+        form.max
+      );
       setMode('lobby');
     }
   };
@@ -122,7 +134,7 @@ function SetupContent() {
     }
   };
 
-  const handleGuestReady = (e: React.FormEvent) => {
+  const handleGuestReady = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user && guestPlayCount >= 1) {
       setIsLoginModalOpen(true);
@@ -131,8 +143,12 @@ function SetupContent() {
     const currentName = profileData?.name || 'Guest';
     const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
 
-    if (validate()) {
-      completeGuestSetup(currentName, currentUid, parseInt(form.secret));
+    if (await validate()) {
+      completeGuestSetup(
+        currentName, 
+        currentUid, 
+        gameState.mode === 'numeric' ? parseInt(form.secret) : form.secret
+      );
       setMode('lobby');
     }
   };
@@ -154,23 +170,50 @@ function SetupContent() {
     }
   };
 
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    
-    // Host range validation
-    if (mode === 'host-setup') {
-      if (form.min >= form.max) {
-        newErrors.range = 'Min must be less than max';
-      }
+  const isValidWord = async (word: string) => {
+    try {
+      const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
+      return resp.ok;
+    } catch (e) {
+      return true; // Fallback to true if API is down
     }
+  };
 
-    // Secret validation (against current range)
-    const currentMin = mode === 'guest-setup' ? range.min : form.min;
-    const currentMax = mode === 'guest-setup' ? range.max : form.max;
-    
-    const s = parseInt(form.secret);
-    if (isNaN(s) || s < currentMin || s > currentMax) {
-      newErrors.secret = `Must be between ${currentMin} and ${currentMax}`;
+  const validate = async () => {
+    const newErrors: Record<string, string> = {};
+    const currentMode = mode === 'host-setup' ? form.mode : gameState.mode;
+
+    if (currentMode === 'numeric') {
+      // Host range validation
+      if (mode === 'host-setup') {
+        if (form.min >= form.max) {
+          newErrors.range = 'Min must be less than max';
+        }
+      }
+
+      // Secret validation (against current range)
+      const currentMin = mode === 'guest-setup' ? range.min : form.min;
+      const currentMax = mode === 'guest-setup' ? range.max : form.max;
+      
+      const s = parseInt(form.secret);
+      if (isNaN(s) || s < currentMin || s > currentMax) {
+        newErrors.secret = `Must be between ${currentMin} and ${currentMax}`;
+      }
+    } else {
+      // Word validation
+      const targetLength = mode === 'guest-setup' ? gameState.wordLength : form.wordLength;
+      if (!form.secret || form.secret.length !== targetLength) {
+        newErrors.secret = `Must be exactly ${targetLength} letters`;
+      } else if (!/^[A-Za-z]+$/.test(form.secret)) {
+        newErrors.secret = 'Letters only, please';
+      } else {
+        setIsValidating(true);
+        const valid = await isValidWord(form.secret);
+        setIsValidating(false);
+        if (!valid) {
+          newErrors.secret = 'Not a valid English word';
+        }
+      }
     }
 
     setErrors(newErrors);
@@ -194,9 +237,49 @@ function SetupContent() {
                 <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-foreground to-slate-500 bg-clip-text text-transparent">
                   GET READY!
                 </h1>
-                <p className="text-slate-400 text-sm">Choose your side to begin the match.</p>
+                <p className="text-slate-400 text-sm">Choose your game mode to begin.</p>
               </div>
-              <div className="grid gap-4 pt-6">
+
+              {/* Game Mode Selection */}
+              <div className="grid grid-cols-2 gap-4">
+                <button 
+                  onClick={() => setForm({ ...form, mode: 'numeric' })}
+                  className={`p-6 rounded-3xl border transition-all flex flex-col items-center gap-3 group ${
+                    form.mode === 'numeric' 
+                      ? 'bg-blue-600/10 border-blue-500/50 shadow-lg shadow-blue-500/10' 
+                      : 'bg-card/40 border-card-border hover:border-slate-700'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
+                    form.mode === 'numeric' ? 'bg-blue-500 text-white' : 'bg-slate-800 text-slate-500'
+                  }`}>
+                    <Hash size={24} />
+                  </div>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${
+                    form.mode === 'numeric' ? 'text-blue-400' : 'text-slate-500'
+                  }`}>Numbers</span>
+                </button>
+
+                <button 
+                  onClick={() => setForm({ ...form, mode: 'word' })}
+                  className={`p-6 rounded-3xl border transition-all flex flex-col items-center gap-3 group ${
+                    form.mode === 'word' 
+                      ? 'bg-purple-600/10 border-purple-500/50 shadow-lg shadow-purple-500/10' 
+                      : 'bg-card/40 border-card-border hover:border-slate-700'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
+                    form.mode === 'word' ? 'bg-purple-500 text-white' : 'bg-slate-800 text-slate-500'
+                  }`}>
+                    <Brain size={24} />
+                  </div>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${
+                    form.mode === 'word' ? 'text-purple-400' : 'text-slate-500'
+                  }`}>Words</span>
+                </button>
+              </div>
+
+              <div className="grid gap-4 pt-2">
                 <Button onClick={() => setMode('host-setup')} size="md" className="h-14 text-xs md:text-lg font-bold group whitespace-nowrap">
                   <Users className="mr-3 group-hover:scale-110 transition-transform" />
                   HOST A MindMatch
@@ -264,17 +347,56 @@ function SetupContent() {
               </div>
               <form onSubmit={handleCreateRoom} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+                {form.mode === 'numeric' ? (
+                  <section className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-12 text-base font-bold" labelClassName="text-[10px]" />
+                      <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-12 text-base font-bold" labelClassName="text-[10px]" />
+                    </div>
+                  </section>
+                ) : (
+                  <section className="space-y-4">
+                    <div className="flex items-center justify-between gap-4 p-4 bg-purple-500/10 border border-purple-500/20 rounded-2xl">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-purple-400">Word Length</span>
+                      <div className="flex gap-2">
+                        {[4, 5, 6].map((len) => (
+                          <button
+                            key={len}
+                            type="button"
+                            onClick={() => setForm({ ...form, wordLength: len, secret: '' })}
+                            className={`w-10 h-10 rounded-xl font-black text-sm transition-all ${
+                              form.wordLength === len 
+                                ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' 
+                                : 'bg-slate-800 text-slate-500 hover:text-slate-300'
+                            }`}
+                          >
+                            {len}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+                )}
+                
                 <section className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <Input label="Min Range" type="number" value={form.min} onChange={(e) => setForm({ ...form, min: parseInt(e.target.value) })} id="min" className="h-12 text-base font-bold" labelClassName="text-[10px]" />
-                    <Input label="Max Range" type="number" value={form.max} onChange={(e) => setForm({ ...form, max: parseInt(e.target.value) })} id="max" error={errors.range} className="h-12 text-base font-bold" labelClassName="text-[10px]" />
+                  <div className={`flex items-center gap-2 font-black uppercase tracking-[0.2em] text-[10px] ${
+                    form.mode === 'numeric' ? 'text-green-400' : 'text-purple-400'
+                  }`}>
+                    <ShieldCheck size={14} className={form.mode === 'numeric' ? 'fill-green-400/10' : 'fill-purple-400/10'} /> 
+                    Your Secret {form.mode === 'numeric' ? 'Number' : 'Word'}
                   </div>
-                </section>
-                <section className="space-y-4">
-                  <div className="flex items-center gap-2 text-green-400 font-black uppercase tracking-[0.2em] text-[10px]">
-                    <ShieldCheck size={14} className="fill-green-400/10" /> Your Secret Number
-                  </div>
-                  <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
+                  <Input 
+                    label={`Secret ${form.mode === 'numeric' ? 'Number' : 'Word'}`} 
+                    type="password" 
+                    showPasswordToggle 
+                    value={form.secret} 
+                    onChange={(e) => setForm({ ...form, secret: form.mode === 'numeric' ? e.target.value : e.target.value.toUpperCase().slice(0, form.wordLength) })} 
+                    error={errors.secret} 
+                    placeholder={form.mode === 'numeric' ? "e.g. 42" : `e.g. ${form.wordLength === 4 ? 'MIND' : form.wordLength === 5 ? 'MATCH' : 'WORDS'}`} 
+                    id="secret" 
+                    className="h-12 text-base font-bold tracking-[0.3em]" 
+                    labelClassName="text-[10px]" 
+                  />
                 </section>
                 <Button type="submit" size="lg" fullWidth className="h-16 text-xs md:text-base font-black uppercase tracking-widest whitespace-nowrap">
                   Create MindMatch
@@ -303,26 +425,64 @@ function SetupContent() {
               </div>
               <form onSubmit={handleGuestReady} className="space-y-8 bg-card p-8 rounded-[2.5rem] border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
-                <section className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-3xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                      <Users className="text-blue-400" size={16} />
+                {gameState.mode === 'numeric' ? (
+                  <section className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-3xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <Users className="text-blue-400" size={16} />
+                      </div>
+                      <span className="font-black text-blue-400 tracking-widest text-[10px] uppercase">MindMatch Range</span>
                     </div>
-                    <span className="font-black text-blue-400 tracking-widest text-[10px] uppercase">MindMatch Range</span>
-                  </div>
-                  <div className="text-lg font-black text-foreground px-4 py-1.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
-                    {range.min} — {range.max}
-                  </div>
-                </section>
+                    <div className="text-lg font-black text-foreground px-4 py-1.5 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                      {range.min} — {range.max}
+                    </div>
+                  </section>
+                ) : (
+                  <section className="bg-purple-500/10 border border-purple-500/20 p-5 rounded-3xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                        <Brain className="text-purple-400" size={16} />
+                      </div>
+                      <span className="font-black text-purple-400 tracking-widest text-[10px] uppercase">Word Match Mode</span>
+                    </div>
+                    <div className="text-lg font-black text-foreground px-4 py-1.5 bg-purple-500/20 rounded-xl border border-purple-500/30">
+                      {gameState.wordLength} LETTERS
+                    </div>
+                  </section>
+                )}
+                
                 <section className="space-y-4">
-                  <div className="flex items-center gap-2 text-green-400 font-black uppercase tracking-[0.2em] text-[10px]">
-                    <ShieldCheck size={14} className="fill-green-400/10" /> Your Secret Number
+                  <div className={`flex items-center gap-2 font-black uppercase tracking-[0.2em] text-[10px] ${
+                    gameState.mode === 'numeric' ? 'text-green-400' : 'text-purple-400'
+                  }`}>
+                    <ShieldCheck size={14} className={gameState.mode === 'numeric' ? 'fill-green-400/10' : 'fill-purple-400/10'} /> 
+                    Your Secret {gameState.mode === 'numeric' ? 'Number' : 'Word'}
                   </div>
-                  <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
+                  <Input 
+                    label={`Secret ${gameState.mode === 'numeric' ? 'Number' : 'Word'}`} 
+                    type="password" 
+                    showPasswordToggle 
+                    value={form.secret} 
+                    onChange={(e) => setForm({ ...form, secret: gameState.mode === 'numeric' ? e.target.value : e.target.value.toUpperCase().slice(0, gameState.wordLength) })} 
+                    error={errors.secret} 
+                    placeholder={gameState.mode === 'numeric' ? "e.g. 73" : `e.g. WORD`} 
+                    id="secret" 
+                    className="h-12 text-base font-bold tracking-[0.3em]" 
+                    labelClassName="text-[10px]" 
+                  />
                 </section>
-                <Button type="submit" size="lg" fullWidth className="h-16 text-xs md:text-base font-black uppercase tracking-widest whitespace-nowrap">
-                  Confirm & Ready
-                  <ArrowRight className="ml-2" size={20} />
+                <Button type="submit" size="lg" disabled={isValidating} fullWidth className="h-16 text-xs md:text-base font-black uppercase tracking-widest whitespace-nowrap">
+                  {isValidating ? (
+                    <>
+                      <Loader2 className="mr-2 animate-spin" size={20} />
+                      Checking Word...
+                    </>
+                  ) : (
+                    <>
+                      Confirm & Ready
+                      <ArrowRight className="ml-2" size={20} />
+                    </>
+                  )}
                 </Button>
               </form>
               <button onClick={() => setMode('selection')} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto text-xs font-bold uppercase tracking-widest pt-4">

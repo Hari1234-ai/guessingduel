@@ -1,13 +1,27 @@
 export type GameStatus = 'setup' | 'lobby' | 'guest-setup' | 'playing' | 'finished';
 
-export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | 'Time Out' | null;
+export type GameMode = 'numeric' | 'word';
+
+export type WordLetterStatus = 'correct' | 'present' | 'absent';
+
+export interface WordFeedback {
+  status: WordLetterStatus[];
+  isCorrect: boolean;
+}
+
+export type Feedback = 'Too High' | 'Too Low' | 'Correct!' | 'Time Out' | WordFeedback | null;
 
 export interface Player {
   uid?: string;
   name: string;
-  secretNumber: number;
+  secretNumber: number; // Keep for legacy/numeric
+  secretWord?: string;
   attempts: number;
-  history: { guess: number; feedback: Feedback }[];
+  history: { 
+    guess: number | string; 
+    feedback: Feedback;
+    timestamp?: number;
+  }[];
   isAI?: boolean;
 }
 
@@ -19,6 +33,8 @@ export interface GameRange {
 export interface GameState {
   player1: Player;
   player2: Player;
+  mode: GameMode;
+  wordLength?: number;
   range: GameRange;
   currentTurn: 'player1' | 'player2';
   status: GameStatus;
