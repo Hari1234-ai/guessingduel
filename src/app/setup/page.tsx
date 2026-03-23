@@ -369,7 +369,7 @@ function SetupContent() {
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
                   <div className="flex flex-col items-center gap-6 relative z-10">
                     <div className="flex flex-col items-center gap-3">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Secret Arena Access Code</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Invite Your Rival</p>
                       <div className="flex items-center gap-2">
                         <div className="px-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
                           {roomCode}
