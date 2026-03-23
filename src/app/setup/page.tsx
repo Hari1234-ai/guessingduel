@@ -342,7 +342,7 @@ function SetupContent() {
           <Navbar />
           
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
-            <div className="max-w-lg mx-auto space-y-8 pt-8 md:pt-12">
+            <div className="max-w-lg mx-auto space-y-6 pt-2 md:pt-4">
               <div className="text-center space-y-4">
                 <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
                   connectionStatus === 'connected' ? 'text-green-500/80' : 
