@@ -471,9 +471,6 @@ function SetupContent() {
                 <div className="pt-8 flex flex-col items-center gap-6">
                   {playerId === 'player1' ? (
                     <div className="flex flex-col items-center gap-4 w-full">
-                      <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${isOpponentPresent ? 'text-blue-400 animate-pulse' : 'text-slate-600'}`}>
-                        {isOpponentPresent ? 'COMMUNICATION LINK ESTABLISHED' : 'BROADCASTING ARENA SIGNAL...'}
-                      </p>
                       <Button 
                         size="lg" 
                         fullWidth={false}
