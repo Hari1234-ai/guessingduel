@@ -328,7 +328,7 @@ export default function Game() {
                     <motion.div 
                       initial={{ opacity: 0 }} 
                       animate={{ opacity: 1 }} 
-                      className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_#FF57BC]"
+                      className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(25,133,161,0.3)]"
                     />
                   )}
                 </div>

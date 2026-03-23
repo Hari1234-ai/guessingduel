@@ -33,7 +33,7 @@ export default function PlansPage() {
           </h1>
 
           <div className="max-w-xl mx-auto p-12 rounded-[3rem] bg-card border border-card-border backdrop-blur-xl shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600" />
             
             <p className="text-slate-400 text-base md:text-lg font-bold leading-relaxed">
               &quot;We are curating the best plans for you coming soon.&quot;

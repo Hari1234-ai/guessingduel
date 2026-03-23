@@ -70,7 +70,7 @@ export default function LandingPage() {
 
           <motion.h1 variants={itemVariants} className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase italic leading-[0.85] text-foreground">
             Outsmart <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">Your Rivals.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">Your Rivals.</span>
           </motion.h1>
 
           <motion.p variants={itemVariants} className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
@@ -152,7 +152,7 @@ export default function LandingPage() {
               <Bot size={12} className="fill-current" />
               Practice Mode
             </div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-tight text-foreground text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-tight text-foreground text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
               Sharpen your <br />skills vs AI.
             </h2>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">

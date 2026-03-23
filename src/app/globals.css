@@ -9,18 +9,18 @@
   --color-card: var(--card-bg);
   --color-card-border: var(--card-border);
   
-  /* Primary Color Rebrand: Blue -> Pink (#FF57BC) */
-  --color-blue-50: #FFF0F9;
-  --color-blue-100: #FFD9EF;
-  --color-blue-200: #FFB3DF;
-  --color-blue-300: #FF8DCE;
-  --color-blue-400: #FF67BE;
-  --color-blue-500: #FF57BC;
-  --color-blue-600: #E64EA9;
-  --color-blue-700: #CC4596;
-  --color-blue-800: #B33D83;
-  --color-blue-900: #993470;
-  --color-blue-950: #7F2B5D;
+  /* Primary Color Rebrand: Blue -> Teal (#1985a1) */
+  --color-blue-50: #e4f1f5;
+  --color-blue-100: #c1dfe8;
+  --color-blue-200: #87bdcf;
+  --color-blue-300: #4f99b3;
+  --color-blue-400: #2c83a1;
+  --color-blue-500: #1985a1;
+  --color-blue-600: #156d84;
+  --color-blue-700: #11576a;
+  --color-blue-800: #0d4351;
+  --color-blue-900: #0a333d;
+  --color-blue-950: #07252d;
 }
 
 :root {

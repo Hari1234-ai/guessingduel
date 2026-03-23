@@ -45,7 +45,7 @@ export default function Feedback() {
       <div className="absolute inset-0 bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
       
       <div className="relative bg-card border border-card-border rounded-[3rem] p-8 md:p-16 backdrop-blur-sm shadow-2xl overflow-hidden group">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-30" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 opacity-30" />
         
         <div className="grid lg:grid-cols-5 gap-12 items-center">
           <div className="lg:col-span-2 space-y-6">
