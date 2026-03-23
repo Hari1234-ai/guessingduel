@@ -342,7 +342,7 @@ function SetupContent() {
           <Navbar />
           
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
-            <div className="max-w-lg mx-auto space-y-10 pt-16 md:pt-24">
+            <div className="max-w-lg mx-auto space-y-8 pt-8 md:pt-12">
               <div className="text-center space-y-4">
                 <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
                   connectionStatus === 'connected' ? 'text-green-500/80' : 
@@ -363,6 +363,34 @@ function SetupContent() {
                 </p>
               </div>
 
+              {/* Room Code & Sharing (Moved to Top) */}
+              {playerId === 'player1' && (
+                <div className="py-6 px-8 bg-card/40 border border-card-border rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+                  <div className="flex flex-col items-center gap-4 relative z-10">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Secret Arena Access Code</p>
+                    <div className="flex items-center gap-2">
+                      <div className="px-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
+                        {roomCode}
+                      </div>
+                      <button 
+                        onClick={copyCode}
+                        className="p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
+                      >
+                        {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} className="group-hover:rotate-12 transition-transform" />}
+                      </button>
+                      <button 
+                        onClick={copyInviteLink}
+                        className="p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
+                        title="Copy Invite Link"
+                      >
+                        {linkCopied ? <Check size={20} className="text-green-500" /> : <LinkIcon size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {connectionStatus === 'failed' && (
                 <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-red-500 text-xs text-center font-bold">
                   ERROR: Could not connect to the real-time network. <br/>
@@ -375,46 +403,46 @@ function SetupContent() {
                   {/* Profile Card */}
                   <div className="flex flex-col items-center gap-4">
                     <div className="relative">
-                      <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/30 shadow-2xl text-white font-black text-3xl">
+                      <div className="w-24 h-24 rounded-[2.2rem] bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/30 shadow-2xl text-white font-black text-4xl">
                         {(profileData?.name || 'G')?.charAt(0).toUpperCase()}
                       </div>
-                      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-background rounded-full" />
+                      <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 border-4 border-background rounded-full" />
                     </div>
                     <div className="text-center">
                       <p className="text-xs font-black uppercase tracking-widest text-blue-500 mb-1">Host</p>
-                      <p className="text-sm font-bold text-white italic">{profileData?.name || 'You'}</p>
+                      <p className="text-base font-black text-white italic tracking-tight">{profileData?.name || 'You'}</p>
                     </div>
                   </div>
 
                   {/* Verses Separator */}
                   <div className="relative flex items-center justify-center">
                     <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                    <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center z-10">
-                      <span className="text-xs font-black italic text-slate-500">VS</span>
+                    <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center z-10">
+                      <span className="text-sm font-black italic text-slate-500">VS</span>
                     </div>
-                    <div className="h-[2px] w-24 bg-gradient-to-r from-transparent via-slate-700 to-transparent absolute" />
+                    <div className="h-[2px] w-28 bg-gradient-to-r from-transparent via-slate-700 to-transparent absolute" />
                   </div>
 
                   {/* Opponent Card */}
                   <div className="flex flex-col items-center gap-4 relative">
                     <div className="relative">
-                      <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center border transition-all duration-500 ${
+                      <div className={`w-24 h-24 rounded-[2.2rem] flex items-center justify-center border transition-all duration-500 ${
                         isOpponentPresent 
                           ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-600 shadow-2xl text-white' 
                           : 'bg-slate-900/50 border-slate-800 border-dashed text-slate-800'
                       }`}>
-                        {isOpponentPresent ? <Users size={32} /> : <Loader2 size={32} className="animate-spin opacity-20" />}
+                        {isOpponentPresent ? <Users size={36} /> : <Loader2 size={36} className="animate-spin opacity-20" />}
                       </div>
                       {isOpponentPresent && (
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-background rounded-full" />
+                        <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 border-4 border-background rounded-full" />
                       )}
                     </div>
                     <div className="text-center">
                       <p className="text-xs font-black uppercase tracking-widest text-slate-600 mb-1">Rival</p>
-                      <p className={`text-sm font-bold italic transition-colors ${
+                      <p className={`text-base font-black italic tracking-tight transition-colors ${
                         isOpponentPresent ? 'text-white' : 'text-slate-800'
                       }`}>
-                        {isOpponentPresent ? 'DUELIST CONNECTED' : 'WAITING...'}
+                        {isOpponentPresent ? 'DUELIST READY' : 'WAITING...'}
                       </p>
                     </div>
                   </div>
@@ -439,17 +467,26 @@ function SetupContent() {
                       </Button>
                     </div>
                   ) : (
-                    <div className="text-center py-4 px-8 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                    <div className="text-center py-4 px-8 bg-blue-500/10 border border-blue-500/20 rounded-2xl w-full">
                       <Loader2 className="animate-spin text-blue-500 mx-auto mb-3" size={24} />
                       <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Awaiting Host Signal...</p>
                     </div>
                   )}
                 </div>
 
+                {/* AI Practice Card (Moved to Bottom, Less Prominent) */}
                 {!isOpponentPresent && playerId === 'player1' && (
-                  <div className="pt-8 border-t border-slate-800/50">
-                    <div className="flex flex-col items-center gap-4">
-                      <Button 
+                  <div className="pt-12">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-slate-900/40 border border-slate-800 p-6 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-sm"
+                    >
+                      <div className="text-center sm:text-left">
+                        <h4 className="text-sm font-black uppercase tracking-tight text-white mb-1">Can&apos;t wait for a rival?</h4>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Test your skills against our AI instead.</p>
+                      </div>
+                      <button 
                         onClick={() => {
                           if (!user && guestPlayCount >= 1) {
                             setIsLoginModalOpen(true);
@@ -458,43 +495,15 @@ function SetupContent() {
                             startWithAI(currentUid);
                           }
                         }}
-                        size="lg"
-                        className="w-full h-16 bg-gradient-to-br from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-400 border border-blue-500/20 hover:border-blue-500/40 rounded-3xl transition-all group relative overflow-hidden backdrop-blur-sm"
+                        className="px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 shrink-0"
                       >
-                        <Sparkles size={20} className="mr-3" />
-                        DUEL WITH AI
-                      </Button>
-                    </div>
+                        <Sparkles size={14} />
+                        Duel with AI
+                      </button>
+                    </motion.div>
                   </div>
                 )}
               </div>
-
-              {/* Social Proof / Sharing (Only for Host) */}
-              {playerId === 'player1' && (
-                <div className="pt-8 border-t border-slate-800/50">
-                  <div className="flex flex-col items-center gap-4">
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Secret Arena Access Code</p>
-                    <div className="flex items-center gap-2">
-                      <div className="px-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
-                        {roomCode}
-                      </div>
-                      <button 
-                        onClick={copyCode}
-                        className="p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
-                      >
-                        {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} className="group-hover:rotate-12 transition-transform" />}
-                      </button>
-                      <button 
-                        onClick={copyInviteLink}
-                        className="p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
-                        title="Copy Invite Link"
-                      >
-                        {linkCopied ? <Check size={20} className="text-green-500" /> : <LinkIcon size={20} />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </main>
