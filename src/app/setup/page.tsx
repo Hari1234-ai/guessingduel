@@ -332,82 +332,71 @@ function SetupContent() {
           </div>
         </main>
       );
-    }    if (mode === 'lobby') {
+    }
+
+    if (mode === 'lobby') {
       const isBothReady = isPlayer1Ready && isPlayer2Ready;
       return (
-          <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
-            
-            <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
-              <div className="flex-1 overflow-y-auto pt-4">
-                <div className="max-w-lg mx-auto p-6 pt-0 pb-32 space-y-4">
-                  {/* Connection Status Badge */}
-                  <div className="text-center">
-                    <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
-                      connectionStatus === 'connected' ? 'text-green-500/80' : 
-                      connectionStatus === 'connecting' ? 'text-yellow-500/80' : 
-                      'text-red-500/80'
-                    }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${
-                        connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
-                        connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
-                        'bg-red-500 shadow-[0_0_8px_#ef4444]'
-                      }`} />
-                      {connectionStatus}
-                    </div>
-                  </div>
-
+        <main className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden transition-colors duration-300">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
+          <Navbar />
+          
+          <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <div className="max-w-lg mx-auto p-6 pt-2 md:pt-4 pb-32 space-y-4">
                   {/* Instructional Header */}
-                  <div className="text-center opacity-40">
-                    <h1 className="text-[10px] md:text-xs font-black tracking-widest max-w-[280px] mx-auto md:max-w-none uppercase">
+                  <div className="text-center">
+                    <h1 className="text-xl md:text-2xl font-black tracking-tighter max-w-[280px] mx-auto md:max-w-none uppercase">
                       {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
                     </h1>
                   </div>
 
-                  {/* Action Card Section (Moved to top for mobile visibility) */}
+                  {/* Action Card Section */}
                   <div className="space-y-4">
                     {playerId === 'player1' && (
                       <div className="py-4 px-6 md:py-6 md:px-8 bg-card/40 border border-card-border rounded-[1.5rem] md:rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
-                        <div className="flex flex-col items-center gap-3 relative z-10">
+                        <div className="flex flex-col items-center gap-4 relative z-10">
                           <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Invite Your Rival</p>
-                          <div className="flex flex-wrap items-center justify-center gap-3">
-                            <div className="px-6 py-2 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
+                          
+                          {/* Row 1: Code + Copy + Link */}
+                          <div className="flex items-center gap-2 w-full max-w-[340px]">
+                            <div className="flex-1 px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl font-black text-xl md:text-2xl tracking-[0.2em] md:tracking-[0.3em] text-white shadow-inner flex items-center justify-center">
                               {roomCode}
                             </div>
-                            <div className="flex items-center gap-2">
-                              <button 
-                                onClick={copyCode}
-                                className="p-3 md:p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
-                                title="Copy Code"
-                              >
-                                {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="group-hover:rotate-12 transition-transform" />}
-                              </button>
-                              <button 
-                                onClick={copyInviteLink}
-                                className="p-3 md:p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
-                                title="Copy Invite Link"
-                              >
-                                {linkCopied ? <Check size={18} className="text-green-500" /> : <LinkIcon size={18} />}
-                              </button>
-                              {!isOpponentPresent && (
-                                <button 
-                                  onClick={() => {
-                                    if (!user && guestPlayCount >= 1) {
-                                      setIsLoginModalOpen(true);
-                                    } else {
-                                      const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
-                                      startWithAI(currentUid);
-                                    }
-                                  }}
-                                  className="h-[52px] px-5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group whitespace-nowrap"
-                                >
-                                  <Sparkles size={14} className="group-hover:scale-110 transition-transform" />
-                                  MindMatch with AI
-                                </button>
-                              )}
-                            </div>
+                            <button 
+                              onClick={copyCode}
+                              className="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group flex items-center justify-center"
+                              title="Copy Code"
+                            >
+                              {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="group-hover:rotate-12 transition-transform" />}
+                            </button>
+                            <button 
+                              onClick={copyInviteLink}
+                              className="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group flex items-center justify-center"
+                              title="Copy Invite Link"
+                            >
+                              {linkCopied ? <Check size={18} className="text-green-500" /> : <LinkIcon size={18} />}
+                            </button>
                           </div>
+
+                          {/* Row 2: AI Button (Full Width) */}
+                          {!isOpponentPresent && (
+                            <button 
+                              onClick={() => {
+                                if (!user && guestPlayCount >= 1) {
+                                  setIsLoginModalOpen(true);
+                                } else {
+                                  const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
+                                  startWithAI(currentUid);
+                                }
+                              }}
+                              className="w-full h-[52px] bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group"
+                            >
+                              <Sparkles size={16} className="group-hover:scale-110 transition-transform" />
+                              MindMatch with AI
+                            </button>
+                          )}
                         </div>
                       </div>
                     )}
