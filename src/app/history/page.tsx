@@ -101,15 +101,23 @@ export default function HistoryPage() {
 
       <Navbar />
 
-      <div className="max-w-4xl mx-auto relative z-10 pt-12">
-
-        <div className="mb-12 text-center flex flex-col items-center">
-          <h1 className="text-2xl font-black tracking-tighter uppercase flex items-center justify-center gap-4">
-            <History size={24} className="text-blue-500" />
-            Duel History
-          </h1>
-          <p className="text-slate-500 text-xs mt-2">Your legacy recorded in the halls of fate.</p>
-        </div>
+        <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 relative z-10 pt-12">
+          <div className="text-center mb-12">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6"
+            >
+              <History size={12} className="fill-current" />
+              Combat Records
+            </motion.div>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none mb-6 italic">
+              Duel <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
+            </h1>
+            <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+              Your legacy recorded in the halls of fate.
+            </p>
+          </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
