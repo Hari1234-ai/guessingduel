@@ -10,8 +10,12 @@ import { Analytics } from "@vercel/analytics/next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://mindm.vercel.app/'),
   title: "MindMatch | Outsmart Your Rivals",
   description: "The ultimate real-time testing of strategy and luck. Challenge friends to a high-stakes MindMatch match where every guess counts.",
+  alternates: {
+    canonical: '/',
+  },
   verification: {
     google: "6W_4J_J-gwwAVodQi3si23pVzZTq9iWsUMh1tW_L7E4",
   },
