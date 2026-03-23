@@ -119,9 +119,9 @@ export default function Feedback() {
                   type="submit" 
                   disabled={status === 'loading'}
                   className={`w-full h-14 font-black uppercase tracking-[0.2em] transform transition-all active:scale-[0.98] ${
-                    status === 'success' ? 'bg-green-600 hover:bg-green-600' : 
-                    status === 'error' ? 'bg-red-600 hover:bg-red-600' : 
-                    'bg-white text-slate-950 hover:bg-slate-200'
+                    status === 'success' ? 'bg-green-600 text-white hover:bg-green-700' : 
+                    status === 'error' ? 'bg-red-600 text-white hover:bg-red-700' : 
+                    'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
                 >
                   {status === 'loading' ? (

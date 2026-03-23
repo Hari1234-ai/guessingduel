@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
 import Link from 'next/link';
@@ -13,9 +13,15 @@ import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, del
 
 export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
   const pathname = usePathname();
   const router = useRouter();
   const { user, profileData, logout } = useAuth();
+
+  useEffect(() => {
+    const count = localStorage.getItem('guestPlayCount');
+    if (count) setGuestPlayCount(parseInt(count));
+  }, []);
 
   const resetMyCoins = async () => {
     if (!user || !db) return;
@@ -84,8 +90,14 @@ export default function Navbar() {
     }
   };
 
+  const isPlayLimitReached = !user && guestPlayCount >= 1;
+
   const navLinks = [
-    { label: 'Play MindMatch', href: '/setup', icon: <Brain size={18} /> },
+    { 
+      label: isPlayLimitReached ? 'Login' : 'Play MindMatch', 
+      href: isPlayLimitReached ? '/login' : '/setup', 
+      icon: isPlayLimitReached ? <LogIn size={18} /> : <Brain size={18} /> 
+    },
     { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
@@ -146,10 +158,10 @@ export default function Navbar() {
               {!(pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact') && (
                 <Button 
                   size="md" 
-                  onClick={() => router.push('/setup')}
+                  onClick={() => router.push(!user && guestPlayCount >= 1 ? '/login' : '/setup')}
                   className="h-10 px-6 font-bold hidden md:inline-flex"
                 >
-                  Play Now
+                  {!user && guestPlayCount >= 1 ? 'Login' : 'Play Now'}
                 </Button>
               )}
               {/* Mobile Menu Toggle for Guests */}

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile } from 'lucide-react';
+import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile, LogIn } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -15,6 +15,12 @@ import Feedback from '@/components/landing/Feedback';
 export default function LandingPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
+
+  useEffect(() => {
+    const count = localStorage.getItem('guestPlayCount');
+    if (count) setGuestPlayCount(parseInt(count));
+  }, []);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
 
   const containerVariants = {
@@ -89,11 +95,11 @@ export default function LandingPage() {
             </Button>
             <Button 
               size="lg" 
-              onClick={() => router.push('/setup')}
+              onClick={() => router.push(!user && guestPlayCount >= 1 ? '/login' : '/setup')}
               className="h-12 px-8 text-sm font-black group w-full sm:w-auto"
             >
-              Play now
-              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              {!user && guestPlayCount >= 1 ? 'Login' : 'Play now'}
+              {!user && guestPlayCount >= 1 ? <LogIn className="ml-2 group-hover:translate-x-1 transition-transform" /> : <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
             </Button>
           </motion.div>
         </motion.div>
