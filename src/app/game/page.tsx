@@ -151,12 +151,12 @@ export default function Game() {
     const isWinner = winner === playerId;
     const p1Secret = playerId ? gameState[playerId as 'player1' | 'player2']?.secretNumber : 'N/A';
     const p2Secret = opponentId ? gameState[opponentId as 'player1' | 'player2']?.secretNumber : 'N/A';
-    const shareText = `🎮 Just finished a Duel on Guessing Duel!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close duel.'}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
+    const shareText = `🎮 Just finished a Duel on Duel!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close duel.'}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Guessing Duel Result',
+          title: 'Duel Result',
           text: shareText,
           url: window.location.origin,
         });

@@ -72,7 +72,7 @@ export default function LandingPage() {
           </motion.h1>
 
           <motion.p variants={itemVariants} className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-            Guessing Duel is the ultimate real-time testing of strategy and luck. 
+            Duel is the ultimate real-time testing of strategy and luck. 
             Challenge friends to a high-stakes duel where every guess count.
           </motion.p>
 
@@ -143,7 +143,7 @@ export default function LandingPage() {
 
 
       {/* VS AI Section */}
-      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto border-t border-slate-800">
+      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 space-y-6 text-center md:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-[0.2em]">
@@ -177,7 +177,7 @@ export default function LandingPage() {
       </section>
 
       {/* Rewards & Leaderboard Section */}
-      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto border-t border-slate-800">
+      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16 text-foreground">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-4">Climb the Ranks</h2>
           <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">Prove your worth. Earn rewards. Become a legend.</p>
@@ -192,7 +192,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-2xl font-black uppercase tracking-tight text-white mb-4 relative z-10">Earn Coins</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-8 relative z-10">
-              Every victory in Guessing Duel earns you valuable coins. Stack your riches, show off your wealth, and unlock exclusive features as you dominate your opponents.
+              Every victory in Duel earns you valuable coins. Stack your riches, show off your wealth, and unlock exclusive features as you dominate your opponents.
             </p>
             <div className="space-y-3 w-full relative z-10">
               <div className="flex items-center gap-3 text-sm font-bold text-slate-300">
@@ -234,7 +234,7 @@ export default function LandingPage() {
       <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="Game Rules">
         <div className="space-y-6 text-slate-300 p-2">
           <p className="text-sm leading-relaxed">
-            Guessing Duel is a strategic race. Both players choose a secret number and try to guess their opponent&apos;s number first.
+            Duel is a strategic race. Both players choose a secret number and try to guess their opponent&apos;s number first.
           </p>
           <div className="grid gap-4">
             <RuleItem number="1" title="Set your Secret" desc="Choose a number within the range (e.g., 1-100)." />

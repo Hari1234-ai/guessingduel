@@ -103,7 +103,7 @@ export default function Navbar() {
             <Swords size={20} className="text-white" />
           </div>
           <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase hidden md:inline-block">
-            Guessing Duel
+            Duel
           </span>
         </Link>
 

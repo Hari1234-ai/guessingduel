@@ -14,7 +14,7 @@ export default function Footer() {
             <Swords size={20} className="text-slate-500 group-hover:text-white transition-colors" />
           </div>
           <span className="text-lg font-black tracking-tighter uppercase italic text-slate-400 group-hover:text-white transition-colors">
-            Guessing Duel
+            Duel
           </span>
         </div>
 
@@ -42,7 +42,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="w-full pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
-            © {currentYear} Guessing Duel. Built for competitive spirits.
+            © {currentYear} Duel. Built for competitive spirits.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
