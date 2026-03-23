@@ -199,7 +199,7 @@ export default function LandingPage() {
               Communication is key in every match. Use our real-time emoji reactions to celebrate a great guess, taunt your rival, or show your frustration. Strategy isn&apos;t just about numbers; it&apos;s about psychology.
             </p>
             <div className="flex flex-nowrap justify-between md:justify-start gap-2 md:gap-4 pt-4 overflow-x-auto pb-2 custom-scrollbar">
-              {['🔥', '😂', '🤯', '🥶', '🤫', '🤡'].map((emoji, i) => (
+              {['🥳', '💀', '💩', '😂', '😢', '😱'].map((emoji, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -216,7 +216,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-orange-500/20 blur-[120px] rounded-full" />
             <div className="relative bg-card border border-card-border p-10 rounded-[3rem] backdrop-blur-sm shadow-2xl overflow-hidden aspect-square flex items-center justify-center">
               <div className="grid grid-cols-3 gap-6 relative z-10 scale-125">
-                 {['🤫', '🔥', '🤡', '🤯', '🥶', '😂'].map((emoji, i) => (
+                 {['💩', '🥳', '💀', '😱', '😢', '😂'].map((emoji, i) => (
                     <motion.div
                       key={i}
                       animate={{ 
