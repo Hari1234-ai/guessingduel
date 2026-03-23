@@ -24,6 +24,7 @@ export interface Player {
     timestamp?: number;
   }[];
   isAI?: boolean;
+  initialSecretNumber?: number;
 }
 
 export interface GameRange {

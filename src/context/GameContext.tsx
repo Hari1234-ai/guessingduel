@@ -24,6 +24,7 @@ const initialPlayer = (name: string = '', uid: string = '', secretNumber: number
   name,
   uid,
   secretNumber,
+  initialSecretNumber: secretNumber,
   secretWord,
   attempts: 0,
   history: [],

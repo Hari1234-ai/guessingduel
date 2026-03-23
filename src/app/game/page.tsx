@@ -316,6 +316,21 @@ export default function Game() {
               currentTurn === 'player1' ? 'bg-blue-500' : 'bg-purple-500'
             }`} />
 
+            {/* User's Secret Display */}
+            <div className="absolute top-6 left-8 flex flex-col pointer-events-none select-none">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Your Secret</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xl md:text-2xl font-black text-white tracking-tighter uppercase italic">
+                  {gameState.mode === 'numeric' ? (playerId === 'player1' ? player1.secretNumber : player2.secretNumber) : (playerId === 'player1' ? player1.secretWord : player2.secretWord)}
+                </span>
+                {gameState.mode === 'numeric' && gameState.difficulty === 'hard' && (
+                  <div className="px-1.5 py-0.5 rounded-md bg-red-500/10 border border-red-500/20 text-[8px] font-black text-red-400 uppercase tracking-tighter">
+                    +{(playerId === 'player1' ? (player1.secretNumber - (player1.initialSecretNumber || player1.secretNumber)) : (player2.secretNumber - (player2.initialSecretNumber || player2.secretNumber)))} Shifted
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Turn Timer: Circular Progress */}
             <div className="absolute top-6 right-8 flex items-center justify-center w-16 h-16">
               <svg className="w-full h-full transform -rotate-90">
