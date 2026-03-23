@@ -339,9 +339,9 @@ function SetupContent() {
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
           <Navbar />
           
-            <div className="flex-1 flex flex-col min-h-0">
-              <div className="flex-1 p-6 overflow-y-auto">
-                <div className="max-w-lg mx-auto space-y-4 pt-2 md:pt-4">
+            <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
+              <div className="flex-1 overflow-y-auto">
+                <div className="max-w-lg mx-auto p-6 pt-2 md:pt-4 pb-32 space-y-4">
                   {/* Connection Status Badge */}
                   <div className="text-center">
                     <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
@@ -473,8 +473,8 @@ function SetupContent() {
                 </div>
               </div>
 
-              {/* Ready Status / Start Actions (Now sticky at bottom) */}
-              <div className="p-6 md:px-8 bg-background/80 backdrop-blur-xl border-t border-card-border sticky bottom-0 z-50">
+              {/* Ready Status / Start Actions (Now fixed at bottom) */}
+              <div className="p-6 md:px-8 bg-background/95 backdrop-blur-xl border-t border-card-border fixed bottom-0 left-0 right-0 z-50">
                 <div className="max-w-lg mx-auto w-full">
                   {playerId === 'player1' ? (
                     <div className="flex flex-col items-center w-full">
