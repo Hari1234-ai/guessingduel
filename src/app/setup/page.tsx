@@ -357,7 +357,14 @@ function SetupContent() {
                 </div>
               </div>
 
-              {/* Profiles Section (Now at the Top) */}
+              {/* Instructional Header (Moved back to top) */}
+              <div className="text-center">
+                <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic max-w-[280px] mx-auto md:max-w-none">
+                  {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
+                </h1>
+              </div>
+
+              {/* Profiles Section */}
               <div className="flex flex-col md:flex-row items-center justify-center gap-10 py-4">
                 {/* Profile Card */}
                 <div className="flex flex-col items-center gap-4">
@@ -407,12 +414,6 @@ function SetupContent() {
                 </div>
               </div>
 
-              {/* Instructional Header */}
-              <div className="text-center pt-2">
-                <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic max-w-[280px] mx-auto md:max-w-none">
-                  {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
-                </h1>
-              </div>
 
               {/* Action Card Section */}
               <div className="space-y-6">
