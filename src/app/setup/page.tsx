@@ -197,11 +197,11 @@ function SetupContent() {
                 <p className="text-slate-400 text-sm">Choose your side to begin the match.</p>
               </div>
               <div className="grid gap-4 pt-6">
-                <Button onClick={() => setMode('host-setup')} size="md" className="h-14 text-sm md:text-lg font-bold group whitespace-nowrap">
+                <Button onClick={() => setMode('host-setup')} size="md" className="h-14 text-xs md:text-lg font-bold group whitespace-nowrap">
                   <Users className="mr-3 group-hover:scale-110 transition-transform" />
                   HOST A MindMatch
                 </Button>
-                <Button onClick={() => setMode('enter-code')} variant="secondary" size="md" className="h-14 text-sm md:text-lg font-bold group whitespace-nowrap">
+                <Button onClick={() => setMode('enter-code')} variant="secondary" size="md" className="h-14 text-xs md:text-lg font-bold group whitespace-nowrap">
                   <Hash className="mr-3 group-hover:scale-110 transition-transform" />
                   JOIN A MindMatch
                 </Button>
@@ -276,7 +276,7 @@ function SetupContent() {
                   </div>
                   <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 42" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
                 </section>
-                <Button type="submit" size="lg" fullWidth className="h-16 text-sm md:text-base font-black uppercase tracking-widest whitespace-nowrap">
+                <Button type="submit" size="lg" fullWidth className="h-16 text-xs md:text-base font-black uppercase tracking-widest whitespace-nowrap">
                   Create MindMatch
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
@@ -320,7 +320,7 @@ function SetupContent() {
                   </div>
                   <Input label="Secret Number" type="password" showPasswordToggle value={form.secret} onChange={(e) => setForm({ ...form, secret: e.target.value })} error={errors.secret} placeholder="e.g. 73" id="secret" className="h-12 text-base font-bold tracking-[0.3em]" labelClassName="text-[10px]" />
                 </section>
-                <Button type="submit" size="lg" fullWidth className="h-16 text-sm md:text-base font-black uppercase tracking-widest whitespace-nowrap">
+                <Button type="submit" size="lg" fullWidth className="h-16 text-xs md:text-base font-black uppercase tracking-widest whitespace-nowrap">
                   Confirm & Ready
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
