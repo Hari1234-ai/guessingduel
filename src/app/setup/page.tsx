@@ -357,10 +357,10 @@ function SetupContent() {
                   {connectionStatus}
                 </div>
 
-                <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic">Lobby</h1>
-                <p className="text-slate-500 text-xs md:text-sm max-w-[280px] mx-auto md:max-w-none">
+                <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic max-w-[280px] mx-auto md:max-w-none">
                   {playerId === 'player1' ? 'Invite your opponent to start the duel.' : 'Wait for the host to signal the start.'}
-                </p>
+                </h1>
+                <div className="h-2" />
               </div>
 
               {/* Room Code & Sharing (Moved to Top) */}
