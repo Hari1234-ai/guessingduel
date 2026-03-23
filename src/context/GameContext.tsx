@@ -505,23 +505,29 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (status === 'playing' && currentTurn === 'player2' && player2.isAI) {
         const delay = 1500 + Math.random() * 3000;
         const timer = setTimeout(() => {
-          // AI Logic: Smart Binary Search based on its own history
-          let currentMin = range.min;
-          let currentMax = range.max;
-          
-          // Analyze history to narrow down his own bounds
-          player2.history.forEach(h => {
-            if (typeof h.guess === 'number' && typeof h.feedback === 'string') {
-              if (h.feedback === 'Too Low') {
-                currentMin = Math.max(currentMin, h.guess + 1);
-              } else if (h.feedback === 'Too High') {
-                currentMax = Math.min(currentMax, h.guess - 1);
+          if (gameState.mode === 'numeric') {
+            // AI Logic: Smart Binary Search based on its own history
+            let currentMin = range.min;
+            let currentMax = range.max;
+            
+            player2.history.forEach(h => {
+              if (typeof h.guess === 'number' && typeof h.feedback === 'string') {
+                if (h.feedback === 'Too Low') {
+                  currentMin = Math.max(currentMin, h.guess + 1);
+                } else if (h.feedback === 'Too High') {
+                  currentMax = Math.min(currentMax, h.guess - 1);
+                }
               }
-            }
-          });
-          
-          const guess = Math.floor((currentMin + currentMax) / 2);
-          makeGuess(guess);
+            });
+            
+            const guess = Math.floor((currentMin + currentMax) / 2);
+            makeGuess(guess);
+          } else {
+            // Word Mode: Pick a random word of the same length
+            const wordLength = gameState.wordLength || 5;
+            const guess = getRandomAIWord(wordLength);
+            makeGuess(guess);
+          }
         }, delay);
       
       return () => clearTimeout(timer);
