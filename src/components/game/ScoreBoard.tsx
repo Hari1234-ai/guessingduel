@@ -15,7 +15,7 @@ const ScoreBoard: React.FC = () => {
         {/* Player 1 Card */}
         <div className={`relative p-4 rounded-2xl border-2 transition-all duration-300 ${
           currentTurn === 'player1' && status === 'playing'
-            ? 'bg-blue-600/10 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.15)] scale-[1.02]' 
+            ? 'bg-blue-600/10 border-blue-500 shadow-[0_0_20px_rgba(255,87,188,0.15)] scale-[1.02]' 
             : 'bg-slate-900 border-slate-800 opacity-60'
         }`}>
           <div className="flex flex-col items-center">

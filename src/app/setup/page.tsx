@@ -432,7 +432,7 @@ function SetupContent() {
                         fullWidth={false}
                         disabled={!isOpponentPresent}
                         onClick={startGame}
-                        className="h-16 px-12 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(37,99,235,0.3)]"
+                        className="h-16 px-12 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(255,87,188,0.3)]"
                       >
                         START DUEL
                         <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />

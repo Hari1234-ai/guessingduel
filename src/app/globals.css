@@ -8,6 +8,19 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card-bg);
   --color-card-border: var(--card-border);
+  
+  /* Primary Color Rebrand: Blue -> Pink (#FF57BC) */
+  --color-blue-50: #FFF0F9;
+  --color-blue-100: #FFD9EF;
+  --color-blue-200: #FFB3DF;
+  --color-blue-300: #FF8DCE;
+  --color-blue-400: #FF67BE;
+  --color-blue-500: #FF57BC;
+  --color-blue-600: #E64EA9;
+  --color-blue-700: #CC4596;
+  --color-blue-800: #B33D83;
+  --color-blue-900: #993470;
+  --color-blue-950: #7F2B5D;
 }
 
 :root {
