@@ -367,26 +367,48 @@ function SetupContent() {
               {playerId === 'player1' && (
                 <div className="py-6 px-8 bg-card/40 border border-card-border rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
-                  <div className="flex flex-col items-center gap-4 relative z-10">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Secret Arena Access Code</p>
-                    <div className="flex items-center gap-2">
-                      <div className="px-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
-                        {roomCode}
+                  <div className="flex flex-col items-center gap-6 relative z-10">
+                    <div className="flex flex-col items-center gap-3">
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Secret Arena Access Code</p>
+                      <div className="flex items-center gap-2">
+                        <div className="px-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
+                          {roomCode}
+                        </div>
+                        <button 
+                          onClick={copyCode}
+                          className="p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
+                        >
+                          {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} className="group-hover:rotate-12 transition-transform" />}
+                        </button>
+                        <button 
+                          onClick={copyInviteLink}
+                          className="p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
+                          title="Copy Invite Link"
+                        >
+                          {linkCopied ? <Check size={20} className="text-green-500" /> : <LinkIcon size={20} />}
+                        </button>
                       </div>
-                      <button 
-                        onClick={copyCode}
-                        className="p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
-                      >
-                        {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} className="group-hover:rotate-12 transition-transform" />}
-                      </button>
-                      <button 
-                        onClick={copyInviteLink}
-                        className="p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
-                        title="Copy Invite Link"
-                      >
-                        {linkCopied ? <Check size={20} className="text-green-500" /> : <LinkIcon size={20} />}
-                      </button>
                     </div>
+
+                    {!isOpponentPresent && (
+                      <div className="pt-4 border-t border-slate-800/50 w-full flex flex-col items-center gap-3">
+                        <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Can&apos;t wait for a rival?</p>
+                        <button 
+                          onClick={() => {
+                            if (!user && guestPlayCount >= 1) {
+                              setIsLoginModalOpen(true);
+                            } else {
+                              const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
+                              startWithAI(currentUid);
+                            }
+                          }}
+                          className="px-6 py-2.5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+                        >
+                          <Sparkles size={12} />
+                          Duel with AI
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -473,36 +495,6 @@ function SetupContent() {
                     </div>
                   )}
                 </div>
-
-                {/* AI Practice Card (Moved to Bottom, Less Prominent) */}
-                {!isOpponentPresent && playerId === 'player1' && (
-                  <div className="pt-12">
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-slate-900/40 border border-slate-800 p-6 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-sm"
-                    >
-                      <div className="text-center sm:text-left">
-                        <h4 className="text-sm font-black uppercase tracking-tight text-white mb-1">Can&apos;t wait for a rival?</h4>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Test your skills against our AI instead.</p>
-                      </div>
-                      <button 
-                        onClick={() => {
-                          if (!user && guestPlayCount >= 1) {
-                            setIsLoginModalOpen(true);
-                          } else {
-                            const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
-                            startWithAI(currentUid);
-                          }
-                        }}
-                        className="px-6 py-3 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 shrink-0"
-                      >
-                        <Sparkles size={14} />
-                        Duel with AI
-                      </button>
-                    </motion.div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
