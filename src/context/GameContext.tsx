@@ -132,7 +132,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearInterval(interval);
   }, []); // No dependencies needed, safely uses refs
 
-  const getWordFeedback = (guess: string, secret: string): WordFeedback => {
+  const getWordFeedback = useCallback((guess: string, secret: string): WordFeedback => {
     const status: WordLetterStatus[] = Array(secret.length).fill('absent');
     const secretChars = secret.toUpperCase().split('');
     const guessChars = guess.toUpperCase().split('');
@@ -157,7 +157,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     
     return { status, isCorrect: status.every(s => s === 'correct') };
-  };
+  }, []);
 
 
   const createRoom = useCallback(async (name: string, uid: string, secret: number | string, mode: GameMode, wordLength?: number, min: number = 1, max: number = 100) => {
@@ -532,7 +532,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       return () => clearTimeout(timer);
     }
-  }, [gameState.status, gameState.currentTurn, gameState.player2.isAI, gameState.range, makeGuess]);
+  }, [gameState.status, gameState.currentTurn, gameState.player2.isAI, gameState.mode, gameState.wordLength, gameState.range.min, gameState.range.max, makeGuess]);
 
   const startWithAI = useCallback((uid: string) => {
     const { range } = latestStateRef.current;
