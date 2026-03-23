@@ -339,146 +339,151 @@ function SetupContent() {
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
           <Navbar />
           
-          <div className="flex-1 p-6 pb-20 overflow-y-auto">
-            <div className="max-w-lg mx-auto space-y-6 pt-2 md:pt-4">
-              {/* Connection Status Badge */}
-              <div className="text-center">
-                <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
-                  connectionStatus === 'connected' ? 'text-green-500/80' : 
-                  connectionStatus === 'connecting' ? 'text-yellow-500/80' : 
-                  'text-red-500/80'
-                }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${
-                    connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
-                    connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
-                    'bg-red-500 shadow-[0_0_8px_#ef4444]'
-                  }`} />
-                  {connectionStatus}
-                </div>
-              </div>
+            <div className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 p-6 overflow-y-auto">
+                <div className="max-w-lg mx-auto space-y-4 pt-2 md:pt-4">
+                  {/* Connection Status Badge */}
+                  <div className="text-center">
+                    <div className={`mx-auto inline-flex items-center gap-2 px-3 py-1 bg-card rounded-full border border-card-border text-[9px] font-black tracking-[0.2em] uppercase backdrop-blur-sm transition-all ${
+                      connectionStatus === 'connected' ? 'text-green-500/80' : 
+                      connectionStatus === 'connecting' ? 'text-yellow-500/80' : 
+                      'text-red-500/80'
+                    }`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        connectionStatus === 'connected' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
+                        connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 
+                        'bg-red-500 shadow-[0_0_8px_#ef4444]'
+                      }`} />
+                      {connectionStatus}
+                    </div>
+                  </div>
 
-              {/* Instructional Header (Moved back to top) */}
-              <div className="text-center">
-                <h1 className="text-xl md:text-2xl font-black tracking-tighter max-w-[280px] mx-auto md:max-w-none uppercase">
-                  {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
-                </h1>
-              </div>
+                  {/* Instructional Header */}
+                  <div className="text-center">
+                    <h1 className="text-xl md:text-2xl font-black tracking-tighter max-w-[280px] mx-auto md:max-w-none uppercase">
+                      {playerId === 'player1' ? 'Invite your opponent to start the match.' : 'Wait for the host to signal the start.'}
+                    </h1>
+                  </div>
 
-              {/* Action Card Section (Moved to top for mobile visibility) */}
-              <div className="space-y-4">
-                {playerId === 'player1' && (
-                  <div className="py-4 px-6 md:py-6 md:px-8 bg-card/40 border border-card-border rounded-[1.5rem] md:rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
-                    <div className="flex flex-col items-center gap-3 relative z-10">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Invite Your Rival</p>
-                      <div className="flex flex-wrap items-center justify-center gap-3">
-                        <div className="px-6 py-2 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
-                          {roomCode}
+                  {/* Action Card Section (Moved to top for mobile visibility) */}
+                  <div className="space-y-4">
+                    {playerId === 'player1' && (
+                      <div className="py-4 px-6 md:py-6 md:px-8 bg-card/40 border border-card-border rounded-[1.5rem] md:rounded-[2rem] backdrop-blur-md shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+                        <div className="flex flex-col items-center gap-3 relative z-10">
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Invite Your Rival</p>
+                          <div className="flex flex-wrap items-center justify-center gap-3">
+                            <div className="px-6 py-2 bg-slate-900 border border-slate-800 rounded-2xl font-black text-2xl tracking-[0.3em] text-white shadow-inner">
+                              {roomCode}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button 
+                                onClick={copyCode}
+                                className="p-3 md:p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
+                                title="Copy Code"
+                              >
+                                {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="group-hover:rotate-12 transition-transform" />}
+                              </button>
+                              <button 
+                                onClick={copyInviteLink}
+                                className="p-3 md:p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
+                                title="Copy Invite Link"
+                              >
+                                {linkCopied ? <Check size={18} className="text-green-500" /> : <LinkIcon size={18} />}
+                              </button>
+                              {!isOpponentPresent && (
+                                <button 
+                                  onClick={() => {
+                                    if (!user && guestPlayCount >= 1) {
+                                      setIsLoginModalOpen(true);
+                                    } else {
+                                      const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
+                                      startWithAI(currentUid);
+                                    }
+                                  }}
+                                  className="h-[52px] px-5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group whitespace-nowrap"
+                                >
+                                  <Sparkles size={14} className="group-hover:scale-110 transition-transform" />
+                                  MindMatch with AI
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={copyCode}
-                            className="p-3 md:p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all active:scale-95 group"
-                            title="Copy Code"
-                          >
-                            {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="group-hover:rotate-12 transition-transform" />}
-                          </button>
-                          <button 
-                            onClick={copyInviteLink}
-                            className="p-3 md:p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95 group"
-                            title="Copy Invite Link"
-                          >
-                            {linkCopied ? <Check size={18} className="text-green-500" /> : <LinkIcon size={18} />}
-                          </button>
-                          {!isOpponentPresent && (
-                            <button 
-                              onClick={() => {
-                                if (!user && guestPlayCount >= 1) {
-                                  setIsLoginModalOpen(true);
-                                } else {
-                                  const currentUid = user?.uid || `guest-${Math.random().toString(36).substring(2, 8)}`;
-                                  startWithAI(currentUid);
-                                }
-                              }}
-                              className="h-[52px] px-5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 hover:border-blue-500/30 text-blue-400 rounded-2xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group whitespace-nowrap"
-                            >
-                              <Sparkles size={14} className="group-hover:scale-110 transition-transform" />
-                              MindMatch with AI
-                            </button>
+                      </div>
+                    )}
+
+                    {/* Profiles Section */}
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 py-2 md:py-4">
+                      {/* Profile Card */}
+                      <div className="flex flex-col items-center gap-2 md:gap-4">
+                        <div className="relative scale-90 md:scale-100">
+                          <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.8rem] md:rounded-[2.2rem] bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/30 shadow-2xl text-white font-black text-3xl md:text-4xl">
+                            {(profileData?.name || 'G')?.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 w-6 h-6 md:w-7 md:h-7 bg-green-500 border-4 border-background rounded-full" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-blue-500 mb-0.5 md:mb-1">Host</p>
+                          <p className="text-sm md:text-base font-black text-white italic tracking-tight">{profileData?.name || 'You'}</p>
+                        </div>
+                      </div>
+
+                      {/* Verses Separator */}
+                      <div className="relative flex items-center justify-center">
+                        <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
+                        <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center z-10">
+                          <span className="text-xs md:text-sm font-black italic text-slate-500">VS</span>
+                        </div>
+                        <div className="h-[2px] w-20 md:w-28 bg-gradient-to-r from-transparent via-slate-700 to-transparent absolute" />
+                      </div>
+
+                      {/* Opponent Card */}
+                      <div className="flex flex-col items-center gap-2 md:gap-4 relative">
+                        <div className="relative scale-90 md:scale-100">
+                          <div className={`w-20 h-20 md:w-24 md:h-24 rounded-[1.8rem] md:rounded-[2.2rem] flex items-center justify-center border transition-all duration-500 ${
+                            isOpponentPresent 
+                              ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-600 shadow-2xl text-white' 
+                              : 'bg-slate-900/50 border-slate-800 border-dashed text-slate-800'
+                          }`}>
+                            {isOpponentPresent ? <Users size={30} /> : <Loader2 size={30} className="animate-spin opacity-20" />}
+                          </div>
+                          {isOpponentPresent && (
+                            <div className="absolute -bottom-1 -right-1 w-6 h-6 md:w-7 md:h-7 bg-green-500 border-4 border-background rounded-full" />
                           )}
                         </div>
+                        <div className="text-center">
+                          <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-600 mb-0.5 md:mb-1">Rival</p>
+                          <p className={`text-sm md:text-base font-black italic tracking-tight transition-colors ${
+                            isOpponentPresent ? 'text-white' : 'text-slate-800'
+                          }`}>
+                            {isOpponentPresent ? 'MindMatchIST READY' : 'WAITING...'}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
 
-                {/* Profiles Section (Now below actions) */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 py-2 md:py-4">
-                  {/* Profile Card */}
-                  <div className="flex flex-col items-center gap-2 md:gap-4">
-                    <div className="relative scale-90 md:scale-100">
-                      <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.8rem] md:rounded-[2.2rem] bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center border border-blue-500/30 shadow-2xl text-white font-black text-3xl md:text-4xl">
-                        {(profileData?.name || 'G')?.charAt(0).toUpperCase()}
+                    {connectionStatus === 'failed' && (
+                      <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-red-500 text-xs text-center font-bold">
+                        ERROR: Could not connect to the real-time network. <br/>
+                        Please check your Ably API Key in Vercel settings.
                       </div>
-                      <div className="absolute -bottom-1 -right-1 w-6 h-6 md:w-7 md:h-7 bg-green-500 border-4 border-background rounded-full" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-blue-500 mb-0.5 md:mb-1">Host</p>
-                      <p className="text-sm md:text-base font-black text-white italic tracking-tight">{profileData?.name || 'You'}</p>
-                    </div>
-                  </div>
-
-                  {/* Verses Separator */}
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center z-10">
-                      <span className="text-xs md:text-sm font-black italic text-slate-500">VS</span>
-                    </div>
-                    <div className="h-[2px] w-20 md:w-28 bg-gradient-to-r from-transparent via-slate-700 to-transparent absolute" />
-                  </div>
-
-                  {/* Opponent Card */}
-                  <div className="flex flex-col items-center gap-2 md:gap-4 relative">
-                    <div className="relative scale-90 md:scale-100">
-                      <div className={`w-20 h-20 md:w-24 md:h-24 rounded-[1.8rem] md:rounded-[2.2rem] flex items-center justify-center border transition-all duration-500 ${
-                        isOpponentPresent 
-                          ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-600 shadow-2xl text-white' 
-                          : 'bg-slate-900/50 border-slate-800 border-dashed text-slate-800'
-                      }`}>
-                        {isOpponentPresent ? <Users size={30} /> : <Loader2 size={30} className="animate-spin opacity-20" />}
-                      </div>
-                      {isOpponentPresent && (
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 md:w-7 md:h-7 bg-green-500 border-4 border-background rounded-full" />
-                      )}
-                    </div>
-                    <div className="text-center">
-                      <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-600 mb-0.5 md:mb-1">Rival</p>
-                      <p className={`text-sm md:text-base font-black italic tracking-tight transition-colors ${
-                        isOpponentPresent ? 'text-white' : 'text-slate-800'
-                      }`}>
-                        {isOpponentPresent ? 'MindMatchIST READY' : 'WAITING...'}
-                      </p>
-                    </div>
+                    )}
                   </div>
                 </div>
+              </div>
 
-                {connectionStatus === 'failed' && (
-                  <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-red-500 text-xs text-center font-bold">
-                    ERROR: Could not connect to the real-time network. <br/>
-                    Please check your Ably API Key in Vercel settings.
-                  </div>
-                )}
-
-                {/* Ready Status / Start Actions */}
-                <div className="pt-2 flex flex-col items-center gap-6">
+              {/* Ready Status / Start Actions (Now sticky at bottom) */}
+              <div className="p-6 md:px-8 bg-background/80 backdrop-blur-xl border-t border-card-border sticky bottom-0 z-50">
+                <div className="max-w-lg mx-auto w-full">
                   {playerId === 'player1' ? (
-                    <div className="flex flex-col items-center gap-4 w-full">
+                    <div className="flex flex-col items-center w-full">
                       <Button 
                         size="lg" 
-                        fullWidth={false}
+                        fullWidth
                         disabled={!isOpponentPresent}
                         onClick={startGame}
-                        className="h-16 px-12 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(255,87,188,0.3)]"
+                        className="h-16 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(25,133,161,0.3)]"
                       >
                         START MindMatch
                         <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -493,7 +498,6 @@ function SetupContent() {
                 </div>
               </div>
             </div>
-          </div>
         </main>
       );
     }
