@@ -198,14 +198,14 @@ export default function LandingPage() {
             <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
               Communication is key in every match. Use our real-time emoji reactions to celebrate a great guess, taunt your rival, or show your frustration. Strategy isn&apos;t just about numbers; it&apos;s about psychology.
             </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+            <div className="flex flex-nowrap justify-between md:justify-start gap-2 md:gap-4 pt-4 overflow-x-auto pb-2 custom-scrollbar">
               {['🔥', '😂', '🤯', '🥶', '🤫', '🤡'].map((emoji, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="w-12 h-12 rounded-2xl bg-card border border-card-border flex items-center justify-center text-2xl shadow-lg hover:border-orange-500/50 transition-colors"
+                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-card border border-card-border flex items-center justify-center text-xl md:text-2xl shadow-lg hover:border-orange-500/50 transition-colors"
                 >
                   {emoji}
                 </motion.div>
