@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
+import { Capacitor } from '@capacitor/core';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import { LogOut, LogIn } from 'lucide-react';
@@ -194,7 +195,8 @@ function SetupContent() {
 
   const copyInviteLink = () => {
     if (roomCode) {
-      const url = `${window.location.origin}/setup?room=${roomCode}`;
+      const origin = Capacitor.isNativePlatform() ? 'https://mindm.vercel.app' : window.location.origin;
+      const url = `${origin}/setup?room=${roomCode}`;
       const hostName = profileData?.name || 'A player';
       const matchType = gameState.mode === 'numeric' ? 'Numbers Game' : 'Words Game';
       

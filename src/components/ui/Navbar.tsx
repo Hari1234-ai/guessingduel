@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn, Download } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -113,12 +114,12 @@ export default function Navbar() {
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
     { label: 'Contact', href: '/contact', icon: <MessageSquare size={18} /> },
-    { 
+    ...(!Capacitor.isNativePlatform() ? [{ 
       label: 'Download App', 
       href: '/app-debug.apk', 
       icon: <Download size={18} />,
       isExternal: true 
-    },
+    }] : []),
   ];
 
   const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
