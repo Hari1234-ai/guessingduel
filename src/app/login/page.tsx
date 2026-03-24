@@ -7,7 +7,8 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
   GoogleAuthProvider,
-  AuthError
+  AuthError,
+  getRedirectResult
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import Link from 'next/link';
@@ -26,6 +27,22 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [resetSuccess, setResetSuccess] = useState('');
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (!auth) return;
+    
+    // Check if we just returned from a Google redirect
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          router.push('/');
+        }
+      })
+      .catch((err) => {
+        console.error("Redirect error:", err);
+        setError("Sign-in failed during redirect. Please try again.");
+      });
+  }, [router]);
 
   const handleResetPassword = async () => {
     if (!email) {

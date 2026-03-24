@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -22,6 +22,10 @@ let storage: any;
 if (firebaseConfig.apiKey && firebaseConfig.apiKey !== 'your_api_key_here') {
   app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
   auth = getAuth(app);
+  // Ensure persistence is set for mobile WebView compatibility
+  if (typeof window !== 'undefined') {
+    setPersistence(auth, browserLocalPersistence).catch(err => console.error("Persistence error:", err));
+  }
   db = getFirestore(app);
   storage = getStorage(app);
 } else {
