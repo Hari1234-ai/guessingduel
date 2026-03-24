@@ -7,6 +7,7 @@ import Footer from "@/components/ui/Footer";
 import ActiveMatchBanner from "@/components/game/ActiveMatchBanner";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
+import UpdateDrawer from "@/components/ui/UpdateDrawer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
           <GameProvider>
             {children}
             <ActiveMatchBanner />
+            <UpdateDrawer />
             <Footer />
             <Analytics />
             
