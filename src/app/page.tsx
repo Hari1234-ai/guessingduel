@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile, LogIn } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -11,12 +12,18 @@ import Modal from '@/components/ui/Modal';
 import Navbar from '@/components/ui/Navbar';
 import Testimonials from '@/components/landing/Testimonials';
 import Feedback from '@/components/landing/Feedback';
-import HeroVisual from '@/components/landing/HeroVisual';
+import FriendInviteSection from '@/components/landing/FriendInviteSection';
+import GameModesSection from '@/components/landing/GameModesSection';
 
 export default function LandingPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -58,8 +65,6 @@ export default function LandingPage() {
         
         <div className="absolute top-[40%] left-[20%] w-1 h-1 bg-white/20 rounded-full animate-ping" />
         <div className="absolute top-[60%] right-[25%] w-1 h-1 bg-white/20 rounded-full animate-ping [animation-delay:1s]" />
-        
-        <HeroVisual />
       </div>
 
       <Navbar />
@@ -107,6 +112,14 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* Web-Only Sections */}
+      {!isNative && (
+        <>
+          <FriendInviteSection />
+          <GameModesSection />
+        </>
+      )}
       
       {/* How It Works Section */}
       <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto">
