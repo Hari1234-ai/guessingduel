@@ -1,14 +1,19 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Brain } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  
-  // Hide footer on native Android/iOS apps
-  if (Capacitor.isNativePlatform()) return null;
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
+
+  // Hide footer on native Android/iOS apps after hydration
+  if (isNative) return null;
   
   return (
     <footer className="w-full py-12 px-6 border-t border-white/5 bg-slate-950/50 backdrop-blur-md mt-auto relative z-10">
