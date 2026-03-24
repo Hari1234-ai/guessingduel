@@ -89,19 +89,30 @@ export default function LoginPage() {
       
       switch (authError.code) {
         case 'auth/user-not-found':
-          setError('No account found with this email. Try signing up!');
+        case 'auth/invalid-credential':
+          if (mode === 'login') {
+            // Auto-switch to signup mode with a helpful prompt
+            setMode('signup');
+            setError('No account found with this email. We\'ve switched to Sign Up — just confirm your password to create an account!');
+          } else {
+            setError('Sign up failed. Please try again.');
+          }
           break;
         case 'auth/wrong-password':
           setError('Incorrect password. Please try again.');
           break;
         case 'auth/email-already-in-use':
-          setError('An account already exists with this email.');
+          setError('An account already exists with this email. Please sign in instead.');
+          setMode('login');
           break;
         case 'auth/weak-password':
           setError('Password should be at least 6 characters.');
           break;
         case 'auth/invalid-email':
           setError('Please enter a valid email address.');
+          break;
+        case 'auth/too-many-requests':
+          setError('Too many attempts. Please wait a moment and try again.');
           break;
         default:
           setError('Authentication failed. Please check your credentials.');
