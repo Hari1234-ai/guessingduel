@@ -113,6 +113,10 @@ export default function LoginPage() {
     setError('');
     try {
       const provider = new GoogleAuthProvider();
+      // Force account selection to ensure the redirect doesn't get "stuck" in a silent flow
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
       await signInWithPopup(auth, provider);
       router.push('/');
     } catch (err) {
