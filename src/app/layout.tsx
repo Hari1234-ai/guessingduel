@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { GameProvider } from "@/context/GameContext";
 import { AuthProvider } from "@/context/AuthContext";
-// import Footer from "@/components/ui/Footer";
+import Footer from "@/components/ui/Footer";
 import ActiveMatchBanner from "@/components/game/ActiveMatchBanner";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
@@ -36,7 +36,7 @@ export default function RootLayout({
             {children}
             <ActiveMatchBanner />
             <UpdateDrawer />
-            {/* <Footer /> */}
+            <Footer />
             <Analytics />
             
             {/* Google Analytics */}
