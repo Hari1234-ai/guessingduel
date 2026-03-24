@@ -116,7 +116,7 @@ export default function Navbar() {
     { label: 'Contact', href: '/contact', icon: <MessageSquare size={18} /> },
     ...(!Capacitor.isNativePlatform() ? [{ 
       label: 'Download App', 
-      href: '/app-debug.apk', 
+      href: '/MindMatch.apk', 
       icon: <Download size={18} />,
       isExternal: true 
     }] : []),
