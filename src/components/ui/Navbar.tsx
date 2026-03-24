@@ -16,6 +16,7 @@ export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
   const [hidden, setHidden] = useState(false);
+  const [isNative, setIsNative] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user, profileData, logout } = useAuth();
@@ -29,6 +30,8 @@ export default function Navbar() {
       setHidden(false);
     }
   });
+
+  useEffect(() => { setIsNative(Capacitor.isNativePlatform()); }, []);
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -193,7 +196,7 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-3">
-              {!(pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact' || pathname === '/login') && (
+              {!(pathname === '/setup' || pathname === '/game' || pathname === '/history' || pathname === '/leaderboard' || pathname === '/buy' || pathname === '/contact' || pathname === '/login') && !(isNative && !user) && (
                 <Button 
                   size="md" 
                   onClick={() => router.push(!user && guestPlayCount >= 1 ? '/login' : '/setup')}
