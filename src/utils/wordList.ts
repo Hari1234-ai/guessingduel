@@ -1,6 +1,6 @@
 export const AI_WORDS: Record<number, string[]> = {
   4: [
-    "GAME", "PLAY", "MIND", "WORD", "CODE", "BLUE", "RED", "TEAM", "DUEL", "FAST",
+    "GAME", "PLAY", "MIND", "WORD", "CODE", "BLUE", "RED", "TEAM", "FLIP", "FAST",
     "DARK", "GLOW", "CORE", "BASE", "OPEN", "JOIN", "WINS", "STAR", "FIRE", "WIND"
   ],
   5: [

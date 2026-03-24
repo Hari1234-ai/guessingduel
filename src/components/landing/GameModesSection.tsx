@@ -23,14 +23,14 @@ const GameModesSection = () => {
       id: 'numeric-hard',
       title: 'Numeric: Hard',
       range: 'Custom Range',
-      desc: 'Total control. Set your own limits and challenge your friends to the ultimate duel.',
+      desc: 'Total control. Set your own limits and challenge your friends to the ultimate match.',
       icon: <Trophy size={24} className="text-purple-400" />,
       color: 'purple',
       tag: 'Strategic'
     },
     {
-      id: 'word-duel',
-      title: 'Word Duel',
+      id: 'word-match',
+      title: 'Word Match',
       range: '5 Letters',
       desc: 'A battle of vocabulary. Guess the hidden word using strategy and feedback.',
       icon: <Brain size={24} className="text-emerald-400" />,

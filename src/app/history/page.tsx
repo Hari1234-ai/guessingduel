@@ -139,7 +139,7 @@ export default function HistoryPage() {
                {user ? <Brain size={32} /> : <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center border border-blue-500/20"><Zap className="text-blue-400" size={32} /></div>}
             </div>
             <h3 className="text-xl font-bold mb-2">
-              {user ? "No matchs recorded yet." : "MindMatch History Locked."}
+              {user ? "No matches recorded yet." : "MindMatch History Locked."}
             </h3>
             <p className="text-slate-500 text-sm mb-8 max-w-xs mx-auto">
               {user ? "Start your first match to begin building your competitive legacy." : "Sign in to view your complete combat record and historical signals."}

@@ -211,7 +211,7 @@ function SetupContent() {
         details = `🔤 Mode: ${matchType}\n📏 Word Length: ${length} letters`;
       }
 
-      const message = `⚔️ ${hostName} has challenged you to a MindMatch Duel!\n\n${details}\n\nJoin the arena here:\n${url}`;
+      const message = `⚔️ ${hostName} has challenged you to a MindMatch!\n\n${details}\n\nJoin the arena here:\n${url}`;
 
       navigator.clipboard.writeText(message);
       setLinkCopied(true);

@@ -431,7 +431,7 @@ export default function Game() {
                     fullWidth
                     className="h-12 font-black uppercase tracking-widest bg-green-600 hover:bg-green-700"
                   >
-                    Rearrange & Duel
+                    Rearrange & Match
                   </Button>
                 </div>
               ) : (
