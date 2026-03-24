@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "147596274208",
+    "project_id": "guessing-duel",
+    "storage_bucket": "guessing-duel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147596274208:android:df33ac714399972acd6a45",
+        "android_client_info": {
+          "package_name": "com.mindm.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147596274208-b972b0gdr6h8nddh9fp8dmsmu9qas00i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmWAmK_sOzYVcaLbk7yo6tTggFjxtUjV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147596274208-b972b0gdr6h8nddh9fp8dmsmu9qas00i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
