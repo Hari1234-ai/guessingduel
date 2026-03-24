@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn, Download } from 'lucide-react';
+import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -117,12 +117,6 @@ export default function Navbar() {
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
     { label: 'Contact', href: '/contact', icon: <MessageSquare size={18} /> },
-    ...(!Capacitor.isNativePlatform() ? [{ 
-      label: 'Download App', 
-      href: '/MindMatch.apk', 
-      icon: <Download size={18} />,
-      isExternal: true 
-    }] : []),
   ];
 
   const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
@@ -151,27 +145,15 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-8 lg:gap-12">
           {navLinks.map((link) => (
-            link.isExternal ? (
-              <a 
-                key={link.href}
-                href={link.href}
-                download
-                className="text-[11px] font-black uppercase tracking-[0.2em] transition-all text-blue-400 hover:text-blue-300 flex items-center gap-1.5"
-              >
-                {link.icon}
-                {link.label}
-              </a>
-            ) : (
-              <Link 
-                key={link.href}
-                href={link.href}
-                className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all underline-offset-8 hover:underline hover:text-blue-400 ${
-                  pathname === link.href ? 'text-blue-400 underline' : 'text-slate-400'
-                }`}
-              >
-                {link.label}
-              </Link>
-            )
+            <Link 
+              key={link.href}
+              href={link.href}
+              className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all underline-offset-8 hover:underline hover:text-blue-400 ${
+                pathname === link.href ? 'text-blue-400 underline' : 'text-slate-400'
+              }`}
+            >
+              {link.label}
+            </Link>
           ))}
         </div>
 
@@ -281,34 +263,21 @@ export default function Navbar() {
                 <div className="space-y-2 mb-8">
                   <p className="px-4 text-[10px] font-black text-slate-600 uppercase tracking-widest mb-4">Navigation</p>
                   {navLinks.map((link) => (
-                    link.isExternal ? (
-                      <a 
-                        key={link.href}
-                        href={link.href}
-                        download
-                        onClick={() => setIsDrawerOpen(false)}
-                        className="flex items-center gap-4 px-4 py-4 rounded-2xl transition-all font-bold group text-blue-400 hover:bg-slate-800/50"
-                      >
-                        <span className="text-blue-400 group-hover:text-blue-300">
-                          {link.icon}
-                        </span>
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link 
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setIsDrawerOpen(false)}
-                        className={`flex items-center gap-4 px-4 py-4 rounded-2xl transition-all font-bold group ${
-                          pathname === link.href ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-                        }`}
-                      >
+                    <Link 
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsDrawerOpen(false)}
+                      className={`flex items-center gap-4 px-4 py-4 rounded-2xl transition-all font-bold group ${
+                        pathname === link.href 
+                          ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' 
+                          : 'text-slate-400 hover:bg-slate-800/50'
+                      }`}
+                    >
                         <span className={pathname === link.href ? 'text-white' : 'text-slate-500 group-hover:text-blue-400'}>
                           {link.icon}
                         </span>
                         {link.label}
                       </Link>
-                    )
                   ))}
                 </div>
 

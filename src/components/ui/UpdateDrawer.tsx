@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, X, Sparkles, ArrowUpCircle } from 'lucide-react';
+import { X, Sparkles, ArrowUpCircle } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 import { LOCAL_VERSION } from '@/lib/version';
 
