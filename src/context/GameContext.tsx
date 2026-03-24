@@ -205,7 +205,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       channel.subscribe('guest-heartbeat', (msg) => {
         const payload = msg.data || {};
         updateState(prev => {
-          // Protect guest name from being overwritten by 'Challenger Joining...' if they are already ready
           const newGuestName = (payload.name && payload.name.includes('.')) && prev.isPlayer2Ready 
             ? prev.player2.name 
             : (payload.name || prev.player2.name || 'Player 2');
@@ -217,7 +216,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...prev.player2, 
               name: newGuestName, 
               uid: payload.uid || prev.player2.uid,
-              secretNumber: (prev.playerId !== 'player2' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player2.secretNumber 
+              secretNumber: (prev.playerId !== 'player2' && payload.secret && payload.secret !== 0) ? payload.secret : prev.player2.secretNumber,
+              secretWord: (prev.playerId !== 'player2' && payload.secretWord) ? payload.secretWord : prev.player2.secretWord,
             },
             isPlayer2Ready: payload.isReady || prev.isPlayer2Ready,
           };

@@ -4,7 +4,6 @@ import "./globals.css";
 import { GameProvider } from "@/context/GameContext";
 import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/ui/Footer";
-import ActiveMatchBanner from "@/components/game/ActiveMatchBanner";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import UpdateDrawer from "@/components/ui/UpdateDrawer";
@@ -34,7 +33,6 @@ export default function RootLayout({
         <AuthProvider>
           <GameProvider>
             {children}
-            <ActiveMatchBanner />
             <UpdateDrawer />
             <Footer />
             <Analytics />
