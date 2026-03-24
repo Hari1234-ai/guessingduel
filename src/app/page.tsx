@@ -11,6 +11,7 @@ import Modal from '@/components/ui/Modal';
 import Navbar from '@/components/ui/Navbar';
 import Testimonials from '@/components/landing/Testimonials';
 import Feedback from '@/components/landing/Feedback';
+import HeroVisual from '@/components/landing/HeroVisual';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -57,6 +58,8 @@ export default function LandingPage() {
         
         <div className="absolute top-[40%] left-[20%] w-1 h-1 bg-white/20 rounded-full animate-ping" />
         <div className="absolute top-[60%] right-[25%] w-1 h-1 bg-white/20 rounded-full animate-ping [animation-delay:1s]" />
+        
+        <HeroVisual />
       </div>
 
       <Navbar />
