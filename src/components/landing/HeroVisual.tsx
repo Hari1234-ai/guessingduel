@@ -6,13 +6,13 @@ import { motion } from 'framer-motion';
 const HeroVisual = () => {
   return (
     <div className="absolute inset-x-0 top-0 h-[600px] md:h-[800px] flex items-center justify-center overflow-hidden pointer-events-none opacity-40 md:opacity-50">
-      <div className="relative w-full max-w-5xl h-full flex items-center justify-center">
+      <div className="relative w-full max-w-[1400px] h-full flex items-center justify-center px-4">
         {/* Connection Beam (Thought Path) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent blur-sm" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent blur-sm" />
         
         {/* Animated Particles flowing between them */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl overflow-hidden h-20">
-          {[...Array(12)].map((_, i) => (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl overflow-hidden h-32">
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={i}
               initial={{ x: i % 2 === 0 ? '-10%' : '110%', opacity: 0 }}
@@ -29,7 +29,7 @@ const HeroVisual = () => {
               className={`absolute top-1/2 w-1.5 h-1.5 rounded-full blur-[2px] ${
                 i % 2 === 0 ? 'bg-blue-400' : 'bg-purple-400'
               }`}
-              style={{ top: `${20 + Math.random() * 60}%` }}
+              style={{ top: `${10 + Math.random() * 80}%` }}
             />
           ))}
           
@@ -63,11 +63,11 @@ const HeroVisual = () => {
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="absolute left-[10%] md:left-[20%] scale-75 md:scale-100"
+          className="absolute left-[2%] md:left-[5%] scale-[0.85] md:scale-[1.8] origin-left"
         >
           <div className="relative">
             {/* Spectral Head Shape */}
-            <svg width="200" height="240" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+            <svg width="200" height="240" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_0_20px_rgba(59,130,246,0.3)] opacity-80">
               <path d="M40 80C40 35.8172 75.8172 0 120 0C164.183 0 200 35.8172 200 80C200 95.5492 195.548 110.124 187.842 122.463C174.521 143.791 160 165 160 190V210C160 226.569 146.569 240 130 240H110C93.4315 240 80 226.569 80 210V180C75 160 60 145 40 120C30 108 40 95 40 80Z" fill="url(#paint0_radial_head_left)" fillOpacity="0.2"/>
               <path d="M40 80C40 35.8172 75.8172 0 120 0C164.183 0 200 35.8172 200 80C200 95.5492 195.548 110.124 187.842 122.463C174.521 143.791 160 165 160 190V210C160 226.569 146.569 240 130 240H110C93.4315 240 80 226.569 80 210V180C75 160 60 145 40 120C30 108 40 95 40 80Z" stroke="url(#paint1_linear_head_left)" strokeWidth="2" strokeOpacity="0.5"/>
               <defs>
@@ -117,10 +117,10 @@ const HeroVisual = () => {
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="absolute right-[10%] md:right-[20%] scale-75 md:scale-100"
+          className="absolute right-[2%] md:right-[5%] scale-[0.85] md:scale-[1.8] origin-right"
         >
           <div className="relative scale-x-[-1]">
-            <svg width="200" height="240" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]">
+            <svg width="200" height="240" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_0_20px_rgba(168,85,247,0.3)] opacity-80">
               <path d="M40 80C40 35.8172 75.8172 0 120 0C164.183 0 200 35.8172 200 80C200 95.5492 195.548 110.124 187.842 122.463C174.521 143.791 160 165 160 190V210C160 226.569 146.569 240 130 240H110C93.4315 240 80 226.569 80 210V180C75 160 60 145 40 120C30 108 40 95 40 80Z" fill="url(#paint0_radial_head_right)" fillOpacity="0.2"/>
               <path d="M40 80C40 35.8172 75.8172 0 120 0C164.183 0 200 35.8172 200 80C200 95.5492 195.548 110.124 187.842 122.463C174.521 143.791 160 165 160 190V210C160 226.569 146.569 240 130 240H110C93.4315 240 80 226.569 80 210V180C75 160 60 145 40 120C30 108 40 95 40 80Z" stroke="url(#paint1_linear_head_right)" strokeWidth="2" strokeOpacity="0.5"/>
               <defs>
@@ -166,7 +166,7 @@ const HeroVisual = () => {
         </motion.div>
 
         {/* Central Pulse (Where minds meet) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-blue-500/5 blur-[100px] rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-blue-500/5 blur-[120px] rounded-full" />
       </div>
     </div>
   );
