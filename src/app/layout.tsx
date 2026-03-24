@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://mindm.vercel.app/'),
   title: "MindMatch | Outsmart Your Rivals",
-  description: "The ultimate real-time testing of strategy and luck. Challenge friends to a high-stakes MindMatch match where every guess counts.",
+  description: "The ultimate real-time testing of strategy and luck. Challenge friends to a high-stakes duel where every guess counts.",
   alternates: {
     canonical: '/',
   },

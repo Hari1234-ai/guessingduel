@@ -25,7 +25,7 @@ export default function Footer() {
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Platform</h4>
             <Link href="/setup" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Play MindMatch</Link>
             <Link href="/leaderboard" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Leaderboard</Link>
-            <Link href="/buy" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Plans</Link>
+            {/* <Link href="/buy" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Plans</Link> */}
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Legal</h4>

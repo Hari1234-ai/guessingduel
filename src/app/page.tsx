@@ -162,7 +162,7 @@ export default function LandingPage() {
               Sharpen your <br />skills vs AI.
             </h2>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0">
-              Not ready to face real players? Challenge our intelligent AI opponent to practice your strategies, understand the game mechanics, and prepare for high-stakes matchs!
+              Not ready to face real players? Challenge our intelligent AI opponent to practice your strategies, understand the game mechanics, and prepare for high-stakes matches!
             </p>
             <Button 
               size="lg" 
