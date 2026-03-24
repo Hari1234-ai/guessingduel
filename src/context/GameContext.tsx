@@ -510,7 +510,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
         [opponentKey]: {
           ...prev[opponentKey],
-          secretNumber: shouldIncrement ? prev[opponentKey].secretNumber + 3 : prev[opponentKey].secretNumber
+          secretNumber: shouldIncrement 
+            ? Math.min(prev[opponentKey].secretNumber + 3, prev.range.max)
+            : prev[opponentKey].secretNumber
         },
         currentTurn: nextTurn as 'player1' | 'player2',
         status: isWinner ? 'finished' : 'playing',
