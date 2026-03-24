@@ -8,9 +8,12 @@ import {
   sendPasswordResetEmail,
   GoogleAuthProvider,
   AuthError,
-  getRedirectResult
+  getRedirectResult,
+  signInWithCredential
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { Capacitor } from '@capacitor/core';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
@@ -113,12 +116,23 @@ export default function LoginPage() {
     setError('');
     try {
       const provider = new GoogleAuthProvider();
-      // Force account selection to ensure the redirect doesn't get "stuck" in a silent flow
-      provider.setCustomParameters({
-        prompt: 'select_account'
-      });
-      await signInWithPopup(auth, provider);
-      router.push('/');
+      
+      if (Capacitor.isNativePlatform()) {
+        // Native Android/iOS Sign-in
+        const result = await FirebaseAuthentication.signInWithGoogle();
+        if (result.credential?.idToken) {
+          const credential = GoogleAuthProvider.credential(result.credential.idToken);
+          await signInWithCredential(auth, credential);
+          router.push('/');
+        }
+      } else {
+        // Web Browser Sign-in
+        provider.setCustomParameters({
+          prompt: 'select_account'
+        });
+        await signInWithPopup(auth, provider);
+        router.push('/');
+      }
     } catch (err) {
       console.error(err);
       const authError = err as AuthError;
