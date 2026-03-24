@@ -77,8 +77,8 @@ export default function Game() {
 
   const isMyTurn = currentTurn === playerId;
   const isOpponentReady = gameState.mode === 'numeric' 
-    ? (player1.secretNumber !== 0 && player2.secretNumber !== 0)
-    : (!!player1.secretWord && !!player2.secretWord);
+    ? (player1.secretNumber !== 0 && player2.secretNumber !== 0) || (gameState.isPlayer2Ready && player1.secretNumber !== 0)
+    : (!!player1.secretWord && !!player2.secretWord) || (gameState.isPlayer2Ready && !!player1.secretWord);
 
   const handleGuess = (e: React.FormEvent) => {
     e.preventDefault();
