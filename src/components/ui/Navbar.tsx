@@ -17,9 +17,10 @@ export default function Navbar() {
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
   const [hidden, setHidden] = useState(false);
   const [isNative, setIsNative] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { user, profileData, logout } = useAuth();
+  const { user, profileData, logout, loading } = useAuth();
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -31,7 +32,10 @@ export default function Navbar() {
     }
   });
 
-  useEffect(() => { setIsNative(Capacitor.isNativePlatform()); }, []);
+  useEffect(() => { 
+    setIsNative(Capacitor.isNativePlatform()); 
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -158,10 +162,10 @@ export default function Navbar() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-3">
-          {/* Theme Toggle Button - Removed */}
-
-          {user ? (
+        <div className="flex items-center gap-3 min-w-[40px] justify-end">
+          {(!mounted || loading) ? (
+            <div className="w-10 h-10 rounded-xl bg-slate-800/50 animate-pulse" />
+          ) : user ? (
             <>
               {/* Desktop Avatar */}
               <div className="hidden md:block">
