@@ -23,11 +23,14 @@ export default function UpdateDrawer() {
         });
         const data = await response.json();
 
+        // Skip if user already acknowledged this version
+        const acknowledgedVersion = localStorage.getItem('acknowledgedVersion');
+        if (acknowledgedVersion === data.latestVersion) return;
+
         if (data.latestVersion !== LOCAL_VERSION) {
           setLatestVersion(data.latestVersion);
           setReleaseNotes(data.releaseNotes);
           setUpdateAvailable(true);
-          // Show after a slight delay for better UX
           setTimeout(() => setIsVisible(true), 2000);
         }
       } catch (error) {
@@ -38,7 +41,14 @@ export default function UpdateDrawer() {
     checkUpdate();
   }, []);
 
+  const dismiss = (latestVer: string) => {
+    // Remember this version so the drawer doesn't loop
+    localStorage.setItem('acknowledgedVersion', latestVer);
+    setIsVisible(false);
+  };
+
   const handleUpdate = () => {
+    dismiss(latestVersion);
     window.location.reload();
   };
 
@@ -98,7 +108,7 @@ export default function UpdateDrawer() {
                   APPLY UPDATE NOW
                 </button>
                 <button
-                  onClick={() => setIsVisible(false)}
+                  onClick={() => dismiss(latestVersion)}
                   className="w-full py-4 text-slate-500 font-medium text-sm hover:text-slate-300 transition-colors"
                 >
                   NOT NOW
