@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Guessing Duel</string>
-    <string name="title_activity_main">Guessing Duel</string>
-    <string name="package_name">com.hari.guessingduel</string>
-    <string name="custom_url_scheme">com.hari.guessingduel</string>
+    <string name="app_name">MindMatch</string>
+    <string name="title_activity_main">MindMatch</string>
+    <string name="package_name">com.mindm.app</string>
+    <string name="custom_url_scheme">com.mindm.app</string>
 </resources>

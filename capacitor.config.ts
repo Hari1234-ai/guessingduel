@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.hari.guessingduel',
-  appName: 'Guessing Duel',
+  appId: 'com.mindm.app',
+  appName: 'MindMatch',
   webDir: 'out'
 };
 

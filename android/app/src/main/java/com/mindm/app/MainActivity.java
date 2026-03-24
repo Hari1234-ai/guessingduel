@@ -1,4 +1,4 @@
-package com.hari.guessingduel;
+package com.mindm.app;
 
 import com.getcapacitor.BridgeActivity;
 
