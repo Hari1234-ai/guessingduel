@@ -39,7 +39,7 @@ export default function UpdateDrawer() {
   }, []);
 
   const handleUpdate = () => {
-    window.open('https://mindm.vercel.app/MindMatch.apk', '_blank');
+    window.location.reload();
   };
 
   return (
@@ -94,8 +94,8 @@ export default function UpdateDrawer() {
                   onClick={handleUpdate}
                   className="w-full bg-[#1985a1] hover:bg-[#1985a1]/90 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-[#1985a1]/20"
                 >
-                  <Download size={20} />
-                  UPDATE MINDMATCH NOW
+                  <ArrowUpCircle size={20} />
+                  APPLY UPDATE NOW
                 </button>
                 <button
                   onClick={() => setIsVisible(false)}

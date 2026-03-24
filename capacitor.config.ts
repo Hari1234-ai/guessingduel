@@ -4,6 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.mindm.app',
   appName: 'MindMatch',
   webDir: 'out',
+  server: {
+    url: 'https://mindm.vercel.app',
+    cleartext: false,
+  },
   plugins: {
     FirebaseAuthentication: {
       skipNativeAuth: false,
