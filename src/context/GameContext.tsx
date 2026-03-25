@@ -274,11 +274,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
-      channel.subscribe('rematch', () => {
+      channel.subscribe('rematch', (msg) => {
+        const payload = msg.data;
         updateState(prev => ({
           ...initialState,
           roomCode: prev.roomCode,
           playerId: prev.playerId,
+          matchId: payload.matchId || null,
           status: 'lobby', // Host goes back to lobby/setup
           player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
           player2: { ...initialPlayer(prev.player2.name, prev.player2.uid), attempts: 0, history: [] },
@@ -398,11 +400,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
-      channel.subscribe('rematch', () => {
+      channel.subscribe('rematch', (msg) => {
+        const payload = msg.data;
         updateState(prev => ({
           ...initialState,
           roomCode: prev.roomCode,
           playerId: prev.playerId,
+          matchId: payload.matchId || null,
           status: 'guest-setup', // Guest goes back to guest-setup
           player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
           player2: { ...initialPlayer(prev.player2.name, prev.player2.uid), attempts: 0, history: [] },
@@ -638,10 +642,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const aiSecretNum = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
     const aiSecretWord = mode === 'word' ? getRandomAIWord(wordLength) : undefined;
 
+    const newMatchId = Date.now().toString();
     updateState(prev => ({
       ...initialState,
       roomCode: prev.roomCode,
       playerId: prev.playerId,
+      matchId: isAI ? newMatchId : null,
       range: prev.range,
       mode: prev.mode,
       wordLength: prev.wordLength,
@@ -657,7 +663,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     if (channelRef.current && !isAI) {
-      channelRef.current.publish('rematch', {});
+      channelRef.current.publish('rematch', { matchId: isHost ? Date.now().toString() : null });
     }
   }, [updateState]);
 
