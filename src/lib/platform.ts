@@ -6,11 +6,7 @@ import { Capacitor } from '@capacitor/core';
  */
 export const isNativePlatform = (): boolean => {
   if (typeof window === 'undefined') return false;
-  
-  const isCapacitorNative = Capacitor.isNativePlatform();
-  const hasNativeParam = new URLSearchParams(window.location.search).get('native') === 'true';
-
-  return isCapacitorNative || hasNativeParam;
+  return Capacitor.isNativePlatform();
 };
 
 /**
