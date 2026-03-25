@@ -45,6 +45,8 @@ export default function Game() {
   const emojiIdRef = useRef(0);
   const processedMatchRef = useRef<string | null>(null);
   const lastOpponentAttempts = useRef(0);
+  const gameStateRef = useRef(gameState);
+  useEffect(() => { gameStateRef.current = gameState; }, [gameState]);
 
   const REACTION_EMOJIS = [
     { emoji: '🥳', label: 'Party' },
@@ -149,27 +151,23 @@ export default function Game() {
     if (processedMatchRef.current === matchId) return;
     processedMatchRef.current = matchId;
 
-    const p1 = gameState.player1;
-    const p2 = gameState.player2;
-    const currentPlayerId = gameState.playerId;
-    const currentRoomCode = gameState.roomCode;
-    const currentMode = gameState.mode;
-    const currentDifficulty = gameState.difficulty;
-    const currentWordLength = gameState.wordLength;
+    // Use ref to get the freshest game state (avoids stale closure)
+    const gs = gameStateRef.current;
+    const p1 = gs.player1;
+    const p2 = gs.player2;
+    const currentPlayerId = gs.playerId;
 
     if (user && db) {
-      const saveMatch = async () => {
+      (async () => {
         try {
-          // Only save matches where we have a real user UID
-          if (!p1.uid && !p2.uid) return;
-
+          // Save match to Firestore
           await addDoc(collection(db, 'matches'), {
-            roomCode: currentRoomCode,
+            roomCode: gs.roomCode,
             winner,
             matchId,
-            mode: currentMode,
-            difficulty: currentDifficulty || 'easy',
-            wordLength: currentWordLength,
+            mode: gs.mode,
+            difficulty: gs.difficulty || 'easy',
+            wordLength: gs.wordLength,
             createdAt: serverTimestamp(),
             participants: [p1.uid, p2.uid].filter(Boolean),
             players: [
@@ -178,34 +176,23 @@ export default function Game() {
             ]
           });
 
-          // Reward coins to the winner
+          // Award coins if this player won
           if (winner === currentPlayerId) {
-            const currentWeek = getISOWeek();
             const userRef = doc(db, 'users', user.uid);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-              const userData = userSnap.data();
-              const needsWeeklyReset = userData.lastResetWeek !== currentWeek;
-              await updateDoc(userRef, {
-                coins: increment(100),
-                weeklyCoins: needsWeeklyReset ? 100 : increment(100),
-                lastResetWeek: currentWeek,
-                updatedAt: serverTimestamp()
-              });
-              await refreshProfile();
-            }
+            await updateDoc(userRef, {
+              coins: increment(100),
+              weeklyCoins: increment(100),
+              updatedAt: serverTimestamp()
+            });
+            await refreshProfile();
           }
-        } catch (error) {
-          console.error("Error saving match result & rewards:", error);
+        } catch (err) {
+          console.error('[MindMatch] Failed to save match or award coins:', err);
         }
-      };
-      saveMatch();
-    } else {
-      // Guest mode
-      const currentCount = parseInt(localStorage.getItem('guestPlayCount') || '0');
-      localStorage.setItem('guestPlayCount', (currentCount + 1).toString());
+      })();
     }
   }, [status, winner, matchId, user, refreshProfile]);
+
 
   
   const handleShare = async () => {
