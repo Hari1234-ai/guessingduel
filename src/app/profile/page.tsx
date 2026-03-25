@@ -2,18 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Trophy, Coins, Settings, LogOut, ChevronLeft, Shield, Star, Calendar } from 'lucide-react';
+import { User, Mail, Trophy, Coins, Settings, LogOut, ChevronLeft, Shield, Star, Calendar, History } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { isNativePlatform } from '@/lib/platform';
 import Button from '@/components/ui/Button';
 import Navbar from '@/components/ui/Navbar';
 import BottomNav from '@/components/ui/BottomNav';
+import Modal from '@/components/ui/Modal';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, profileData, logout, loading } = useAuth();
   const [isNative, setIsNative] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     setIsNative(isNativePlatform());
@@ -23,19 +25,18 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white pb-32">
-      {/* Hide top Navbar on native as per request */}
       {!isNative && <Navbar />}
 
       <div className="max-w-md mx-auto px-6 pt-12 space-y-8">
         {/* Header */}
         <div className="flex items-center gap-4">
-           {isNative && (
-             <button onClick={() => router.push('/')} className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center border border-white/5">
-                <ChevronLeft size={20} />
-             </button>
-           )}
            <h1 className="text-2xl font-black uppercase tracking-tighter">Your Profile</h1>
         </div>
+
+        {/* Profile Card */}
+        {/* ... existing card code ... */}
+        
+        {/* Rest of the component ... */}
 
         {/* Profile Card */}
         <motion.div 
@@ -91,18 +92,52 @@ export default function ProfilePage() {
 
         {/* Actions */}
         <div className="space-y-4 pt-4">
-          <Button variant="secondary" fullWidth className="h-14 rounded-3xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 border border-white/5">
+          <Button 
+            onClick={() => router.push('/history')}
+            variant="secondary" 
+            fullWidth 
+            className="h-16 rounded-3xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 border border-white/5 bg-slate-900/50 hover:bg-slate-900"
+          >
+            <History size={18} className="text-blue-400" /> Combat History
+          </Button>
+
+          <Button 
+            onClick={() => setIsSettingsOpen(true)}
+            variant="secondary" 
+            fullWidth 
+            className="h-14 rounded-3xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 border border-white/5"
+          >
             <Settings size={18} /> Account Settings
           </Button>
+
           <Button 
             onClick={logout}
             fullWidth 
-            className="h-14 rounded-3xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20"
+            className="h-14 rounded-3xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20"
           >
             <LogOut size={18} /> Sign Out
           </Button>
         </div>
       </div>
+
+      <Modal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        title="Account Settings"
+      >
+        <div className="p-6 text-center space-y-4">
+          <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/5">
+            <Settings size={32} className="text-slate-500 animate-spin-slow" />
+          </div>
+          <h3 className="text-lg font-black uppercase tracking-tight">V1.2 encrypted</h3>
+          <p className="text-sm text-slate-500 leading-relaxed">
+            Advanced account management, profile editing and security overrides are currently being synchronized for the next update.
+          </p>
+          <Button fullWidth onClick={() => setIsSettingsOpen(false)} className="mt-4 font-black">
+            Acknowledged
+          </Button>
+        </div>
+      </Modal>
 
       {isNative && <BottomNav />}
     </main>

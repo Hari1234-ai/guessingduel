@@ -14,20 +14,18 @@ const BottomNav = () => {
     { name: 'Home', icon: Home, path: '/' },
     { name: 'Play', icon: Brain, path: '/setup' },
     { name: 'Ranks', icon: Trophy, path: '/leaderboard' },
-    { name: 'History', icon: History, path: '/history' },
-    { name: 'Talk', icon: MessageSquare, path: '/contact' },
     { name: 'Me', icon: User, path: '/profile' },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[100] px-4 pb-6 pt-2 pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 z-[100] border-t border-white/5 bg-slate-950/80 backdrop-blur-2xl">
       <motion.nav 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="mx-auto max-w-md h-16 bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex items-center justify-around px-2 pointer-events-auto relative overflow-hidden"
+        className="max-w-md mx-auto h-20 flex items-center justify-around px-2 relative overflow-hidden"
       >
-        {/* Animated Background Highlight */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent pointer-events-none" />
+        {/* Subtle Highlight line at top */}
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
         
         {navItems.map((item) => {
           const isActive = pathname === item.path;
@@ -35,33 +33,33 @@ const BottomNav = () => {
             <button
               key={item.name}
               onClick={() => router.push(item.path)}
-              className="relative flex flex-col items-center justify-center w-16 h-full group"
+              className="relative flex flex-col items-center justify-center min-w-[70px] h-full group pb-2"
             >
-              {isActive && (
-                <motion.div 
-                  layoutId="bottom-nav-active"
-                  className="absolute inset-0 bg-blue-500/10 rounded-2xl"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              <div className={cn(
+                "w-12 h-10 rounded-2xl flex items-center justify-center transition-all duration-300 mb-1",
+                isActive ? "bg-blue-500/10" : "group-hover:bg-white/5"
+              )}>
+                <item.icon 
+                  size={20} 
+                  className={cn(
+                    "transition-all duration-300",
+                    isActive ? "text-blue-400" : "text-slate-500"
+                  )} 
                 />
-              )}
-              
-              <item.icon 
-                size={22} 
-                className={cn(
-                  "transition-all duration-300 relative z-10",
-                  isActive ? "text-blue-400 scale-110" : "text-slate-500 group-hover:text-slate-300"
-                )} 
-              />
+              </div>
               
               <span className={cn(
-                "text-[10px] font-bold mt-1 transition-all duration-300 relative z-10",
-                isActive ? "text-blue-400 opacity-100" : "text-slate-500 opacity-60"
+                "text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                isActive ? "text-blue-400" : "text-slate-500"
               )}>
                 {item.name}
               </span>
 
               {isActive && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-blue-500 rounded-full blur-[4px] opacity-50" />
+                <motion.div 
+                  layoutId="bottom-nav-indicator"
+                  className="absolute bottom-1 w-1 h-1 bg-blue-500 rounded-full"
+                />
               )}
             </button>
           );

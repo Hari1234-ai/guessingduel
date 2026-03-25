@@ -133,7 +133,6 @@ const AndroidDashboard = () => {
       >
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Weekly Global Rank</h4>
-          <span className="text-[10px] font-black text-green-500 uppercase">Live: 1,420 Active</span>
         </div>
         <div className="flex items-center gap-6">
            <div className="flex flex-col">
@@ -151,10 +150,6 @@ const AndroidDashboard = () => {
            <Trophy size={20} className="text-yellow-500" />
         </div>
       </motion.div>
-
-      <Button onClick={() => router.push('/leaderboard')} fullWidth variant="secondary" className="h-14 rounded-3xl font-black uppercase tracking-widest text-[10px]">
-        View Global Leaderboard
-      </Button>
     </div>
   );
 };
