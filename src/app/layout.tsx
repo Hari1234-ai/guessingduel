@@ -7,6 +7,9 @@ import Footer from "@/components/ui/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import UpdateDrawer from "@/components/ui/UpdateDrawer";
+import BottomNav from "@/components/ui/BottomNav";
+import { Capacitor } from "@capacitor/core";
+import React, { useState, useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +37,10 @@ export default function RootLayout({
           <GameProvider>
             {children}
             <UpdateDrawer />
-            <Footer />
+            <NativeLayoutWrapper>
+              <Footer />
+            </NativeLayoutWrapper>
+            <NativeBottomNav />
             <Analytics />
             
             {/* Google Analytics */}
@@ -76,4 +82,24 @@ export default function RootLayout({
       </body>
     </html>
   );
+}
+
+function NativeLayoutWrapper({ children }: { children: React.ReactNode }) {
+  const [isNative, setIsNative] = useState(false);
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
+  
+  if (isNative) return null;
+  return <>{children}</>;
+}
+
+function NativeBottomNav() {
+  const [isNative, setIsNative] = useState(false);
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
+  
+  if (!isNative) return null;
+  return <BottomNav />;
 }

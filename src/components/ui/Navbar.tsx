@@ -125,6 +125,8 @@ export default function Navbar() {
 
   const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
 
+  if (isNative) return null;
+
   return (
     <>
       <motion.header
