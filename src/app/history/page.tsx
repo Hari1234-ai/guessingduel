@@ -124,7 +124,7 @@ export default function HistoryPage() {
               <History size={12} className="fill-current" />
               Combat Records
             </motion.div>
-            <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4 italic`}>
+            <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4`}>
               {getBrandName()} <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
             </h1>
             <p className="text-slate-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed">

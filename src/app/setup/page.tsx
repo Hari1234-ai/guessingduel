@@ -289,7 +289,7 @@ function SetupContent() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16 pb-20">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
               <div className="space-y-4 text-center">
-                <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4 italic`}>
+                <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4`}>
               Match <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Setup.</span>
             </h1>
             <p className="text-slate-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
