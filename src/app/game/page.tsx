@@ -24,7 +24,7 @@ export default function Game() {
   const router = useRouter();
   const { user, refreshProfile } = useAuth();
   const { gameState, makeGuess, resetGame, startNewGame, latestReaction, sendReaction } = useGame();
-  const { player1, player2, currentTurn, status, winner, roomCode, playerId } = gameState;
+  const { player1, player2, currentTurn, status, winner, roomCode, playerId, matchId } = gameState;
 
   const [guess, setGuess] = useState('');
   const [lastFeedback, setLastFeedback] = useState<{ 
@@ -145,8 +145,8 @@ export default function Game() {
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
   useEffect(() => {
-    if (status === 'finished' && winner && roomCode && processedMatchRef.current !== roomCode) {
-      processedMatchRef.current = roomCode; // Lock immediately
+    if (status === 'finished' && winner && matchId && processedMatchRef.current !== matchId) {
+      processedMatchRef.current = matchId; // Lock immediately
 
       if (user && db) {
         const saveMatch = async () => {

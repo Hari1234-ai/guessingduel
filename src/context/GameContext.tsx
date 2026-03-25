@@ -41,6 +41,7 @@ const initialState: GameState = {
   winner: null,
   roomCode: null,
   playerId: null,
+  matchId: null,
   isOpponentPresent: false,
   isPlayer1Ready: false,
   isPlayer2Ready: false,
@@ -235,7 +236,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Merge state cautiously: Never overwrite our own player object
           player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
           player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
-          range: payload.range || prev.range
+          range: payload.range || prev.range,
+          matchId: payload.matchId || prev.matchId
         }));
       });
 
@@ -300,6 +302,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
               winner: isWinner ? currentPlayerKey : null,
+              matchId: msg.data.matchId || prev.matchId
             };
           });
         }
@@ -357,7 +360,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           difficulty: payload.difficulty || prev.difficulty,
           player1: prev.playerId === 'player1' ? prev.player1 : (payload.player1 || prev.player1),
           player2: prev.playerId === 'player2' ? prev.player2 : (payload.player2 || prev.player2),
-          range: payload.range || prev.range
+          range: payload.range || prev.range,
+          matchId: payload.matchId || prev.matchId
         }));
       });
 
@@ -409,7 +413,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       channel.subscribe('guess-made', (msg) => {
         if (msg.clientId !== ablyRef.current?.clientId) {
-          const { guess, feedback, nextTurn, isWinner } = msg.data;
+          const { guess, feedback, nextTurn, isWinner, matchId } = msg.data;
           updateState(prev => {
             const currentPlayerKey = prev.currentTurn;
             return {
@@ -422,6 +426,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
               winner: isWinner ? currentPlayerKey : null,
+              matchId: matchId || prev.matchId
             };
           });
         }
@@ -522,7 +527,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     if (channelRef.current) {
-      channelRef.current.publish('guess-made', { guess, feedback: actualFeedback, nextTurn, isWinner });
+      channelRef.current.publish('guess-made', { 
+        guess, 
+        feedback: actualFeedback, 
+        nextTurn, 
+        isWinner,
+        matchId: state.matchId 
+      });
     }
     return actualFeedback;
   }, [updateState, getWordFeedback]);
@@ -579,6 +590,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateState(prev => ({
       ...prev,
       status: 'playing',
+      matchId: Date.now().toString(),
       mode,
       difficulty,
       wordLength,
@@ -609,9 +621,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         range: state.range,
         mode: state.mode,
         difficulty: state.difficulty,
-        wordLength: state.wordLength
+        wordLength: state.wordLength,
+        matchId: Date.now().toString()
       });
-      updateState(prev => ({ ...prev, status: 'playing' }));
+      updateState(prev => ({ ...prev, status: 'playing', matchId: Date.now().toString() }));
     }
   }, [updateState]);
 

@@ -44,6 +44,7 @@ export interface GameState {
   winner: 'player1' | 'player2' | null;
   roomCode: string | null;
   playerId: 'player1' | 'player2' | null;
+  matchId: string | null;
   isOpponentPresent: boolean;
   isPlayer1Ready: boolean;
   isPlayer2Ready: boolean;
