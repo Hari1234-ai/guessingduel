@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, MessageSquare, Sparkles, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { getBrandName, getActionName } from '@/lib/branding';
 import Button from '@/components/ui/Button';
 
 export default function Feedback() {
@@ -60,7 +61,7 @@ export default function Feedback() {
             </h2>
             
             <p className="text-slate-400 text-sm leading-relaxed">
-              We&apos;re building MindMatch for you. Have a feature request, a bug to report, or just want to tell us how much you love the match? We&apos;re listening.
+              We&apos;re building {getBrandName()} for you. Have a feature request, a bug to report, or just want to tell us how much you love the {getActionName().toLowerCase()}? We&apos;re listening.
             </p>
             
             <div className="space-y-4 pt-4">
@@ -83,7 +84,7 @@ export default function Feedback() {
                     id="name"
                     name="name" 
                     required 
-                    placeholder="Guest MindMatchist"
+                    placeholder={`Guest ${getBrandName()}ist`}
                     className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:text-slate-700"
                   />
                 </div>
@@ -93,7 +94,7 @@ export default function Feedback() {
                     type="email" 
                     id="email"
                     name="email" 
-                    placeholder="matchist@arena.com"
+                    placeholder={`${getActionName().toLowerCase()}ist@arena.com`}
                     className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:text-slate-700"
                   />
                 </div>
@@ -112,7 +113,7 @@ export default function Feedback() {
               </div>
 
               <input type="hidden" name="_to" value="hari.paraheights@gmail.com" />
-              <input type="hidden" name="_subject" value="New MindMatch Review/Suggestion" />
+              <input type="hidden" name="_subject" value={`New ${getBrandName()} Review/Suggestion`} />
               
               <div className="pt-2">
                 <Button 
