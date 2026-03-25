@@ -160,21 +160,23 @@ export default function Game() {
     if (user && db) {
       (async () => {
         try {
-          // Save match to Firestore
-          await addDoc(collection(db, 'matches'), {
-            roomCode: gs.roomCode,
+          // Strip undefined values — Firebase rejects them
+          const matchDoc: Record<string, any> = {
+            roomCode: gs.roomCode || null,
             winner,
             matchId,
             mode: gs.mode,
             difficulty: gs.difficulty || 'easy',
-            wordLength: gs.wordLength,
             createdAt: serverTimestamp(),
             participants: [p1.uid, p2.uid].filter(Boolean),
             players: [
-              { uid: p1.uid || '', name: p1.name, secretNumber: p1.secretNumber, secretWord: p1.secretWord, guesses: p1.history },
-              { uid: p2.uid || '', name: p2.name, secretNumber: p2.secretNumber, secretWord: p2.secretWord, guesses: p2.history }
+              { uid: p1.uid || '', name: p1.name || '', secretNumber: p1.secretNumber ?? 0, secretWord: p1.secretWord ?? null, guesses: p1.history ?? [] },
+              { uid: p2.uid || '', name: p2.name || '', secretNumber: p2.secretNumber ?? 0, secretWord: p2.secretWord ?? null, guesses: p2.history ?? [] }
             ]
-          });
+          };
+          if (gs.wordLength !== undefined) matchDoc.wordLength = gs.wordLength;
+
+          await addDoc(collection(db, 'matches'), matchDoc);
 
           // Award coins if this player won
           if (winner === currentPlayerId) {
