@@ -10,6 +10,7 @@ import { collection, query, where, orderBy, limit, getDocs } from 'firebase/fire
 import { db } from '@/lib/firebase';
 import Navbar from '@/components/ui/Navbar';
 import { isNativePlatform } from '@/lib/platform';
+import { getBrandName, getActionName } from '@/lib/branding';
 
 interface Match {
   id: string;
@@ -124,7 +125,7 @@ export default function HistoryPage() {
               Combat Records
             </motion.div>
             <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4 italic`}>
-              MindMatch <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
+              {getBrandName()} <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
             </h1>
             <p className="text-slate-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
               Your legacy recorded in the halls of fate.

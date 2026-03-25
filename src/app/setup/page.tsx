@@ -11,6 +11,7 @@ import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import { isNativePlatform } from '@/lib/platform';
+import { getBrandName, getActionName } from '@/lib/branding';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import { LogOut, LogIn } from 'lucide-react';
@@ -288,10 +289,12 @@ function SetupContent() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16 pb-20">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md space-y-8 relative z-10 text-center">
               <div className="space-y-4 text-center">
-                <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-b from-foreground to-slate-500 bg-clip-text text-transparent">
-                  GET READY!
-                </h1>
-                <p className="text-slate-400 text-sm">Choose your game mode to begin.</p>
+                <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4 italic`}>
+              Match <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Setup.</span>
+            </h1>
+            <p className="text-slate-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
+              Configure your next {getActionName().toLowerCase()} and challenge your rival.
+            </p>
               </div>
 
               {/* Game Mode Selection */}

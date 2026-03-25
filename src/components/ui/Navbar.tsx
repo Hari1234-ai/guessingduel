@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { isNativePlatform } from '@/lib/platform';
+import { getBrandName, getActionName } from '@/lib/branding';
 import AvatarDropdown from './AvatarDropdown';
 import Button from './Button';
 import { db } from '@/lib/firebase';
@@ -111,13 +112,13 @@ export default function Navbar() {
 
   const isPlayLimitReached = !user && guestPlayCount >= 1;
 
+// ... inside navLinks
   const navLinks = [
     { 
-      label: 'Play MindMatch', 
+      label: `Play ${getBrandName()}`, 
       href: '/setup', 
       icon: <Brain size={18} /> 
     },
-    // { label: 'Plans', href: '/buy', icon: <CreditCard size={18} /> },
     { label: 'Leaderboard', href: '/leaderboard', icon: <Trophy size={18} /> },
     { label: 'History', href: '/history', icon: <History size={18} /> },
     { label: 'Contact', href: '/contact', icon: <MessageSquare size={18} /> },
@@ -126,6 +127,8 @@ export default function Navbar() {
   const firstLetter = profileData?.name?.charAt(0).toUpperCase() || 'P';
 
   if (isNative) return null;
+
+  const brandName = getBrandName();
 
   return (
     <>
@@ -145,7 +148,7 @@ export default function Navbar() {
             <Brain size={20} className="text-white" />
           </div>
           <span className="text-xl md:text-2xl font-black tracking-tighter">
-            MindMatch
+            {brandName}
           </span>
         </Link>
 

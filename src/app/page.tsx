@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile, LogIn, Sparkles, Hash } from 'lucide-react';
 import { isNativePlatform } from '@/lib/platform';
+import { getBrandName, getActionName } from '@/lib/branding';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -23,6 +24,8 @@ export default function LandingPage() {
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
   const [isNative, setIsNative] = useState(false);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
+  const brandName = getBrandName();
+  const actionName = getActionName();
 
   useEffect(() => {
     setIsNative(isNativePlatform());
@@ -123,15 +126,14 @@ export default function LandingPage() {
                 <Zap size={12} className="fill-current" />
                 Season 1: The Awakening
               </motion.div>
-
               <motion.h1 variants={itemVariants} className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.85] text-foreground">
                 Outsmart <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">Your Rivals.</span>
               </motion.h1>
 
               <motion.p variants={itemVariants} className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-                MindMatch is the ultimate real-time testing of strategy and luck. 
-                Challenge friends to a high-stakes MindMatch where every guess counts.
+                {brandName} is the ultimate real-time testing of strategy and luck. 
+                Challenge friends to a high-stakes {actionName.toLowerCase()} where every guess counts.
               </motion.p>
 
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">

@@ -9,14 +9,8 @@ export const isNativePlatform = (): boolean => {
   
   const isCapacitorNative = Capacitor.isNativePlatform();
   const hasNativeParam = new URLSearchParams(window.location.search).get('native') === 'true';
-  const hasNativeStorage = localStorage.getItem('forceNative') === 'true';
 
-  // If user once visits with ?native=true, we can persist it for that session/browser
-  if (hasNativeParam) {
-    localStorage.setItem('forceNative', 'true');
-  }
-
-  return isCapacitorNative || hasNativeParam || hasNativeStorage;
+  return isCapacitorNative || hasNativeParam;
 };
 
 /**

@@ -6,6 +6,8 @@ import { Share2, Users, Zap, ArrowRight, Link as LinkIcon } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
+import { getBrandName, getActionName } from '@/lib/branding';
+
 const FriendInviteSection = () => {
   const router = useRouter();
 
@@ -36,10 +38,10 @@ const FriendInviteSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-[0.9] text-white"
+              className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-white leading-tight"
             >
-              Match Anyone, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Anywhere.</span>
+              Invite a Friend. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Claim Victory.</span>
             </motion.h2>
 
             <motion.p 
@@ -47,9 +49,9 @@ const FriendInviteSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-slate-400 text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              className="text-slate-400 text-sm md:text-base leading-relaxed"
             >
-              MindMatch is built for instant action. No app downloads required for your friends — just send a magic link and start the match in seconds.
+              Strategy is better with a rival. Send the code, start the {getActionName().toLowerCase()}, and prove who owns the signal chain. No install required for your friends.
             </motion.p>
 
             <motion.div 

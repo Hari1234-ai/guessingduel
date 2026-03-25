@@ -6,6 +6,8 @@ import { Hash, Sparkles, Brain, Trophy, ChevronRight, Zap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
+import { getBrandName, getActionName } from '@/lib/branding';
+
 const GameModesSection = () => {
   const router = useRouter();
 
@@ -53,7 +55,7 @@ const GameModesSection = () => {
             Endless Variety
           </motion.div>
           <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-white">Choose Your Challenge</h2>
-          <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">Multiple ways to MindMatch. One goal: Win.</p>
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">Multiple ways to {getBrandName()}. One goal: Win.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

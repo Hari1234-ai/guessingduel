@@ -1,7 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Brain } from 'lucide-react';
+import { Brain, Twitter, Github, Mail, Shield, Smartphone } from 'lucide-react';
+import { getBrandName } from '@/lib/branding';
 import { Capacitor } from '@capacitor/core';
 
 export default function Footer() {
@@ -52,8 +53,8 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="w-full pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
-            © {currentYear} MindMatch. Built for competitive spirits.
+          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
+            © {new Date().getFullYear()} {getBrandName()}. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />

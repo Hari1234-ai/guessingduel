@@ -12,6 +12,8 @@ import ScoreBoard from '@/components/game/ScoreBoard';
 import GuessHistory from '@/components/game/GuessHistory';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import Navbar from '@/components/ui/Navbar';
+import { isNativePlatform } from '@/lib/platform';
+import { getBrandName, getActionName } from '@/lib/branding';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, updateDoc, doc, increment, getDoc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
@@ -213,12 +215,12 @@ export default function Game() {
     const isWinner = winner === playerId;
     const p1Secret = playerId ? (gameState.mode === 'numeric' ? gameState[playerId as 'player1' | 'player2']?.secretNumber : gameState[playerId as 'player1' | 'player2']?.secretWord) : 'N/A';
     const p2Secret = opponentId ? (gameState.mode === 'numeric' ? gameState[opponentId as 'player1' | 'player2']?.secretNumber : gameState[opponentId as 'player1' | 'player2']?.secretWord) : 'N/A';
-    const shareText = `🎮 Just finished a MindMatch on MindMatch!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close match.'}\nMode: ${gameState.mode}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
+    const shareText = `🎮 Just finished a ${getActionName()} on ${getBrandName()}!\n${isWinner ? '🏆 I WON!' : '🥈 It was a close match.'}\nMode: ${gameState.mode}\nMy secret: ${p1Secret} | Opponent's: ${p2Secret}\n\nJoin the arena: ${window.location.origin}`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'MindMatch Result',
+          title: `${getBrandName()} Result`,
           text: shareText,
           url: window.location.origin,
         });
@@ -277,7 +279,7 @@ export default function Game() {
           {gameState.mode === 'numeric' ? (
             <>Target Range: <span className="text-foreground">{gameState.range.min} — {gameState.range.max}</span></>
           ) : (
-            <>Mode: <span className="text-foreground">Word MindMatch ({gameState.wordLength} Letters)</span></>
+            <>Mode: <span className="text-foreground">{gameState.mode === 'word' ? `Word ${getBrandName()}` : 'Numeric'} ({gameState.wordLength} Letters)</span></>
           )}
         </div>
 
@@ -348,7 +350,7 @@ export default function Game() {
             <div className="relative z-10">
               <div className="mb-8 items-start text-left">
                 <h2 className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-1">
-                  {isMyTurn ? 'Your Action' : 'MindMatch Status'}
+                  {isMyTurn ? 'Your Action' : `${getBrandName()} Status`}
                 </h2>
                 <h3 className="text-foreground font-black uppercase tracking-tight text-lg italic">
                   {isMyTurn ? 'Enter Your Guess' : (player2.isAI ? 'AI is analyzing...' : 'Opponent is thinking...')}
@@ -573,7 +575,7 @@ export default function Game() {
               <div className="mt-6 pt-4 border-t border-white/5">
                 <p className="text-[10px] text-slate-400 font-medium leading-relaxed italic text-left">
                   <Sparkles size={10} className="inline mr-1 text-yellow-500" />
-                  Find all letters to trigger the <span className="text-purple-400 font-bold">Rearrange Phase</span> and win the MindMatch!
+                  Find all letters to trigger the <span className="text-purple-400 font-bold">Rearrange Phase</span> and win the {getActionName().toLowerCase()}!
                 </p>
               </div>
             </motion.div>
@@ -582,7 +584,7 @@ export default function Game() {
       </div>
 
       {/* Win Modal */}
-      <Modal isOpen={status === 'finished'} onClose={() => {}} title="MindMatch Result" showCloseButton={false}>
+      <Modal isOpen={status === 'finished'} onClose={() => {}} title={`${getBrandName()} Result`} showCloseButton={false}>
         <div className="flex flex-col items-center text-center p-4">
           <motion.div
             initial={{ scale: 0 }}
@@ -673,7 +675,7 @@ export default function Game() {
         <div className="p-4 text-center">
           <p className="text-slate-400 mb-6 text-sm">Are you sure you want to forfeit this match? Your rival will win immediately.</p>
           <div className="flex gap-3">
-            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)} className="h-10 text-xs">Stay in MindMatch</Button>
+            <Button variant="secondary" fullWidth onClick={() => setIsGiveUpModalOpen(false)} className="h-10 text-xs text-white">Stay in {getActionName()}</Button>
             <Button fullWidth onClick={() => { setIsGiveUpModalOpen(false); startNewGame(); }} className="bg-red-600 hover:bg-red-700 h-10 text-xs">Forfeit Match</Button>
           </div>
         </div>

@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import { useAuth } from '@/context/AuthContext';
 import { isNativePlatform } from '@/lib/platform';
+import { getBrandName } from '@/lib/branding';
 
 interface LeaderboardEntry {
   uid: string;
@@ -81,7 +82,7 @@ export default function LeaderboardPage() {
             Hall of <span className="text-blue-500">Legends.</span>
           </h1>
           <p className={`${isNative ? 'text-sm' : 'text-lg'} text-slate-400 max-w-xl mx-auto`}>
-            Weekly rewards reset every Monday. MindMatch your way to the top of the signal chain.
+            Weekly rewards reset every Monday. {getBrandName()} your way to the top of the signal chain.
           </p>
         </div>
 
