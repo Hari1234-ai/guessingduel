@@ -8,8 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import UpdateDrawer from "@/components/ui/UpdateDrawer";
 import BottomNav from "@/components/ui/BottomNav";
-import { Capacitor } from "@capacitor/core";
-import React, { useState, useEffect } from "react";
+import { NativeLayoutWrapper, NativeBottomNav } from "@/components/ui/NativeLayoutWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -82,24 +81,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
-
-function NativeLayoutWrapper({ children }: { children: React.ReactNode }) {
-  const [isNative, setIsNative] = useState(false);
-  useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
-  }, []);
-  
-  if (isNative) return null;
-  return <>{children}</>;
-}
-
-function NativeBottomNav() {
-  const [isNative, setIsNative] = useState(false);
-  useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
-  }, []);
-  
-  if (!isNative) return null;
-  return <BottomNav />;
 }
