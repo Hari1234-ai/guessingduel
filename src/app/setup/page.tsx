@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import AvatarDropdown from '@/components/ui/AvatarDropdown';
-import { Capacitor } from '@capacitor/core';
+import { isNativePlatform } from '@/lib/platform';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import { LogOut, LogIn } from 'lucide-react';
@@ -55,6 +55,11 @@ function SetupContent() {
   const [guestPlayCount, setGuestPlayCount] = useState<number>(0);
   const [isValidating, setIsValidating] = useState(false);
   const [isDiffInfoOpen, setIsDiffInfoOpen] = useState(false);
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(isNativePlatform());
+  }, []);
 
   useEffect(() => {
     const count = localStorage.getItem('guestPlayCount');
@@ -195,7 +200,7 @@ function SetupContent() {
 
   const copyInviteLink = () => {
     if (roomCode) {
-      const origin = Capacitor.isNativePlatform() ? 'https://mindm.vercel.app' : window.location.origin;
+      const origin = isNativePlatform() ? 'https://mindm.vercel.app' : window.location.origin;
       const url = `${origin}/setup?room=${roomCode}`;
       const hostName = profileData?.name || 'A player';
       const matchType = gameState.mode === 'numeric' ? 'Numbers Game' : 'Words Game';
@@ -389,7 +394,7 @@ function SetupContent() {
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
           <Navbar />
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
-            <div className="max-w-xl mx-auto space-y-8 pt-16 md:pt-24 text-center md:text-left">
+            <div className={`max-w-xl mx-auto space-y-8 text-center md:text-left ${isNative ? 'pt-4' : 'pt-16 md:pt-24'}`}>
               <div className="space-y-2 text-center md:text-left">
                 <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">MindMatch SETUP</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">Configure your match settings before inviting a rival.</p>
@@ -498,7 +503,7 @@ function SetupContent() {
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b,transparent)] opacity-10 pointer-events-none" />
           <Navbar />
           <div className="flex-1 p-6 pb-20 overflow-y-auto">
-            <div className="max-w-xl mx-auto space-y-8 pt-16 md:pt-24">
+            <div className={`max-w-xl mx-auto space-y-8 text-center md:text-left ${isNative ? 'pt-4' : 'pt-16 md:pt-24'}`}>
               <div className="space-y-2 text-center md:text-left">
                 <h2 className="text-2xl font-black tracking-tight uppercase italic underline decoration-blue-500/30 underline-offset-8">JOIN THE MindMatch</h2>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-widest pl-1 leading-relaxed">A match has been found! Prepare yourself.</p>

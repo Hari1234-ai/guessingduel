@@ -8,7 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import UpdateDrawer from "@/components/ui/UpdateDrawer";
 import BottomNav from "@/components/ui/BottomNav";
-import { NativeLayoutWrapper, NativeBottomNav } from "@/components/ui/NativeLayoutWrapper";
+import { NativeLayoutWrapper, NativeBottomNav, NativeContent } from "@/components/ui/NativeLayoutWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,8 +34,10 @@ export default function RootLayout({
       <body className={`${inter.className} min-h-screen bg-slate-950 text-slate-50 flex flex-col`}>
         <AuthProvider>
           <GameProvider>
-            {children}
-            <UpdateDrawer />
+            <NativeContent>
+              {children}
+              <UpdateDrawer />
+            </NativeContent>
             <NativeLayoutWrapper>
               <Footer />
             </NativeLayoutWrapper>

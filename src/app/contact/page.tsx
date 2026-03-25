@@ -10,10 +10,17 @@ import AvatarDropdown from '@/components/ui/AvatarDropdown';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
+import { isNativePlatform } from '@/lib/platform';
+import { useEffect } from 'react';
 
 export default function ContactPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(isNativePlatform());
+  }, []);
 
   return (
     <main className="min-h-screen bg-background text-foreground overflow-hidden relative transition-colors duration-300">
@@ -24,7 +31,7 @@ export default function ContactPage() {
 
       <Navbar />
 
-      <section className="relative z-10 pt-24 pb-24 px-6 max-w-4xl mx-auto flex justify-center">
+      <section className={`relative z-10 pb-24 px-6 max-w-4xl mx-auto flex justify-center ${isNative ? 'pt-8' : 'pt-24'}`}>
         <motion.div 
           initial={{ opacity: 0, y: 30 }} 
           animate={{ opacity: 1, y: 0 }}
@@ -39,11 +46,11 @@ export default function ContactPage() {
               <MessageSquare size={12} className="fill-current" />
               Direct Line
             </motion.div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-[0.85] mb-8 text-center">
+            <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-[0.85] mb-6 text-center`}>
               Send a <br />
               <span className="text-blue-500">Transmission.</span>
             </h1>
-            <p className="text-slate-400 text-base leading-relaxed max-w-xl mx-auto text-center">
+            <p className="text-slate-400 text-xs md:text-base leading-relaxed max-w-xl mx-auto text-center">
               Connect with the creator or share your feedback directly. All signals are routed to the creator's secure line.
             </p>
           </div>

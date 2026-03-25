@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import { useAuth } from '@/context/AuthContext';
+import { isNativePlatform } from '@/lib/platform';
 
 interface LeaderboardEntry {
   uid: string;
@@ -24,6 +25,11 @@ export default function LeaderboardPage() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'weekly' | 'all-time'>('weekly');
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(isNativePlatform());
+  }, []);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -60,7 +66,7 @@ export default function LeaderboardPage() {
 
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 relative z-10 pt-20 md:pt-32">
+      <div className={`max-w-4xl mx-auto px-4 md:px-6 lg:px-8 relative z-10 ${isNative ? 'pt-8' : 'pt-20 md:pt-32'}`}>
 
         {/* Title Section */}
         <div className="text-center mb-12">
@@ -71,10 +77,10 @@ export default function LeaderboardPage() {
           >
             <Trophy size={14} /> Global Rankings
           </motion.div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none mb-6">
+          <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4`}>
             Hall of <span className="text-blue-500">Legends.</span>
           </h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto">
+          <p className={`${isNative ? 'text-sm' : 'text-lg'} text-slate-400 max-w-xl mx-auto`}>
             Weekly rewards reset every Monday. MindMatch your way to the top of the signal chain.
           </p>
         </div>

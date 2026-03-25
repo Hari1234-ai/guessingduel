@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Navbar from '@/components/ui/Navbar';
+import { isNativePlatform } from '@/lib/platform';
 
 interface Match {
   id: string;
@@ -29,8 +30,10 @@ export default function HistoryPage() {
   const { user } = useAuth();
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isNative, setIsNative] = useState(false);
 
   useEffect(() => {
+    setIsNative(isNativePlatform());
     const fetchHistory = async () => {
       if (!user || !db) {
         setLoading(false);
@@ -110,8 +113,8 @@ export default function HistoryPage() {
 
       <Navbar />
 
-        <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 relative z-10 pt-20 md:pt-32">
-          <div className="text-center mb-12">
+        <div className={`max-w-4xl mx-auto px-4 md:px-6 lg:px-8 relative z-10 ${isNative ? 'pt-8' : 'pt-20 md:pt-32'}`}>
+          <div className="text-center mb-8 md:mb-12">
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -120,10 +123,10 @@ export default function HistoryPage() {
               <History size={12} className="fill-current" />
               Combat Records
             </motion.div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none mb-6 italic">
+            <h1 className={`${isNative ? 'text-2xl' : 'text-3xl md:text-5xl'} font-black tracking-tighter uppercase leading-none mb-4 italic`}>
               MindMatch <span className="text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">History.</span>
             </h1>
-            <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+            <p className="text-slate-400 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
               Your legacy recorded in the halls of fate.
             </p>
           </div>
