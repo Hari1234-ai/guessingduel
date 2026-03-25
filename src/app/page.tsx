@@ -35,19 +35,12 @@ export default function LandingPage() {
     if (count) setGuestPlayCount(parseInt(count));
   }, []);
 
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+
   const handleOnboardingComplete = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
     setHasSeenOnboarding(true);
   };
-
-  if (authLoading || (isNative && hasSeenOnboarding === null)) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -58,6 +51,14 @@ export default function LandingPage() {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { type: 'spring', damping: 20 } }
   } as const;
+
+  if (authLoading || (isNative && hasSeenOnboarding === null)) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground overflow-hidden relative transition-colors duration-300">
