@@ -145,70 +145,68 @@ export default function Game() {
   const [victoryQuote, setVictoryQuote] = useState(VICTORY_QUOTES[0]);
 
   useEffect(() => {
-    if (status === 'finished' && winner && matchId && processedMatchRef.current !== matchId) {
-      processedMatchRef.current = matchId; // Lock immediately
+    if (status !== 'finished' || !winner || !matchId) return;
+    if (processedMatchRef.current === matchId) return;
+    processedMatchRef.current = matchId;
 
-      if (user && db) {
-        const saveMatch = async () => {
-          try {
-            await addDoc(collection(db, 'matches'), {
-              roomCode,
-              winner,
-              mode: gameState.mode,
-              difficulty: gameState.difficulty || 'easy',
-              wordLength: gameState.wordLength,
-              createdAt: serverTimestamp(),
-              participants: [player1.uid, player2.uid],
-              players: [
-                { 
-                  uid: player1.uid || '', 
-                  name: player1.name, 
-                  secretNumber: player1.secretNumber, 
-                  secretWord: player1.secretWord,
-                  guesses: player1.history 
-                },
-                { 
-                  uid: player2.uid || '', 
-                  name: player2.name, 
-                  secretNumber: player2.secretNumber, 
-                  secretWord: player2.secretWord,
-                  guesses: player2.history 
-                }
-              ]
-            });
-  
-            // Reward coins to winner
-            if (winner === playerId) {
-              const currentWeek = getISOWeek();
-              const userRef = doc(db, 'users', user.uid);
-              const userSnap = await getDoc(userRef);
-              
-              if (userSnap.exists()) {
-                const userData = userSnap.data();
-                const needsWeeklyReset = userData.lastResetWeek !== currentWeek;
-                
-                await updateDoc(userRef, {
-                  coins: increment(100),
-                  weeklyCoins: needsWeeklyReset ? 100 : increment(100),
-                  lastResetWeek: currentWeek,
-                  updatedAt: serverTimestamp()
-                });
-                
-                await refreshProfile();
-              }
+    const p1 = gameState.player1;
+    const p2 = gameState.player2;
+    const currentPlayerId = gameState.playerId;
+    const currentRoomCode = gameState.roomCode;
+    const currentMode = gameState.mode;
+    const currentDifficulty = gameState.difficulty;
+    const currentWordLength = gameState.wordLength;
+
+    if (user && db) {
+      const saveMatch = async () => {
+        try {
+          // Only save matches where we have a real user UID
+          if (!p1.uid && !p2.uid) return;
+
+          await addDoc(collection(db, 'matches'), {
+            roomCode: currentRoomCode,
+            winner,
+            matchId,
+            mode: currentMode,
+            difficulty: currentDifficulty || 'easy',
+            wordLength: currentWordLength,
+            createdAt: serverTimestamp(),
+            participants: [p1.uid, p2.uid].filter(Boolean),
+            players: [
+              { uid: p1.uid || '', name: p1.name, secretNumber: p1.secretNumber, secretWord: p1.secretWord, guesses: p1.history },
+              { uid: p2.uid || '', name: p2.name, secretNumber: p2.secretNumber, secretWord: p2.secretWord, guesses: p2.history }
+            ]
+          });
+
+          // Reward coins to the winner
+          if (winner === currentPlayerId) {
+            const currentWeek = getISOWeek();
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+              const userData = userSnap.data();
+              const needsWeeklyReset = userData.lastResetWeek !== currentWeek;
+              await updateDoc(userRef, {
+                coins: increment(100),
+                weeklyCoins: needsWeeklyReset ? 100 : increment(100),
+                lastResetWeek: currentWeek,
+                updatedAt: serverTimestamp()
+              });
+              await refreshProfile();
             }
-          } catch (error) {
-            console.error("Error saving match result & rewards:", error);
           }
-        };
-        saveMatch();
-      } else {
-        // Guest mode: Increment play count in localStorage
-        const currentCount = parseInt(localStorage.getItem('guestPlayCount') || '0');
-        localStorage.setItem('guestPlayCount', (currentCount + 1).toString());
-      }
+        } catch (error) {
+          console.error("Error saving match result & rewards:", error);
+        }
+      };
+      saveMatch();
+    } else {
+      // Guest mode
+      const currentCount = parseInt(localStorage.getItem('guestPlayCount') || '0');
+      localStorage.setItem('guestPlayCount', (currentCount + 1).toString());
     }
-  }, [status, winner, user, roomCode, player1, player2, playerId, refreshProfile]);
+  }, [status, winner, matchId, user, refreshProfile]);
+
   
   const handleShare = async () => {
     const opponentId = playerId === 'player1' ? 'player2' : 'player1';
