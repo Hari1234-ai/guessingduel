@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { User, Mail, Trophy, Coins, Settings, LogOut, ChevronLeft, Shield, Star, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Capacitor } from '@capacitor/core';
+import { isNativePlatform } from '@/lib/platform';
 import Button from '@/components/ui/Button';
 import Navbar from '@/components/ui/Navbar';
 import BottomNav from '@/components/ui/BottomNav';
@@ -16,7 +16,7 @@ export default function ProfilePage() {
   const [isNative, setIsNative] = useState(false);
 
   useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
+    setIsNative(isNativePlatform());
   }, []);
 
   if (loading) return null;

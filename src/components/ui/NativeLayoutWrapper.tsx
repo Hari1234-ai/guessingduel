@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Capacitor } from "@capacitor/core";
+import { isNativePlatform } from "@/lib/platform";
 import BottomNav from "./BottomNav";
 
 export function NativeLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isNative, setIsNative] = useState(false);
   useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
+    setIsNative(isNativePlatform());
   }, []);
   
   if (isNative) return null;
@@ -17,7 +17,7 @@ export function NativeLayoutWrapper({ children }: { children: React.ReactNode })
 export function NativeBottomNav() {
   const [isNative, setIsNative] = useState(false);
   useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
+    setIsNative(isNativePlatform());
   }, []);
   
   if (!isNative) return null;

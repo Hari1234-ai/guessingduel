@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile, LogIn, Sparkles, Hash } from 'lucide-react';
-import { Capacitor } from '@capacitor/core';
+import { isNativePlatform } from '@/lib/platform';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export default function LandingPage() {
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
+    setIsNative(isNativePlatform());
     const seen = localStorage.getItem('hasSeenOnboarding');
     setHasSeenOnboarding(seen === 'true');
   }, []);

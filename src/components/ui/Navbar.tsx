@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { Brain, Zap, Trophy, MessageSquare, CreditCard, Menu, X, LogOut, RefreshCcw, Trash2, History, Settings, Sun, Moon, Coins, LogIn } from 'lucide-react';
-import { Capacitor } from '@capacitor/core';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { isNativePlatform } from '@/lib/platform';
 import AvatarDropdown from './AvatarDropdown';
 import Button from './Button';
 import { db } from '@/lib/firebase';
@@ -33,7 +33,7 @@ export default function Navbar() {
   });
 
   useEffect(() => { 
-    setIsNative(Capacitor.isNativePlatform()); 
+    setIsNative(isNativePlatform()); 
     setMounted(true);
   }, []);
 
