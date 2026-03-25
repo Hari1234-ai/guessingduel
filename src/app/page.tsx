@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile, LogIn } from 'lucide-react';
+import { Brain, Play, Shield, Zap, Users, ChevronRight, Bot, Trophy, Coins, Star, Smile, LogIn, Sparkles, Hash } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
@@ -99,7 +99,7 @@ export default function LandingPage() {
               onClick={() => setIsHowToPlayOpen(true)}
               className="h-12 px-8 text-sm font-black w-full sm:w-auto"
             >
-              View Rules
+              How to Play?
             </Button>
             <Button 
               size="lg" 
@@ -316,17 +316,65 @@ export default function LandingPage() {
       <Feedback />
 
       {/* Modals */}
-      <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="Game Rules">
-        <div className="space-y-6 text-slate-300 p-2">
-          <p className="text-sm leading-relaxed">
-            MindMatch is a strategic race. Both players choose a secret number and try to guess their opponent&apos;s number first.
-          </p>
-          <div className="grid gap-4">
-            <RuleItem number="1" title="Set your Secret" desc="Choose a number within the range (e.g., 1-100)." />
-            <RuleItem number="2" title="Take Turns" desc="Guess a number. We'll tell you if it's too high or too low." />
-            <RuleItem number="3" title="Win the Match" desc="The first to guess the exact number wins!" />
-          </div>
-          <Button fullWidth onClick={() => setIsHowToPlayOpen(false)} className="mt-6">Let&apos;s Play</Button>
+      <Modal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} title="How to MindMatch?">
+        <div className="space-y-8 text-slate-300 p-2 max-h-[70vh] overflow-y-auto custom-scrollbar">
+          <section className="space-y-4">
+            <h3 className="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+              <Zap size={20} className="text-blue-400" />
+              The Basics
+            </h3>
+            <p className="text-sm leading-relaxed">
+              MindMatch is a real-time race of intuition. Every game starts with both players setting a <strong>Secret</strong> (a number or a word) that the other player must guess. The first one to uncover the secret wins!
+            </p>
+            <div className="grid gap-4">
+              <RuleItem number="1" title="Create or Join" desc="Start a room and share the 6-digit code with a friend." />
+              <RuleItem number="2" title="Set your Secret" desc="Choose something tricky but within the game's limits." />
+              <RuleItem number="3" title="Take Turns" desc="Guess your opponent's secret. Use their feedback to narrow it down." />
+            </div>
+          </section>
+
+          <section className="space-y-4 pt-4 border-t border-slate-800">
+            <h3 className="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+              <Sparkles size={20} className="text-purple-400" />
+              Game Modes
+            </h3>
+            
+            <div className="space-y-6">
+              <div className="p-4 rounded-2xl bg-slate-900/50 border border-blue-500/20">
+                <h4 className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+                  <Hash size={16} /> Numeric: Easy
+                </h4>
+                <p className="text-xs leading-relaxed text-slate-400">
+                  Perfect for quick matches. The range is fixed from <strong>1 to 100</strong>. Ideal for testing your "gut feeling."
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-900/50 border border-purple-500/20">
+                <h4 className="font-bold text-purple-400 mb-2 flex items-center gap-2">
+                  <Shield size={16} /> Numeric: Hard
+                </h4>
+                <p className="text-xs leading-relaxed text-slate-400">
+                  Total control. The host sets a <strong>Custom Range</strong> (e.g., 1 to 10,000). Larger ranges require more strategic elimination!
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-900/50 border border-orange-500/20">
+                <h4 className="font-bold text-orange-400 mb-2 flex items-center gap-2">
+                  <Brain size={16} /> Word Match
+                </h4>
+                <p className="text-xs leading-relaxed text-slate-400">
+                   A battle of vocabulary. Each guess gives you feedback on every letter:
+                   <br/>• <span className="text-green-500">Green</span>: Correct letter, correct spot.
+                   <br/>• <span className="text-yellow-500">Yellow</span>: Correct letter, wrong spot.
+                   <br/>• <span className="text-slate-500">Grey</span>: Letter is not in the word.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <Button fullWidth onClick={() => setIsHowToPlayOpen(false)} className="h-14 rounded-2xl font-black uppercase tracking-widest">
+            Ready to Play
+          </Button>
         </div>
       </Modal>
     </main>

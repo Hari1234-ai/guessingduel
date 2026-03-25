@@ -54,6 +54,23 @@ export default function RootLayout({
                 `
               }}
             />
+
+            {/* Force unregister any legacy service workers to fix APK download prompt issues */}
+            <Script
+              id="unregister-sw"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                      for(let registration of registrations) {
+                        registration.unregister();
+                      }
+                    });
+                  }
+                `
+              }}
+            />
           </GameProvider>
         </AuthProvider>
       </body>
