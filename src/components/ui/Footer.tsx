@@ -42,12 +42,12 @@ export default function Footer() {
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Legal</h4>
             <Link href="/privacy" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Privacy Policy</Link>
             <Link href="/terms" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Terms of Service</Link>
-            <Link href="/sitemap.xml" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Sitemap</Link>
+            <a href="/sitemap.xml" target="_blank" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Sitemap</a>
           </div>
           <div className="flex flex-col gap-3">
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-2">Support</h4>
             <Link href="/contact" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all">Contact Us</Link>
-            <Link href="/faq" className="text-xs font-bold text-slate-500 hover:text-blue-400 transition-all opacity-50 cursor-not-allowed">Help Center</Link>
+            <span className="text-xs font-bold text-slate-500 opacity-50 cursor-not-allowed">Help Center</span>
           </div>
         </div>
 
