@@ -174,9 +174,21 @@ export default function Game() {
               { uid: p2.uid || '', name: p2.name || '', secretNumber: p2.secretNumber ?? 0, secretWord: p2.secretWord ?? null, guesses: p2.history ?? [] }
             ]
           };
-          if (gs.wordLength !== undefined) matchDoc.wordLength = gs.wordLength;
+          // Recursive helper to strip undefined values — Firestore rejects them
+          const deepClean = (obj: any): any => {
+            if (obj === null || typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) return obj.map(deepClean);
+            const cleaned: any = {};
+            Object.keys(obj).forEach(key => {
+              if (obj[key] !== undefined) cleaned[key] = deepClean(obj[key]);
+            });
+            return cleaned;
+          };
 
-          await addDoc(collection(db, 'matches'), matchDoc);
+          const finalDoc = deepClean(matchDoc);
+          console.log('[MindMatch] Saving match document:', finalDoc);
+
+          await addDoc(collection(db, 'matches'), finalDoc);
 
           // Award coins if this player won
           if (winner === currentPlayerId) {

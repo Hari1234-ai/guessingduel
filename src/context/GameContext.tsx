@@ -299,7 +299,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               [currentPlayerKey]: {
                 ...prev[currentPlayerKey],
                 attempts: prev[currentPlayerKey].attempts + (guess === -1 ? 0 : 1),
-                history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
+                history: [{ guess, feedback, timestamp: Date.now() }, ...prev[currentPlayerKey].history],
               },
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
@@ -425,7 +425,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               [currentPlayerKey]: {
                 ...prev[currentPlayerKey],
                 attempts: prev[currentPlayerKey].attempts + (guess === -1 ? 0 : 1),
-                history: [{ guess, feedback }, ...prev[currentPlayerKey].history],
+                history: [{ guess, feedback, timestamp: Date.now() }, ...prev[currentPlayerKey].history],
               },
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
