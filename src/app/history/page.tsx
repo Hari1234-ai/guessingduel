@@ -24,6 +24,7 @@ interface Match {
   totalGuesses: number;
   mode: 'numeric' | 'word';
   difficulty?: 'easy' | 'hard';
+  sortTime?: number;
 }
 
 export default function HistoryPage() {
