@@ -177,8 +177,14 @@ export default function Game() {
           // Recursive helper to strip undefined values — Firestore rejects them
           const deepClean = (obj: any): any => {
             if (obj === null || typeof obj !== 'object') return obj;
-            // Don't clean Firestore sentinels (serverTimestamp, etc)
-            if (obj.constructor?.name === 'FieldValueImpl' || obj._methodName === 'serverTimestamp') return obj;
+            // Robust check for Firestore sentinels (serverTimestamp, etc)
+            if (
+              obj.constructor?.name === 'FieldValueImpl' || 
+              obj.constructor?.name === 'FieldValue' ||
+              obj._methodName === 'serverTimestamp' ||
+              (typeof obj.isEqual === 'function' && obj._type === 'server_timestamp')
+            ) return obj;
+            
             if (Array.isArray(obj)) return obj.map(deepClean);
             const cleaned: any = {};
             Object.keys(obj).forEach(key => {
@@ -188,22 +194,27 @@ export default function Game() {
           };
 
           const finalDoc = deepClean(matchDoc);
-          console.log('[MindMatch] Saving match document:', finalDoc);
+          console.log('[MindMatch] Firestore Project ID:', (db as any).app?.options?.projectId);
+          console.log('[MindMatch] Attempting to save match document:', finalDoc);
+          console.log('[MindMatch] Registered participants:', finalDoc.participants);
 
-          await addDoc(collection(db, 'matches'), finalDoc);
+          const docRef = await addDoc(collection(db, 'matches'), finalDoc);
+          console.log('[MindMatch] Match saved successfully with ID:', docRef.id);
 
           // Award coins if this player won
           if (winner === currentPlayerId) {
+            console.log('[MindMatch] Winner detected, awarding 100 coins to:', user.uid);
             const userRef = doc(db, 'users', user.uid);
             await updateDoc(userRef, {
               coins: increment(100),
               weeklyCoins: increment(100),
               updatedAt: serverTimestamp()
             });
+            console.log('[MindMatch] Coins awarded and profile refresh triggered.');
             await refreshProfile();
           }
         } catch (err) {
-          console.error('[MindMatch] Failed to save match or award coins:', err);
+          console.error('[MindMatch] Critical failure saving match or awarding coins:', err);
         }
       })();
     }
