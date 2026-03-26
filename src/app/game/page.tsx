@@ -177,6 +177,8 @@ export default function Game() {
           // Recursive helper to strip undefined values — Firestore rejects them
           const deepClean = (obj: any): any => {
             if (obj === null || typeof obj !== 'object') return obj;
+            // Don't clean Firestore sentinels (serverTimestamp, etc)
+            if (obj.constructor?.name === 'FieldValueImpl' || obj._methodName === 'serverTimestamp') return obj;
             if (Array.isArray(obj)) return obj.map(deepClean);
             const cleaned: any = {};
             Object.keys(obj).forEach(key => {

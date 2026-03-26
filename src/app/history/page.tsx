@@ -69,15 +69,24 @@ export default function HistoryPage() {
             isWinner = true;
           }
 
-          // Handle Firestore Timestamp
+          // Handle Firestore Timestamp with multiple fallbacks
           const timestamp = data.createdAt;
-          let dateStr = 'Invalid Date';
+          const mId = data.matchId;
+          let dateStr = 'Just Now';
+          let sortTime = 0;
+
           if (timestamp && typeof timestamp.toDate === 'function') {
             const d = timestamp.toDate();
             dateStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-          } else if (timestamp && timestamp.seconds) { // Fallback for plain objects
+            sortTime = d.getTime();
+          } else if (timestamp && timestamp.seconds) {
             const d = new Date(timestamp.seconds * 1000);
             dateStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            sortTime = d.getTime();
+          } else if (mId && !isNaN(Number(mId))) {
+            const d = new Date(Number(mId));
+            dateStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            sortTime = Number(mId);
           }
 
           fetchedMatches.push({
@@ -91,11 +100,16 @@ export default function HistoryPage() {
             opponentSecretWord: opponent?.secretWord,
             totalGuesses: myData?.guesses?.length || 0,
             mode,
-            difficulty: data.difficulty || 'easy'
+            difficulty: data.difficulty || 'easy',
+            sortTime // Temporary field for sorting
           });
         });
 
-        setMatches(fetchedMatches);
+        // Final client-side sort to guarantee order (especially for pending timestamps)
+        fetchedMatches.sort((a: any, b: any) => (b.sortTime || 0) - (a.sortTime || 0));
+
+        setMatches(fetchedMatches.map(({ sortTime, ...rest }: any) => rest));
+
       } catch (error) {
         console.error("Error fetching match history:", error);
       } finally {
