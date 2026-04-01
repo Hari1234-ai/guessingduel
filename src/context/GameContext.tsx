@@ -294,12 +294,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { guess, feedback, nextTurn, isWinner } = msg.data;
           updateState(prev => {
             const currentPlayerKey = prev.currentTurn;
+            const opponentKey = currentPlayerKey === 'player1' ? 'player2' : 'player1';
+            const shouldIncrement = prev.mode === 'numeric' && prev.difficulty === 'hard' && !isWinner && guess !== -1;
+
             return {
               ...prev,
               [currentPlayerKey]: {
                 ...prev[currentPlayerKey],
                 attempts: prev[currentPlayerKey].attempts + (guess === -1 ? 0 : 1),
                 history: [{ guess, feedback, timestamp: Date.now() }, ...prev[currentPlayerKey].history],
+              },
+              [opponentKey]: {
+                ...prev[opponentKey],
+                secretNumber: shouldIncrement 
+                  ? Math.min(prev[opponentKey].secretNumber + 3, prev.range.max)
+                  : prev[opponentKey].secretNumber
               },
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
@@ -420,12 +429,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { guess, feedback, nextTurn, isWinner, matchId } = msg.data;
           updateState(prev => {
             const currentPlayerKey = prev.currentTurn;
+            const opponentKey = currentPlayerKey === 'player1' ? 'player2' : 'player1';
+            const shouldIncrement = prev.mode === 'numeric' && prev.difficulty === 'hard' && !isWinner && guess !== -1;
+
             return {
               ...prev,
               [currentPlayerKey]: {
                 ...prev[currentPlayerKey],
                 attempts: prev[currentPlayerKey].attempts + (guess === -1 ? 0 : 1),
                 history: [{ guess, feedback, timestamp: Date.now() }, ...prev[currentPlayerKey].history],
+              },
+              [opponentKey]: {
+                ...prev[opponentKey],
+                secretNumber: shouldIncrement 
+                  ? Math.min(prev[opponentKey].secretNumber + 3, prev.range.max)
+                  : prev[opponentKey].secretNumber
               },
               currentTurn: nextTurn as 'player1' | 'player2',
               status: isWinner ? 'finished' : 'playing',
@@ -619,6 +637,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const startGame = useCallback(() => {
     const state = latestStateRef.current;
     if (state.playerId === 'player1' && channelRef.current) {
+      const matchId = Date.now().toString();
       channelRef.current.publish('start-match', {
         player1: state.player1,
         player2: state.player2,
@@ -626,14 +645,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         mode: state.mode,
         difficulty: state.difficulty,
         wordLength: state.wordLength,
-        matchId: Date.now().toString()
+        matchId: matchId
       });
-      updateState(prev => ({ ...prev, status: 'playing', matchId: Date.now().toString() }));
+      updateState(prev => ({ ...prev, status: 'playing', matchId: matchId }));
     }
   }, [updateState]);
 
   const resetGame = useCallback(() => {
-    const { playerId, player2, roomCode, player1, range } = latestStateRef.current;
+    const { playerId, player2, range } = latestStateRef.current;
     const isHost = playerId === 'player1';
     const isAI = player2.isAI;
     
@@ -642,14 +661,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const aiSecretNum = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
     const aiSecretWord = mode === 'word' ? getRandomAIWord(wordLength) : undefined;
 
-    const newMatchId = Date.now().toString();
+    const newMatchId = isAI ? Date.now().toString() : null;
     updateState(prev => ({
       ...initialState,
       roomCode: prev.roomCode,
       playerId: prev.playerId,
-      matchId: isAI ? newMatchId : null,
+      matchId: newMatchId,
       range: prev.range,
       mode: prev.mode,
+      difficulty: prev.difficulty, // PRESERVE DIFFICULTY
       wordLength: prev.wordLength,
       status: isAI ? 'playing' : (isHost ? 'lobby' : 'guest-setup'), 
       player1: { ...initialPlayer(prev.player1.name, prev.player1.uid), attempts: 0, history: [] },
@@ -663,7 +683,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     if (channelRef.current && !isAI) {
-      channelRef.current.publish('rematch', { matchId: isHost ? Date.now().toString() : null });
+      // For multiplayer rematches, the new matchId will be generated when the host calls startGame again.
+      // So here we just reset state for both.
+      channelRef.current.publish('rematch', { matchId: null });
     }
   }, [updateState]);
 

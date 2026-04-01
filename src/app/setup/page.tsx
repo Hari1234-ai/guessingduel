@@ -706,38 +706,37 @@ function SetupContent() {
                         Please check your Ably API Key in Vercel settings.
                       </div>
                     )}
+                  {/* Ready Status / Start Actions (Integrated into scroll) */}
+                  <div className="mt-8 pt-6 border-t border-card-border/50">
+                    <div className="w-full">
+                      {playerId === 'player1' ? (
+                        <div className="flex flex-col items-center w-full gap-2">
+                          <Button 
+                            size="lg" 
+                            fullWidth
+                            disabled={!isOpponentPresent || !gameState.isPlayer2Ready}
+                            onClick={startGame}
+                            className="h-16 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(25,133,161,0.2)] disabled:opacity-50"
+                          >
+                            {!isOpponentPresent ? 'Waiting for Opponent...' : !gameState.isPlayer2Ready ? 'Opponent Setting Up...' : 'START MindMatch'}
+                            {gameState.isPlayer2Ready && isOpponentPresent && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
+                          </Button>
+                          {isOpponentPresent && !gameState.isPlayer2Ready && (
+                            <p className="text-xs text-slate-500">Waiting for opponent to choose their secret number...</p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 px-8 bg-blue-500/10 border border-blue-500/20 rounded-2xl w-full">
+                          <Loader2 className="animate-spin text-blue-500 mx-auto mb-3" size={24} />
+                          <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Awaiting Host Signal...</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Ready Status / Start Actions (Now fixed at bottom) */}
-              <div className="p-6 md:px-8 bg-background/95 backdrop-blur-xl border-t border-card-border fixed bottom-0 left-0 right-0 z-50">
-                <div className="max-w-lg mx-auto w-full">
-                  {playerId === 'player1' ? (
-                    <div className="flex flex-col items-center w-full gap-2">
-                      <Button 
-                        size="lg" 
-                        fullWidth
-                        disabled={!isOpponentPresent || !gameState.isPlayer2Ready}
-                        onClick={startGame}
-                        className="h-16 text-base font-black uppercase tracking-widest group bg-blue-600 hover:bg-blue-500 shadow-[0_0_30px_rgba(25,133,161,0.3)] disabled:opacity-50"
-                      >
-                        {!isOpponentPresent ? 'Waiting for Opponent...' : !gameState.isPlayer2Ready ? 'Opponent Setting Up...' : 'START MindMatch'}
-                        {gameState.isPlayer2Ready && isOpponentPresent && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
-                      </Button>
-                      {isOpponentPresent && !gameState.isPlayer2Ready && (
-                        <p className="text-xs text-slate-500">Waiting for opponent to choose their secret number...</p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-center py-4 px-8 bg-blue-500/10 border border-blue-500/20 rounded-2xl w-full">
-                      <Loader2 className="animate-spin text-blue-500 mx-auto mb-3" size={24} />
-                      <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Awaiting Host Signal...</p>
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
+          </div>
         </main>
       );
     }
